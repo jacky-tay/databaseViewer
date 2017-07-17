@@ -35,6 +35,11 @@
 		850C381C1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C381B1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift */; };
 		850C381E1F1C724800F2D116 /* NSAttributeTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C381D1F1C724700F2D116 /* NSAttributeTypeExtension.swift */; };
 		850C38201F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C381F1F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift */; };
+		850C38221F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38211F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift */; };
+		850C38241F1D5DAC00F2D116 /* DatabaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38231F1D5DAC00F2D116 /* DatabaseTableViewController.swift */; };
+		850C38271F1D655700F2D116 /* Join.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38261F1D655700F2D116 /* Join.swift */; };
+		850C38291F1D753A00F2D116 /* QueryAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38281F1D753A00F2D116 /* QueryAction.swift */; };
+		850C382B1F1D7AE800F2D116 /* UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C382A1F1D7AE800F2D116 /* UINavigationController.swift */; };
 		854972E01F1338C100E86E84 /* UtilityHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 854972DE1F1338C100E86E84 /* UtilityHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		85599E2E1F1C45170024FA39 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85599E2D1F1C45170024FA39 /* DatabaseManager.swift */; };
 		85599E301F1C45430024FA39 /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85599E2F1F1C45420024FA39 /* Table.swift */; };
@@ -55,6 +60,11 @@
 		850C381B1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableDetailsViewController.swift; sourceTree = "<group>"; };
 		850C381D1F1C724700F2D116 /* NSAttributeTypeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAttributeTypeExtension.swift; sourceTree = "<group>"; };
 		850C381F1F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSManagedObjectContextExtension.swift; sourceTree = "<group>"; };
+		850C38211F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseQueryPropertiesTableViewController.swift; sourceTree = "<group>"; };
+		850C38231F1D5DAC00F2D116 /* DatabaseTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableViewController.swift; sourceTree = "<group>"; };
+		850C38261F1D655700F2D116 /* Join.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Join.swift; sourceTree = "<group>"; };
+		850C38281F1D753A00F2D116 /* QueryAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryAction.swift; sourceTree = "<group>"; };
+		850C382A1F1D7AE800F2D116 /* UINavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigationController.swift; sourceTree = "<group>"; };
 		854972DB1F1338C100E86E84 /* UtilityHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UtilityHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		854972DE1F1338C100E86E84 /* UtilityHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UtilityHelper.h; sourceTree = "<group>"; };
 		854972DF1F1338C100E86E84 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -77,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				850C38151F1C63AD00F2D116 /* DatabaseResultCollectionViewCell.swift */,
+				850C38231F1D5DAC00F2D116 /* DatabaseTableViewController.swift */,
 				850C380B1F1C52DC00F2D116 /* DatabaseViewer.storyboard */,
 				850C38101F1C632800F2D116 /* DuplexCollectionViewLayout.swift */,
 			);
@@ -87,6 +98,7 @@
 		850C380D1F1C56C400F2D116 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				850C38211F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift */,
 				850C38171F1C63CC00F2D116 /* DatabaseResultViewController.swift */,
 				850C381B1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift */,
 				850C380E1F1C570400F2D116 /* DatabaseTableListViewController.swift */,
@@ -101,6 +113,14 @@
 				850C38191F1C63F700F2D116 /* FetchResult.swift */,
 			);
 			path = "View Models";
+			sourceTree = "<group>";
+		};
+		850C38251F1D650B00F2D116 /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				850C38261F1D655700F2D116 /* Join.swift */,
+			);
+			path = Enums;
 			sourceTree = "<group>";
 		};
 		854972D11F1338C100E86E84 = {
@@ -122,11 +142,12 @@
 		854972DD1F1338C100E86E84 /* UtilityHelper */ = {
 			isa = PBXGroup;
 			children = (
+				85599E2C1F1C44DE0024FA39 /* Database Viewer */,
+				850C38251F1D650B00F2D116 /* Enums */,
+				85599E311F1C461D0024FA39 /* Extensions */,
+				850C37FA1F1C520A00F2D116 /* UI Interfaces */,
 				850C38121F1C636900F2D116 /* View Models */,
 				850C380D1F1C56C400F2D116 /* ViewControllers */,
-				850C37FA1F1C520A00F2D116 /* UI Interfaces */,
-				85599E2C1F1C44DE0024FA39 /* Database Viewer */,
-				85599E311F1C461D0024FA39 /* Extensions */,
 				854972DE1F1338C100E86E84 /* UtilityHelper.h */,
 				854972DF1F1338C100E86E84 /* Info.plist */,
 			);
@@ -137,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				85599E2D1F1C45170024FA39 /* DatabaseManager.swift */,
+				850C38281F1D753A00F2D116 /* QueryAction.swift */,
 				85599E2F1F1C45420024FA39 /* Table.swift */,
 			);
 			path = "Database Viewer";
@@ -151,6 +173,7 @@
 				850C381F1F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift */,
 				850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */,
 				850C38061F1C52BD00F2D116 /* UIColorExtension.swift */,
+				850C382A1F1D7AE800F2D116 /* UINavigationController.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -258,15 +281,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				850C38081F1C52BD00F2D116 /* StringExtension.swift in Sources */,
+				850C382B1F1D7AE800F2D116 /* UINavigationController.swift in Sources */,
 				850C38181F1C63CC00F2D116 /* DatabaseResultViewController.swift in Sources */,
+				850C38291F1D753A00F2D116 /* QueryAction.swift in Sources */,
+				850C38241F1D5DAC00F2D116 /* DatabaseTableViewController.swift in Sources */,
 				85599E301F1C45430024FA39 /* Table.swift in Sources */,
 				850C38161F1C63AD00F2D116 /* DatabaseResultCollectionViewCell.swift in Sources */,
+				850C38271F1D655700F2D116 /* Join.swift in Sources */,
 				850C38141F1C638800F2D116 /* DisplayResult.swift in Sources */,
 				850C381E1F1C724800F2D116 /* NSAttributeTypeExtension.swift in Sources */,
 				850C381C1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift in Sources */,
 				850C381A1F1C63F700F2D116 /* FetchResult.swift in Sources */,
 				85599E2E1F1C45170024FA39 /* DatabaseManager.swift in Sources */,
 				850C38091F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift in Sources */,
+				850C38221F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift in Sources */,
 				850C38201F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift in Sources */,
 				850C38111F1C632800F2D116 /* DuplexCollectionViewLayout.swift in Sources */,
 				850C380F1F1C570400F2D116 /* DatabaseTableListViewController.swift in Sources */,

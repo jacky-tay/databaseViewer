@@ -19,30 +19,37 @@ public class DatabaseManager {
 
     public func prepareDatabases(with contexts: [NSManagedObjectContext?], and sqlites: [String]) {
         prepareDatabase(for: contexts.flatMap { $0 })
+        databaseNames = Array(databases.keys).sorted()
         updateEntitiesCount()
     }
 
     public func presentDatabaseViewer(navigationController: UINavigationController?) {
-        let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseTableListViewController.self))
-        let vc = storyboard.instantiateViewController(withIdentifier: "DatabaseTableListViewController")
-        let nav = UINavigationController(rootViewController: vc)
-        nav.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
-        navigationController?.present(nav, animated: true, completion: nil)
+        let vc = DatabaseTableListViewController.getViewController()
+        navigationController?.presentViewControllerModally(vc)
     }
 
     private func updateEntitiesCount() {
         updateEntitiesCountForContexts()
     }
 
+    private func ensureDatabaseNameIsUnique(name: String) -> String {
+        guard databases.keys.contains(name) else {
+            return name
+        }
+        let count = Array(databases.keys)
+            .filter { $0.contains(name) }
+            .count
+        return name + "\(count)"
+    }
+
     // MARK: - NSManagedObjectContext
     private func prepareDatabase(for contexts: [NSManagedObjectContext]) {
-        databases.removeAll()
         for context in contexts {
-            let name = (context.persistentStoreCoordinator?.persistentStores.flatMap { $0.url?.absoluteString }.first)?.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "Context \(databases.count)"
-            databases[name] = prepareTables(for: context)
+            var name = (context.persistentStoreCoordinator?.persistentStores.flatMap { $0.url?.absoluteString }.first)?.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "Context \(databases.count)"
+            name = ensureDatabaseNameIsUnique(name: name)
+            databases[name] = prepareTables(for: context, databaseName: name)
             contextDict[name] = context
         }
-        databaseNames = Array(databases.keys).sorted()
     }
 
     private func updateEntitiesCountForContexts() {
@@ -59,13 +66,13 @@ public class DatabaseManager {
         } // for every context in dictionary
     }
 
-    private func prepareTables(for context: NSManagedObjectContext) -> [Table] {
+    private func prepareTables(for context: NSManagedObjectContext, databaseName: String) -> [Table] {
         var results = [Table]()
         if let entities = context.persistentStoreCoordinator?.managedObjectModel.entities.sorted(by: { $0.name ?? "" < $1.name ?? "" }) {
             for entity in entities {
                 if let name = entity.name {
                     let properties = entity.attributesByName.values.toDictionary(key: { $0.name }, value: { $0.attributeType })
-                    results.append(Table(name: name, properties: properties, relationships: entity.relationshipsByName.flatMap({ $0.value.destinationEntity?.name })))
+                    results.append(Table(databaseName: databaseName, name: name, properties: properties, relationships: entity.relationshipsByName.flatMap({ $0.value.destinationEntity?.name })))
                 }
             } // for
         } // entities
