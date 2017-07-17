@@ -22,6 +22,6 @@ class Table {
         alias = name.takeUppercasedCharacter()
         propertiesName = Array(properties.keys).sorted()
         self.properties = properties
-        self.relationships = relationships
+        self.relationships = relationships?.sorted()
     }
 }

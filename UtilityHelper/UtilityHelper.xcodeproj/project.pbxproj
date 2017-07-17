@@ -359,7 +359,7 @@
 			};
 			name = D;
 		};
-		854972E11F1338C100E86E84 /* Debug */ = {
+		854972E11F1338C100E86E84 /* Q */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -411,7 +411,7 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Q;
 		};
 		854972E21F1338C100E86E84 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -460,7 +460,7 @@
 			};
 			name = Release;
 		};
-		854972E41F1338C100E86E84 /* Debug */ = {
+		854972E41F1338C100E86E84 /* Q */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -478,7 +478,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
-			name = Debug;
+			name = Q;
 		};
 		854972E51F1338C100E86E84 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -499,12 +499,12 @@
 			};
 			name = Release;
 		};
-		854972E81F133A8C00E86E84 /* Debug */ = {
+		854972E81F133A8C00E86E84 /* Q */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
-			name = Debug;
+			name = Q;
 		};
 		854972E91F133A8C00E86E84 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -519,7 +519,7 @@
 		854972D51F1338C100E86E84 /* Build configuration list for PBXProject "UtilityHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				854972E11F1338C100E86E84 /* Debug */,
+				854972E11F1338C100E86E84 /* Q */,
 				850C37F71F1C504600F2D116 /* D */,
 				854972E21F1338C100E86E84 /* Release */,
 			);
@@ -529,7 +529,7 @@
 		854972E31F1338C100E86E84 /* Build configuration list for PBXNativeTarget "UtilityHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				854972E41F1338C100E86E84 /* Debug */,
+				854972E41F1338C100E86E84 /* Q */,
 				850C37F81F1C504600F2D116 /* D */,
 				854972E51F1338C100E86E84 /* Release */,
 			);
@@ -539,7 +539,7 @@
 		854972E71F133A8C00E86E84 /* Build configuration list for PBXAggregateTarget "UtilityHelper-Universal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				854972E81F133A8C00E86E84 /* Debug */,
+				854972E81F133A8C00E86E84 /* Q */,
 				850C37F91F1C504600F2D116 /* D */,
 				854972E91F133A8C00E86E84 /* Release */,
 			);

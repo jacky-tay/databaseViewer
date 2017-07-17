@@ -61,4 +61,19 @@ class DatabaseResultViewController: UICollectionViewController {
         }
         return cell
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard indexPath.section > 0 && indexPath.row > 0 else {
+            return
+        }
+        let columnTitle = result?.title[indexPath.row - 1]
+        let content = result?.contents[indexPath.section - 1][indexPath.row - 1]
+        
+        guard content != nil else {
+            return
+        }
+        let alert = UIAlertController(title: columnTitle, message: content, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        navigationController?.present(alert, animated: true, completion: nil)
+    }
 }
