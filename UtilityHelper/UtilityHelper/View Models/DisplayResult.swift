@@ -10,16 +10,16 @@ import UIKit
 
 class DisplayResult {
     let title: [String]!
-    let contents: [[String]]!
+    let contents: [[String?]]!
     var columnWidth: [CGFloat]!
 
     static var maxWidth: CGFloat = 300
     static var displayHeight: CGFloat = 44
     static let displayHeaderFont = UIFont(name: "Courier-Bold", size: 17) ?? UIFont.monospacedDigitSystemFont(ofSize: 15, weight: UIFontWeightBold)
-    static let displayFont = UIFont(name: "Courier-Regular", size: 17) ?? UIFont.monospacedDigitSystemFont(ofSize: 17, weight: UIFontWeightRegular)
+    static let displayFont = UIFont(name: "Courier", size: 17) ?? UIFont.monospacedDigitSystemFont(ofSize: 17, weight: UIFontWeightRegular)
     static let margin: CGFloat = 20
 
-    static func prepare(title: [String], contents: [[String]], completionHandler: @escaping ()->()) -> DisplayResult? {
+    static func prepare(title: [String], contents: [[String?]], completionHandler: @escaping ()->()) -> DisplayResult? {
         // ensure the contents column count is same as title count
         guard (contents.reduce(true) { $0 && $1.count == title.count }) else {
             return nil
@@ -34,7 +34,7 @@ class DisplayResult {
         return displayResult
     }
 
-    private init(title: [String], contents: [[String]]) {
+    private init(title: [String], contents: [[String?]]) {
         self.title = title
         self.contents = contents
     }
@@ -48,8 +48,10 @@ class DisplayResult {
 
         for column in 0 ..< title.count {
             var longestText = title[column]
-            for row in contents where longestText.characters.count < row[column].characters.count {
-                longestText = row[column]
+            for row in contents {
+                if let value = row[column], longestText.characters.count < value.characters.count {
+                    longestText = value
+                }
             }
             columnWidth.append(ceil(longestText.calculateFrameSize(width: width, font: font).width * 1.05) + margin)
         }

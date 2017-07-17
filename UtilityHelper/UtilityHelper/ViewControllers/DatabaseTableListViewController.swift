@@ -49,6 +49,24 @@ class DatabaseTableListViewController: UITableViewController {
         return DatabaseManager.sharedInstance.databaseNames[section]
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let databaseName = DatabaseManager.sharedInstance.databaseNames[indexPath.section]
+        if let tables = DatabaseManager.sharedInstance.databases[databaseName],
+            let vc = DatabaseResultViewController.getViewController() {
+
+            navigationController?.pushViewController(vc, animated: true)
+
+            DispatchQueue.global().async {
+                let table = tables[indexPath.row]
+                if let context = DatabaseManager.sharedInstance.contextDict[databaseName] {
+                    vc.result = DisplayResult.prepare(title: table.propertiesName, contents: context.fetchAll(for: table.name, keys: table.propertiesName)) {
+                        vc.prepareContentLayout()
+                    } // prepare
+                } // if let context
+            } // async
+        } // if let tables
+    }
+
     override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         if let tables = DatabaseManager.sharedInstance.databases[DatabaseManager.sharedInstance.databaseNames[indexPath.section]],
             let vc = DatabaseTableDetailsViewController.getViewController(table: tables[indexPath.row]) {

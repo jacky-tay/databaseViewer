@@ -12,7 +12,7 @@ import CoreData
 public class DatabaseManager {
     internal var databaseNames = [String]()
     internal var databases = [String : [Table]]()
-    private var contextDict = [String : NSManagedObjectContext]()
+    internal var contextDict = [String : NSManagedObjectContext]()
     private var sqliteNames = [String]()
 
     public static let sharedInstance = DatabaseManager()

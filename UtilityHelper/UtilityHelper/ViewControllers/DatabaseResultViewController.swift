@@ -12,8 +12,14 @@ class DatabaseResultViewController: UICollectionViewController {
 
     var result: DisplayResult?
 
+    class func getViewController() -> DatabaseResultViewController? {
+        let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseResultViewController.self))
+        return storyboard.instantiateViewController(withIdentifier: "DatabaseResultViewController") as? DatabaseResultViewController
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView?.setCollectionViewLayout(DuplexCollectionViewLayout(), animated: false)
         navigationController?.navigationBar.backgroundColor = UIColor.white
     }
 
@@ -42,13 +48,15 @@ class DatabaseResultViewController: UICollectionViewController {
         let column = indexPath.row - 1
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DatabaseResultCollectionViewCell", for: indexPath)
         if let cell = cell as? DatabaseResultCollectionViewCell, let result = result {
+            let isNil = indexPath.section > 0 && indexPath.row > 0 && result.contents[row][column] == nil
             cell.label.text = indexPath.section == 0 && indexPath.row == 0 ? nil :
                 indexPath.section == 0 ? result.title[column] :
                 indexPath.row == 0 ? "\(indexPath.section)" :
-                result.contents[row][column]
+                result.contents[row][column] ?? "NULL"
             cell.label.textAlignment = indexPath.row == 0 ? .right : .left
-            cell.label.textColor = indexPath.row == 0 ? UIColor.gray : UIColor.darkText
-            cell.label.font = indexPath.section == 0 ? DisplayResult.displayHeaderFont : DisplayResult.displayFont
+            cell.label.textColor = indexPath.row == 0 ? UIColor.gray :
+                indexPath.section == 0 ? UIColor.darkText :
+                isNil ? UIColor.gray : UIColor.darkText
             cell.backgroundColor = indexPath.section % 2 == 1 ? UIColor.groupTableViewBackground : UIColor.white
         }
         return cell
