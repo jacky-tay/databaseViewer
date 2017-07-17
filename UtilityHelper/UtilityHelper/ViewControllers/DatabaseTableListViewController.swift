@@ -12,6 +12,8 @@ class DatabaseTableListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor.groupTableViewBackground
+        tableView.tableFooterView = UIView()
         tableView.rowHeight = 60
         navigationItem.title = "Database Viewer"
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(close(_:)))
@@ -45,5 +47,12 @@ class DatabaseTableListViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return DatabaseManager.sharedInstance.databaseNames[section]
+    }
+
+    override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        if let tables = DatabaseManager.sharedInstance.databases[DatabaseManager.sharedInstance.databaseNames[indexPath.section]],
+            let vc = DatabaseTableDetailsViewController.getViewController(table: tables[indexPath.row]) {
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }

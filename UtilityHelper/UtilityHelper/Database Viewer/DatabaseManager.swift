@@ -25,7 +25,9 @@ public class DatabaseManager {
     public func presentDatabaseViewer(navigationController: UINavigationController?) {
         let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseTableListViewController.self))
         let vc = storyboard.instantiateViewController(withIdentifier: "DatabaseTableListViewController")
-        navigationController?.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+        let nav = UINavigationController(rootViewController: vc)
+        nav.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
+        navigationController?.present(nav, animated: true, completion: nil)
     }
 
     private func updateEntitiesCount() {
