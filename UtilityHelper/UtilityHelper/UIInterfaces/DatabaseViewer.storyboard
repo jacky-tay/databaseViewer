@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Database Table List View Controller-->
+        <scene sceneID="GNq-tn-IlM">
+            <objects>
+                <tableViewController storyboardIdentifier="DatabaseTableListViewController" id="GH7-ib-UFx" customClass="DatabaseTableListViewController" customModule="UtilityHelper" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="iuU-Na-fNm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatabaseTableRowTableViewCell" textLabel="t2m-b9-apc" detailTextLabel="W09-xw-daf" style="IBUITableViewCellStyleSubtitle" id="Ndr-ig-2aj">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ndr-ig-2aj" id="p5r-si-yRh">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="t2m-b9-apc">
+                                            <rect key="frame" x="15" y="5" width="33.5" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="W09-xw-daf">
+                                            <rect key="frame" x="15" y="25.5" width="44" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="GH7-ib-UFx" id="fHP-ni-W9J"/>
+                            <outlet property="delegate" destination="GH7-ib-UFx" id="4FY-no-NZB"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PGA-vR-nff" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="63" y="-99"/>
+        </scene>
+        <!--Database Result View Controller-->
+        <scene sceneID="QyY-fc-6wK">
+            <objects>
+                <collectionViewController storyboardIdentifier="DatabaseResultViewController" id="exz-wa-4mG" customClass="DatabaseResultViewController" customModule="DatabaseViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="CQR-JQ-YxE">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ND8-Jp-kY8" customClass="DualDirectionalCollectionViewLayout" customModule="DatabaseViewer" customModuleProvider="target">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DatabaseResultCollectionViewCell" id="Gnr-2V-Un6" customClass="DatabaseResultCollectionViewCell" customModule="DatabaseViewer" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nGX-AW-P9W">
+                                            <rect key="frame" x="10" y="14" width="30" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xfi-YH-Cqv">
+                                            <rect key="frame" x="49" y="0.0" width="1" height="50"/>
+                                            <color key="backgroundColor" cocoaTouchSystemColor="lightTextColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="1" id="dZ9-rJ-mUD"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="Xfi-YH-Cqv" secondAttribute="bottom" id="9Vd-nf-DRj"/>
+                                    <constraint firstAttribute="trailing" secondItem="Xfi-YH-Cqv" secondAttribute="trailing" id="HTU-6d-VWf"/>
+                                    <constraint firstItem="nGX-AW-P9W" firstAttribute="leading" secondItem="Gnr-2V-Un6" secondAttribute="leading" constant="10" id="OPQ-ln-EBU"/>
+                                    <constraint firstItem="nGX-AW-P9W" firstAttribute="centerY" secondItem="Gnr-2V-Un6" secondAttribute="centerY" id="Oi1-pz-Xg1"/>
+                                    <constraint firstItem="Xfi-YH-Cqv" firstAttribute="top" secondItem="Gnr-2V-Un6" secondAttribute="top" id="SvJ-VO-s3R"/>
+                                    <constraint firstAttribute="trailing" secondItem="nGX-AW-P9W" secondAttribute="trailing" constant="10" id="eVf-w4-pUP"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="label" destination="nGX-AW-P9W" id="5Qg-6Z-bOU"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="exz-wa-4mG" id="2tI-JK-yJI"/>
+                            <outlet property="delegate" destination="exz-wa-4mG" id="rA7-Ik-KS8"/>
+                        </connections>
+                    </collectionView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="I7V-Kd-Lni" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="882" y="-99"/>
+        </scene>
+    </scenes>
+</document>
