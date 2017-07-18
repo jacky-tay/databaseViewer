@@ -67,7 +67,7 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController, Q
     private func showJoinOptions() {
         let alert = UIAlertController(title: "Join", message: nil, preferredStyle: .actionSheet)
         for join in Join.getAllJoins() {
-            alert.addAction(UIAlertAction(title: "\(join) join".capitalized, style: .default) { [weak self] (action) in
+            alert.addAction(UIAlertAction(title: join.description, style: .default) { [weak self] (action) in
                 self?.didSelectedJoin(sender: action)
             })
         }
@@ -76,7 +76,12 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController, Q
     }
 
     private func didSelectedJoin(sender: UIAlertAction) {
-        // TODO
+        guard let join = Join(rawValue: sender.title?.components(separatedBy: " ").first?.uppercased() ?? "") else {
+            return
+        }
+        if let vc = DatabaseTableListViewController.getViewController(joinType: join, with: table) {
+            navigationController?.presentViewControllerModally(vc)
+        }
     }
 
     // MARK: - Table view data source

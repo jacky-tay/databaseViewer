@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Join: String {
+enum Join: String, CustomStringConvertible {
     case full = "FULL"
     case inner = "INNER"
     case left = "LEFT"
@@ -16,5 +16,9 @@ enum Join: String {
 
     static func getAllJoins() -> [Join] {
         return [.full, .inner, .left, .right]
+    }
+
+    var description: String {
+        return rawValue.capitalized + " Join with"
     }
 }

@@ -10,25 +10,50 @@ import UIKit
 
 class DatabaseTableListViewController: DatabaseTableViewController {
 
-    var isQuery = false
+    private var action = QueryAction.default
+    private var joinType: Join?
+    private var databases: [DatabaseTableLitePair] = []
 
-    static func getViewController() -> UIViewController {
+    static func getViewController() -> DatabaseTableListViewController? {
         let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseTableListViewController.self))
-        return storyboard.instantiateViewController(withIdentifier: "DatabaseTableListViewController")
+        let vc = storyboard.instantiateViewController(withIdentifier: "DatabaseTableListViewController") as? DatabaseTableListViewController
+        vc?.databases = DatabaseManager.sharedInstance.getDatabaseTableLitePairs()
+        return vc
+    }
+
+    static func getViewController(joinType: Join, with table: Table) -> DatabaseTableListViewController? {
+        let vc = getViewController()
+        vc?.action = .join
+        vc?.joinType = joinType
+
+        if let databaseIndex = vc?.databases.index(where: { $0.databaseName == table.databaseName }) {
+            var toRemove = [table.name]
+            let relationships = table.relationships ?? []
+            toRemove.append(contentsOf: relationships)
+            for value in toRemove {
+                if let index = vc?.databases[databaseIndex].tables.index(where: { $0.name == value }) {
+                    vc?.databases[databaseIndex].tables.remove(at: index)
+                }
+            }
+            if !relationships.isEmpty {
+                vc?.databases.insert(("Relationships", relationships.map { ($0, 0) }), at: 0)
+            }
+        }
+        return vc
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.rowHeight = 60
+        tableView.rowHeight = action == .join ? 44 : 60
 
-        if !isQuery {
+        if action == .default {
             navigationItem.title = "Database Viewer"
-            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(close(_:)))
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Query", style: .plain, target: self, action: #selector(query(_:)))
         }
         else {
-            navigationItem.title = "Select"
+            navigationItem.title = joinType?.description ?? action.description
         }
+        navigationItem.leftBarButtonItem = action == .select ? nil : UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(close(_:)))
     }
 
     dynamic private func close(_ sender: UIBarButtonItem) {
@@ -36,47 +61,46 @@ class DatabaseTableListViewController: DatabaseTableViewController {
     }
 
     dynamic private func query(_ sender: UIBarButtonItem) {
-        if let vc = DatabaseTableListViewController.getViewController() as? DatabaseTableListViewController {
-            vc.isQuery = true
+        if let vc = DatabaseTableListViewController.getViewController() {
+            vc.action = .select
             navigationController?.pushViewController(vc, animated: true)
         }
     }
 
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return DatabaseManager.sharedInstance.databaseNames.count
+        return databases.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let databaseName = DatabaseManager.sharedInstance.databaseNames[section]
-        return DatabaseManager.sharedInstance.databases[databaseName]?.count ?? 0
+        return databases[section].tables.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DatabaseTableRowTableViewCell", for: indexPath)
-        let databaseName = DatabaseManager.sharedInstance.databaseNames[indexPath.section]
-        if let database = DatabaseManager.sharedInstance.databases[databaseName], database.count > indexPath.row {
-            let table = database[indexPath.row]
+        let database = databases[indexPath.section]
+        if database.tables.count > indexPath.row {
+            let table = database.tables[indexPath.row]
             cell.textLabel?.text = table.name
-            cell.detailTextLabel?.text = "\(table.count) item\(table.count == 1 ? "" : "s")"
+            cell.detailTextLabel?.text = action == .join ? nil : "\(table.count) item\(table.count == 1 ? "" : "s")"
         }
         cell.detailTextLabel?.textColor = UIColor.lightGray
-        cell.accessoryType = isQuery ? .none : .detailDisclosureButton
+        cell.accessoryType = action != .default ? .none : .detailDisclosureButton
         return cell
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return DatabaseManager.sharedInstance.databaseNames[section]
+        return databases[section].databaseName
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let databaseName = DatabaseManager.sharedInstance.databaseNames[indexPath.section]
-        guard let tables = DatabaseManager.sharedInstance.databases[databaseName] else {
+        let databaseName = databases[indexPath.section].databaseName
+        let tableName = databases[indexPath.section].tables[indexPath.row].name
+        guard let table = DatabaseManager.sharedInstance.getTableFrom(databaseName: databaseName, tableName: tableName) else {
             return
         }
 
-        let table = tables[indexPath.row]
-        if isQuery, let vc = DatabaseQueryPropertiesTableViewController.getViewController(table: table) {
+        if action == .select, let vc = DatabaseQueryPropertiesTableViewController.getViewController(table: table) {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
             let alert = UIAlertController(title: "Alias", message: "Set \(table.name) as:", preferredStyle: .alert)
             alert.addTextField(configurationHandler: { (textField) in
@@ -91,6 +115,7 @@ class DatabaseTableListViewController: DatabaseTableViewController {
         }
         else if let vc = DatabaseResultViewController.getViewController() {
             navigationController?.pushViewController(vc, animated: true)
+            let databaseName = databases[indexPath.section].databaseName
             DispatchQueue.global().async {
                 if let context = DatabaseManager.sharedInstance.contextDict[databaseName] {
                     vc.result = DisplayResult.prepare(title: table.propertiesName, contents: context.fetchAll(for: table.name, keys: table.propertiesName)) {
@@ -102,8 +127,13 @@ class DatabaseTableListViewController: DatabaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-        if let tables = DatabaseManager.sharedInstance.databases[DatabaseManager.sharedInstance.databaseNames[indexPath.section]],
-            let vc = DatabaseTableDetailsViewController.getViewController(table: tables[indexPath.row]) {
+        let databaseName = databases[indexPath.section].databaseName
+        let tableName = databases[indexPath.section].tables[indexPath.row].name
+        guard let table = DatabaseManager.sharedInstance.getTableFrom(databaseName: databaseName, tableName: tableName) else {
+            return
+        }
+
+        if let vc = DatabaseTableDetailsViewController.getViewController(table: table) {
             navigationController?.pushViewController(vc, animated: true)
         }
     }

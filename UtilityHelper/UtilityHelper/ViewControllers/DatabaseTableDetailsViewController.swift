@@ -117,4 +117,13 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
         return action == .default ? (section == 0 ? "Properties" : "Relationships") :
             tables[section].name + " AS " + (tables[section].customAlias ?? tables[section].alias)
     }
+
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let view = view as? UITableViewHeaderFooterView, view.textLabel?.text?.contains(" AS ") ?? false {
+            let attributtedString = NSMutableAttributedString(string: tables[section].name)
+            attributtedString.append(NSAttributedString(string: " AS ", attributes: [NSForegroundColorAttributeName : UIColor.blue]))
+            attributtedString.append(NSAttributedString(string: tables[section].customAlias ?? tables[section].alias))
+            view.textLabel?.attributedText = attributtedString
+        }
+    }
 }

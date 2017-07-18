@@ -9,9 +9,11 @@
 import UIKit
 import CoreData
 
+typealias DatabaseTableLitePair = (databaseName: String, tables: [(name: String, count: Int)])
+typealias DatabaseTablesPair = (databaseName: String, tables: [Table])
+
 public class DatabaseManager {
-    internal var databaseNames = [String]()
-    internal var databases = [String : [Table]]()
+    private var databases = [DatabaseTablesPair]()
     internal var contextDict = [String : NSManagedObjectContext]()
     private var sqliteNames = [String]()
 
@@ -19,13 +21,30 @@ public class DatabaseManager {
 
     public func prepareDatabases(with contexts: [NSManagedObjectContext?], and sqlites: [String]) {
         prepareDatabase(for: contexts.flatMap { $0 })
-        databaseNames = Array(databases.keys).sorted()
+        databases.sort(by: { $0.databaseName < $1.databaseName })
         updateEntitiesCount()
     }
 
     public func presentDatabaseViewer(navigationController: UINavigationController?) {
-        let vc = DatabaseTableListViewController.getViewController()
-        navigationController?.presentViewControllerModally(vc)
+        if let vc = DatabaseTableListViewController.getViewController() {
+            navigationController?.presentViewControllerModally(vc)
+        }
+    }
+
+    internal func getDatabaseTableLitePairs() -> [DatabaseTableLitePair] {
+        var results = [DatabaseTableLitePair]()
+        for database in databases {
+            results.append((database.databaseName, database.tables.map { ($0.name, $0.count) }))
+        }
+        return results
+    }
+
+    internal func getTableFrom(databaseName: String, tableName: String) -> Table? {
+        if let databaseIndex = databases.index(where: { $0.databaseName == databaseName }),
+            let tableIndex = databases[databaseIndex].tables.index(where: { $0.name == tableName }) {
+                return databases[databaseIndex].tables[tableIndex]
+        }
+        return nil
     }
 
     private func updateEntitiesCount() {
@@ -33,12 +52,10 @@ public class DatabaseManager {
     }
 
     private func ensureDatabaseNameIsUnique(name: String) -> String {
-        guard databases.keys.contains(name) else {
+        guard databases.contains(where: { $0.databaseName == name }) else {
             return name
         }
-        let count = Array(databases.keys)
-            .filter { $0.contains(name) }
-            .count
+        let count = 1 // TODO
         return name + "\(count)"
     }
 
@@ -47,14 +64,14 @@ public class DatabaseManager {
         for context in contexts {
             var name = (context.persistentStoreCoordinator?.persistentStores.flatMap { $0.url?.absoluteString }.first)?.components(separatedBy: "/").last?.components(separatedBy: ".").first ?? "Context \(databases.count)"
             name = ensureDatabaseNameIsUnique(name: name)
-            databases[name] = prepareTables(for: context, databaseName: name)
+            databases.append((name, prepareTables(for: context, databaseName: name)))
             contextDict[name] = context
         }
     }
 
     private func updateEntitiesCountForContexts() {
         for dict in contextDict {
-            if let tables = databases[dict.key] {
+            if let tables = databases.first(where: { $0.databaseName == dict.key })?.tables {
                 dict.value.performAndWait({
                     for table in tables {
                         if let count = (try? dict.value.count(for: NSFetchRequest(entityName: table.name))) {
