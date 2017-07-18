@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 
 typealias DatabaseTableLitePair = (databaseName: String, tables: [(name: String, count: Int)])
+typealias DatabaseTablePair = (databaseName: String, tableName: String)
 typealias DatabaseTablesPair = (databaseName: String, tables: [Table])
 
 public class DatabaseManager {
@@ -20,6 +21,7 @@ public class DatabaseManager {
     public static let sharedInstance = DatabaseManager()
 
     public func prepareDatabases(with contexts: [NSManagedObjectContext?], and sqlites: [String]) {
+        databases.removeAll()
         prepareDatabase(for: contexts.flatMap { $0 })
         databases.sort(by: { $0.databaseName < $1.databaseName })
         updateEntitiesCount()
@@ -39,7 +41,11 @@ public class DatabaseManager {
         return results
     }
 
-    internal func getTableFrom(databaseName: String, tableName: String) -> Table? {
+    internal func getTableFrom(databaseName: String?, tableName: String) -> Table? {
+        guard let databaseName = databaseName else {
+            return nil
+        }
+
         if let databaseIndex = databases.index(where: { $0.databaseName == databaseName }),
             let tableIndex = databases[databaseIndex].tables.index(where: { $0.name == tableName }) {
                 return databases[databaseIndex].tables[tableIndex]

@@ -13,6 +13,9 @@ class DatabaseTableListViewController: DatabaseTableViewController {
     private var action = QueryAction.default
     private var joinType: Join?
     private var databases: [DatabaseTableLitePair] = []
+    private var relationshipWith: DatabaseTablePair?
+    private let relationships = "Relationships"
+    private weak var delegate: QueryActionDelegate?
 
     static func getViewController() -> DatabaseTableListViewController? {
         let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseTableListViewController.self))
@@ -25,7 +28,7 @@ class DatabaseTableListViewController: DatabaseTableViewController {
         let vc = getViewController()
         vc?.action = .join
         vc?.joinType = joinType
-
+        vc?.relationshipWith = (table.databaseName, table.name)
         if let databaseIndex = vc?.databases.index(where: { $0.databaseName == table.databaseName }) {
             var toRemove = [table.name]
             let relationships = table.relationships ?? []
@@ -96,24 +99,34 @@ class DatabaseTableListViewController: DatabaseTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let databaseName = databases[indexPath.section].databaseName
         let tableName = databases[indexPath.section].tables[indexPath.row].name
-        guard let table = DatabaseManager.sharedInstance.getTableFrom(databaseName: databaseName, tableName: tableName) else {
+        guard let table = DatabaseManager.sharedInstance.getTableFrom(databaseName: databaseName, tableName: tableName) ??
+            DatabaseManager.sharedInstance.getTableFrom(databaseName: relationshipWith?.databaseName, tableName: tableName) else {
             return
         }
 
-        if action == .select, let vc = DatabaseQueryPropertiesTableViewController.getViewController(table: table) {
+        if action != .default {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
             let alert = UIAlertController(title: "Alias", message: "Set \(table.name) as:", preferredStyle: .alert)
             alert.addTextField(configurationHandler: { (textField) in
                 textField.text = table.alias
             })
             alert.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
-                vc.table.customAlias = alert.textFields?.first?.text
                 tableView.cellForRow(at: indexPath)?.accessoryType = .none
-                self?.navigationController?.pushViewController(vc, animated: true)
+                if self?.action == .select, let vc = DatabaseQueryPropertiesTableViewController.getViewController(table: table) {
+                    vc.table.customAlias = alert.textFields?.first?.text
+                    self?.navigationController?.pushViewController(vc, animated: true)
+                }
+                else if self?.action == .join, let joinType = self?.joinType, let relationshipWith = self?.relationshipWith {
+                    self?.delegate?.addRelationship(between: relationshipWith, and: (relationshipWith.databaseName, tableName), joinType: joinType)
+                    self?.navigationController?.dismiss(animated: true, completion: nil)
+                }
+                else if self?.action == .join, let relationshipWith = self?.relationshipWith, let joinType = self?.joinType {
+                    // push
+                }
             })
             navigationController?.present(alert, animated: true) { _ in tableView.deselectRow(at: indexPath, animated: true) }
         }
-        else if let vc = DatabaseResultViewController.getViewController() {
+        else if action == .default, let vc = DatabaseResultViewController.getViewController() {
             navigationController?.pushViewController(vc, animated: true)
             let databaseName = databases[indexPath.section].databaseName
             DispatchQueue.global().async {

@@ -39,7 +39,7 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController, Q
 
     // MARK: - 
     private func setToolbar() {
-        let items: [QueryAction] = [.select, .join, .where, .orderBy, .groupBy]
+        let items: [QueryAction] = [.select, .join, .where, .groupBy, .having, .orderBy]
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbarItems = items.enumerated().flatMap { enumerate -> [UIBarButtonItem] in
             let item = UIBarButtonItem(title: enumerate.element.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
@@ -128,5 +128,9 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController, Q
 
     func didGroupBy(properties: [(TablePropertyPair)]) {
 
+    }
+
+    func addRelationship(between left: DatabaseTablePair, and right: DatabaseTablePair, joinType: Join) {
+        
     }
 }
