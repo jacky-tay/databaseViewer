@@ -68,7 +68,7 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return action == .default ? (section == 0 ? tables[section].propertiesName.count : tables[section].relationships?.count ?? 0) :
-            tables[section].propertiesName.count
+            tables[section].propertiesName.count + (action == .select ? 1 : 0)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -90,7 +90,13 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
         else {
             cell.selectionStyle = .default
             cell.accessoryType = selectedIndexPath.contains(indexPath) ? .checkmark : .none
-            cell.textLabel?.text = tables[indexPath.section].propertiesName[indexPath.row]
+            let offset = action == .select ? 1 : 0
+            if indexPath.row == 0 && action == .select {
+                cell.textLabel?.text = "*"
+            }
+            else {
+                cell.textLabel?.text = tables[indexPath.section].propertiesName[indexPath.row - offset]
+            }
             cell.detailTextLabel?.text = nil
         }
         return cell
@@ -116,6 +122,10 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return action == .default ? (section == 0 ? "Properties" : "Relationships") :
             tables[section].name + " AS " + (tables[section].customAlias ?? tables[section].alias)
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return action == .default ? "\(self.tableView(tableView, numberOfRowsInSection: section)) \(section == 0 ? "properties" : "relationships")" : nil
     }
 
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {

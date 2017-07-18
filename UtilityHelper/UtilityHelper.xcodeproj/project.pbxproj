@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		2804D98B1F1E2524009ED045 /* QueryRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804D98A1F1E2524009ED045 /* QueryRequestModel.swift */; };
 		850C38071F1C52BD00F2D116 /* CollectionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38031F1C52BD00F2D116 /* CollectionExtension.swift */; };
 		850C38081F1C52BD00F2D116 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38041F1C52BD00F2D116 /* StringExtension.swift */; };
 		850C38091F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */; };
@@ -46,6 +47,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2804D98A1F1E2524009ED045 /* QueryRequestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryRequestModel.swift; sourceTree = "<group>"; };
 		850C38031F1C52BD00F2D116 /* CollectionExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionExtension.swift; sourceTree = "<group>"; };
 		850C38041F1C52BD00F2D116 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICollectionViewLayoutAttributesExtension.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			children = (
 				850C38131F1C638800F2D116 /* DisplayResult.swift */,
 				850C38191F1C63F700F2D116 /* FetchResult.swift */,
+				2804D98A1F1E2524009ED045 /* QueryRequestModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -300,6 +303,7 @@
 				850C380F1F1C570400F2D116 /* DatabaseTableListViewController.swift in Sources */,
 				850C38071F1C52BD00F2D116 /* CollectionExtension.swift in Sources */,
 				850C380A1F1C52BD00F2D116 /* UIColorExtension.swift in Sources */,
+				2804D98B1F1E2524009ED045 /* QueryRequestModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

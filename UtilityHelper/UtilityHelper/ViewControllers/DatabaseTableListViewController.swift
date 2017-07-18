@@ -95,6 +95,10 @@ class DatabaseTableListViewController: DatabaseTableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return databases[section].databaseName
     }
+    
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return action == .default ? "\(databases[section].tables.count) tables" : nil
+    }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let databaseName = databases[indexPath.section].databaseName

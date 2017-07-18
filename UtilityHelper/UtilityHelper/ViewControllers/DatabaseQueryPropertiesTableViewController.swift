@@ -8,10 +8,11 @@
 
 import UIKit
 
-class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController, QueryActionDelegate {
+class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
 
     internal var table: Table!
     private var selected = [IndexPath]()
+    var queryRequest: QueryRequestModel!
 
     static func getViewController(table: Table) -> DatabaseQueryPropertiesTableViewController? {
         let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseQueryPropertiesTableViewController.self))
@@ -22,7 +23,8 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController, Q
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = table.alias
+        queryRequest = QueryRequestModel()
+        navigationItem.title = "Query"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: QueryAction.execute.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
     }
 
@@ -58,7 +60,7 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController, Q
         case .execute:
             break
         default:
-            if let vc = DatabaseTableDetailsViewController.getViewController(tables: [table], action: action, delegate: self) {
+            if let vc = DatabaseTableDetailsViewController.getViewController(tables: [table], action: action, delegate: queryRequest) {
                 navigationController?.presentViewControllerModally(vc)
             }
         }
@@ -117,20 +119,4 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController, Q
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
-    // MARK: - QueryActionDelegate
-    func didSelect(properties: [(TablePropertyPair)]) {
-
-    }
-
-    func didOrderBy(properties: [(TablePropertyPair)]) {
-
-    }
-
-    func didGroupBy(properties: [(TablePropertyPair)]) {
-
-    }
-
-    func addRelationship(between left: DatabaseTablePair, and right: DatabaseTablePair, joinType: Join) {
-        
-    }
 }
