@@ -61,8 +61,10 @@ public class DatabaseManager {
         guard databases.contains(where: { $0.databaseName == name }) else {
             return name
         }
-        let count = 1 // TODO
-        return name + "\(count)"
+        if let count = databases.flatMap({ $0.databaseName.range(of: name)?.lowerBound == $0.databaseName.startIndex ? Int($0.databaseName.replacingOccurrences(of: name, with: "")) : nil }).max() {
+            return name + "\(count + 1)"
+        }
+        return name
     }
 
     // MARK: - NSManagedObjectContext
