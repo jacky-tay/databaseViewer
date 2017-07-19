@@ -10,7 +10,24 @@ import Foundation
 
 class QueryRequestModel: QueryActionDelegate {
     var selected = [String]()
-    var from: String?
+    var from: DatabaseTablePair!
+    
+    init(from: DatabaseTablePair) {
+        self.from = from
+    }
+    
+    func getRowCount(for section: Int) -> Int {
+        return section == 1 ? selected.count : 1
+    }
+    
+    func getSectionCount() -> Int {
+        return 2
+    }
+    
+    func getSectionTitle(section: Int) -> String {
+        return section == 0 ? "Select" :
+        section == 1 ? "From" : ""
+    }
     
     // MARK: - QueryActionDelegate
     func didSelect(properties: [(TablePropertyPair)]) {

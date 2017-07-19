@@ -19,12 +19,12 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
         let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseQueryPropertiesTableViewController.self))
         let vc = storyboard.instantiateViewController(withIdentifier: "DatabaseQueryPropertiesTableViewController") as? DatabaseQueryPropertiesTableViewController
         vc?.table = table
+        vc?.queryRequest = QueryRequestModel(from: ("",""))
         return vc
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        queryRequest = QueryRequestModel()
         navigationItem.title = "Query"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: QueryAction.execute.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
     }
@@ -61,7 +61,6 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
         case .execute:
             break
         default:
-//            performSegue(withIdentifier: "", sender: nil)
             if let vc = DatabaseTableDetailsViewController.getViewController(tables: [table], action: action, delegate: queryRequest) {
                 navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
             }
@@ -84,28 +83,39 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
             return
         }
         if let vc = DatabaseTableListViewController.getViewController(joinType: join, with: table) {
-            navigationController?.presentViewControllerModally(vc)
+            navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
         }
     }
 
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return queryRequest.getSectionCount()
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return table.propertiesName.count
+        return queryRequest.getRowCount(for: section)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DatabaseTableRowTableViewCell", for: indexPath)
         cell.textLabel?.text = table.propertiesName[indexPath.row]
-        cell.accessoryType = selected.contains(indexPath) ? .checkmark : .none
+//        cell.accessoryType = selected.contains(indexPath) ? .checkmark : .none
         return cell
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return table.name
+        return queryRequest.getSectionTitle(section: section)
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let view = view as? UITableViewHeaderFooterView {
+            view.backgroundColor = UIColor.clear
+            view.backgroundView?.backgroundColor = UIColor(white: 1, alpha: 0.9)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 44
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -120,5 +130,4 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
 }
