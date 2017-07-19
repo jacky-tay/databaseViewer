@@ -16,6 +16,7 @@ class SemiModalPresentationController: UIPresentationController {
 
     override func presentationTransitionWillBegin() {
         presentingViewController.transitionCoordinator?.animate(alongsideTransition: { [weak self] (context) -> Void in
+            self?.presentingViewController.view.alpha = 0.5
             self?.presentingViewController.view.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
             }, completion: nil)
     }
@@ -23,6 +24,7 @@ class SemiModalPresentationController: UIPresentationController {
     override func dismissalTransitionWillBegin() {
         presentingViewController.transitionCoordinator?.animate(alongsideTransition: { [weak self] (context) -> Void in
             self?.presentingViewController.view.transform = CGAffineTransform.identity
+            self?.presentingViewController.view.alpha = 1
             }, completion: nil)
     }
 
