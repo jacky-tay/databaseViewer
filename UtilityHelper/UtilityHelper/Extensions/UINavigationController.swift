@@ -9,10 +9,13 @@
 import UIKit
 
 extension UINavigationController {
-    func presentViewControllerModally(_ vc: UIViewController) {
+    func presentViewControllerModally(_ vc: UIViewController, transitioningDelegate: SemiModalTransistioningDelegate? = nil) {
         let nav = UINavigationController(rootViewController: vc)
         nav.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
+        if transitioningDelegate != nil {
+            nav.modalPresentationStyle = .custom
+            nav.transitioningDelegate = transitioningDelegate
+        }
         present(nav, animated: true, completion: nil)
     }
 }
-

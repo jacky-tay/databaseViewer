@@ -13,6 +13,7 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
     internal var table: Table!
     private var selected = [IndexPath]()
     var queryRequest: QueryRequestModel!
+    let semiModalTransitioningDelegate = SemiModalTransistioningDelegate()
 
     static func getViewController(table: Table) -> DatabaseQueryPropertiesTableViewController? {
         let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseQueryPropertiesTableViewController.self))
@@ -60,8 +61,9 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
         case .execute:
             break
         default:
+//            performSegue(withIdentifier: "", sender: nil)
             if let vc = DatabaseTableDetailsViewController.getViewController(tables: [table], action: action, delegate: queryRequest) {
-                navigationController?.presentViewControllerModally(vc)
+                navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
             }
         }
     }

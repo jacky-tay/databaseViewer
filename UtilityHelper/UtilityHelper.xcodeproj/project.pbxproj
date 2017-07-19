@@ -44,6 +44,10 @@
 		854972E01F1338C100E86E84 /* UtilityHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 854972DE1F1338C100E86E84 /* UtilityHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		85599E2E1F1C45170024FA39 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85599E2D1F1C45170024FA39 /* DatabaseManager.swift */; };
 		85599E301F1C45430024FA39 /* Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85599E2F1F1C45420024FA39 /* Table.swift */; };
+		85E70F7D1F1EF34300F30771 /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E70F7C1F1EF34300F30771 /* UIViewExtension.swift */; };
+		85E70F811F1EF7F800F30771 /* SemiModalPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E70F801F1EF7F800F30771 /* SemiModalPresentationController.swift */; };
+		85E70F831F1F1F1400F30771 /* SemiModalTransistioningDelagate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E70F821F1F1F1400F30771 /* SemiModalTransistioningDelagate.swift */; };
+		85E70F851F1F200100F30771 /* SemiModalTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E70F841F1F200100F30771 /* SemiModalTransitionAnimator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +76,10 @@
 		854972DF1F1338C100E86E84 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		85599E2D1F1C45170024FA39 /* DatabaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		85599E2F1F1C45420024FA39 /* Table.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Table.swift; sourceTree = "<group>"; };
+		85E70F7C1F1EF34300F30771 /* UIViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		85E70F801F1EF7F800F30771 /* SemiModalPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SemiModalPresentationController.swift; sourceTree = "<group>"; };
+		85E70F821F1F1F1400F30771 /* SemiModalTransistioningDelagate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SemiModalTransistioningDelagate.swift; sourceTree = "<group>"; };
+		85E70F841F1F200100F30771 /* SemiModalTransitionAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SemiModalTransitionAnimator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +156,7 @@
 				85599E2C1F1C44DE0024FA39 /* Database Viewer */,
 				850C38251F1D650B00F2D116 /* Enums */,
 				85599E311F1C461D0024FA39 /* Extensions */,
+				85E70F7E1F1EF52900F30771 /* Styles */,
 				850C37FA1F1C520A00F2D116 /* UI Interfaces */,
 				850C38121F1C636900F2D116 /* View Models */,
 				850C380D1F1C56C400F2D116 /* ViewControllers */,
@@ -177,8 +186,27 @@
 				850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */,
 				850C38061F1C52BD00F2D116 /* UIColorExtension.swift */,
 				850C382A1F1D7AE800F2D116 /* UINavigationController.swift */,
+				85E70F7C1F1EF34300F30771 /* UIViewExtension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		85E70F7E1F1EF52900F30771 /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				85E70F7F1F1EF75B00F30771 /* Semi Modal Presenter */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
+		85E70F7F1F1EF75B00F30771 /* Semi Modal Presenter */ = {
+			isa = PBXGroup;
+			children = (
+				85E70F801F1EF7F800F30771 /* SemiModalPresentationController.swift */,
+				85E70F821F1F1F1400F30771 /* SemiModalTransistioningDelagate.swift */,
+				85E70F841F1F200100F30771 /* SemiModalTransitionAnimator.swift */,
+			);
+			path = "Semi Modal Presenter";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,8 +311,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85E70F851F1F200100F30771 /* SemiModalTransitionAnimator.swift in Sources */,
 				850C38081F1C52BD00F2D116 /* StringExtension.swift in Sources */,
 				850C382B1F1D7AE800F2D116 /* UINavigationController.swift in Sources */,
+				85E70F7D1F1EF34300F30771 /* UIViewExtension.swift in Sources */,
 				850C38181F1C63CC00F2D116 /* DatabaseResultViewController.swift in Sources */,
 				850C38291F1D753A00F2D116 /* QueryAction.swift in Sources */,
 				850C38241F1D5DAC00F2D116 /* DatabaseTableViewController.swift in Sources */,
@@ -303,6 +333,8 @@
 				850C380F1F1C570400F2D116 /* DatabaseTableListViewController.swift in Sources */,
 				850C38071F1C52BD00F2D116 /* CollectionExtension.swift in Sources */,
 				850C380A1F1C52BD00F2D116 /* UIColorExtension.swift in Sources */,
+				85E70F811F1EF7F800F30771 /* SemiModalPresentationController.swift in Sources */,
+				85E70F831F1F1F1400F30771 /* SemiModalTransistioningDelagate.swift in Sources */,
 				2804D98B1F1E2524009ED045 /* QueryRequestModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

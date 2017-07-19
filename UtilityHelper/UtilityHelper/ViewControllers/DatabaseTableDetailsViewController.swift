@@ -41,6 +41,16 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
         tableView.tableFooterView = UIView()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if action != .default {
+            let radius: CGFloat = 10
+            let corners: UIRectCorner = [.topLeft, .topRight]
+            navigationController?.navigationBar.applyRoundCorner(to: corners, radius: radius)
+            view.applyRoundCorner(to: corners, radius: radius)
+        }
+    }
+
     private dynamic func done(_ sender: AnyObject) {
         let properties = selectedIndexPath.flatMap { [weak self] indexPath -> TablePropertyPair? in
             if let table = self?.tables[indexPath.section] {
