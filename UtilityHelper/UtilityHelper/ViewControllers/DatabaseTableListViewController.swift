@@ -13,7 +13,7 @@ class DatabaseTableListViewController: DatabaseTableViewController {
     private var action = QueryAction.default
     private var joinType: Join?
     private var databases: [DatabaseTableLitePair] = []
-    private var relationshipWith: DatabaseTablePair?
+    private var relationshipWith: DatabaseTableAlias?
     private let relationships = "Relationships"
     private weak var delegate: QueryActionDelegate?
 
@@ -24,11 +24,12 @@ class DatabaseTableListViewController: DatabaseTableViewController {
         return vc
     }
 
-    static func getViewController(joinType: Join, with table: Table) -> DatabaseTableListViewController? {
+    static func getViewController(joinType: Join, with table: SelectedTable, delegate: QueryActionDelegate) -> DatabaseTableListViewController? {
         let vc = getViewController()
         vc?.action = .join
         vc?.joinType = joinType
-        vc?.relationshipWith = (table.databaseName, table.name)
+        vc?.relationshipWith = table.toDatabaseTableAlias()
+        vc?.delegate = delegate
         if let databaseIndex = vc?.databases.index(where: { $0.databaseName == table.databaseName }) {
             var toRemove = [table.name]
             let relationships = table.relationships ?? []
@@ -116,12 +117,15 @@ class DatabaseTableListViewController: DatabaseTableViewController {
             })
             alert.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
                 tableView.cellForRow(at: indexPath)?.accessoryType = .none
-                if self?.action == .select, let vc = DatabaseQueryPropertiesTableViewController.getViewController(table: table) {
+                if self?.action == .select, let vc = DatabaseQueryTableViewController.getViewController(table: table.toSelectedTable(alias: alert.textFields?.first?.text)) {
                     
                     self?.navigationController?.pushViewController(vc, animated: true)
                 }
-                else if self?.action == .join, let joinType = self?.joinType, let relationshipWith = self?.relationshipWith {
-                    self?.delegate?.addRelationship(between: relationshipWith, and: (relationshipWith.databaseName, tableName), joinType: joinType)
+                else if self?.action == .join,
+                    let joinType = self?.joinType,
+                    let relationshipWith = self?.relationshipWith?.toJoinByDatabaseAlias(join: joinType, with: table.toDatabaseTable(alias: alert.textFields?.first?.text), onConditions: nil) {
+                    
+                    self?.delegate?.addRelationship(with: relationshipWith)
                     self?.navigationController?.dismiss(animated: true, completion: nil)
                 }
                 else if self?.action == .join, let relationshipWith = self?.relationshipWith, let joinType = self?.joinType {

@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 
-struct Property {
+class Property {
     let name: String!
     let attributeType: NSAttributeType!
     
@@ -32,12 +32,26 @@ class Table {
         self.properties = properties
         self.relationships = relationships?.sorted()
     }
+
+    func toSelectedTable(alias: String? = nil) -> SelectedTable {
+        let table = SelectedTable(databaseName: databaseName, name: name, properties: properties, relationships: relationships)
+        table.alias = alias
+        return table
+    }
     
-    func toSelectedTable() -> SelectedTable {
-        return SelectedTable(databaseName: databaseName, name: name, properties: properties, relationships: relationships)
+    func toDatabaseTable(alias: String?) -> DatabaseTableAlias {
+        return DatabaseTableAlias(databaseName: databaseName, tableName: name, alias: alias)
     }
 }
 
 class SelectedTable: Table {
     var alias: String?
+    
+    func propertiesToAliasProperties() -> [AliasProperty] {
+        return properties.map { AliasProperty(alias: alias, propertyName: $0.name) }
+    }
+    
+    func toDatabaseTableAlias() -> DatabaseTableAlias {
+        return toDatabaseTable(alias: alias)
+    }
 }

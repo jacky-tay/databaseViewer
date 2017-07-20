@@ -21,7 +21,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		2804D98B1F1E2524009ED045 /* QueryRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804D98A1F1E2524009ED045 /* QueryRequestModel.swift */; };
+		2804D98B1F1E2524009ED045 /* QueryRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804D98A1F1E2524009ED045 /* QueryRequest.swift */; };
+		2804D98D1F20C522009ED045 /* Comparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804D98C1F20C522009ED045 /* Comparator.swift */; };
+		284E13CA1F20D28800FB55DC /* OrderBy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284E13C91F20D28800FB55DC /* OrderBy.swift */; };
+		28C307161F20E55D004D9ED9 /* NSMutableAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C307151F20E55D004D9ED9 /* NSMutableAttributedString.swift */; };
 		850C38071F1C52BD00F2D116 /* CollectionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38031F1C52BD00F2D116 /* CollectionExtension.swift */; };
 		850C38081F1C52BD00F2D116 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38041F1C52BD00F2D116 /* StringExtension.swift */; };
 		850C38091F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */; };
@@ -36,7 +39,7 @@
 		850C381C1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C381B1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift */; };
 		850C381E1F1C724800F2D116 /* NSAttributeTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C381D1F1C724700F2D116 /* NSAttributeTypeExtension.swift */; };
 		850C38201F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C381F1F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift */; };
-		850C38221F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38211F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift */; };
+		850C38221F1D58A100F2D116 /* DatabaseQueryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38211F1D58A100F2D116 /* DatabaseQueryTableViewController.swift */; };
 		850C38241F1D5DAC00F2D116 /* DatabaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38231F1D5DAC00F2D116 /* DatabaseTableViewController.swift */; };
 		850C38271F1D655700F2D116 /* Join.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38261F1D655700F2D116 /* Join.swift */; };
 		850C38291F1D753A00F2D116 /* QueryAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38281F1D753A00F2D116 /* QueryAction.swift */; };
@@ -51,7 +54,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2804D98A1F1E2524009ED045 /* QueryRequestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryRequestModel.swift; sourceTree = "<group>"; };
+		2804D98A1F1E2524009ED045 /* QueryRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryRequest.swift; sourceTree = "<group>"; };
+		2804D98C1F20C522009ED045 /* Comparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comparator.swift; sourceTree = "<group>"; };
+		284E13C91F20D28800FB55DC /* OrderBy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderBy.swift; sourceTree = "<group>"; };
+		28C307151F20E55D004D9ED9 /* NSMutableAttributedString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedString.swift; sourceTree = "<group>"; };
 		850C38031F1C52BD00F2D116 /* CollectionExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionExtension.swift; sourceTree = "<group>"; };
 		850C38041F1C52BD00F2D116 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICollectionViewLayoutAttributesExtension.swift; sourceTree = "<group>"; };
@@ -66,7 +72,7 @@
 		850C381B1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableDetailsViewController.swift; sourceTree = "<group>"; };
 		850C381D1F1C724700F2D116 /* NSAttributeTypeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAttributeTypeExtension.swift; sourceTree = "<group>"; };
 		850C381F1F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSManagedObjectContextExtension.swift; sourceTree = "<group>"; };
-		850C38211F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseQueryPropertiesTableViewController.swift; sourceTree = "<group>"; };
+		850C38211F1D58A100F2D116 /* DatabaseQueryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseQueryTableViewController.swift; sourceTree = "<group>"; };
 		850C38231F1D5DAC00F2D116 /* DatabaseTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableViewController.swift; sourceTree = "<group>"; };
 		850C38261F1D655700F2D116 /* Join.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Join.swift; sourceTree = "<group>"; };
 		850C38281F1D753A00F2D116 /* QueryAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryAction.swift; sourceTree = "<group>"; };
@@ -108,7 +114,7 @@
 		850C380D1F1C56C400F2D116 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				850C38211F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift */,
+				850C38211F1D58A100F2D116 /* DatabaseQueryTableViewController.swift */,
 				850C38171F1C63CC00F2D116 /* DatabaseResultViewController.swift */,
 				850C381B1F1C6F6B00F2D116 /* DatabaseTableDetailsViewController.swift */,
 				850C380E1F1C570400F2D116 /* DatabaseTableListViewController.swift */,
@@ -121,7 +127,7 @@
 			children = (
 				850C38131F1C638800F2D116 /* DisplayResult.swift */,
 				850C38191F1C63F700F2D116 /* FetchResult.swift */,
-				2804D98A1F1E2524009ED045 /* QueryRequestModel.swift */,
+				2804D98A1F1E2524009ED045 /* QueryRequest.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -129,7 +135,9 @@
 		850C38251F1D650B00F2D116 /* Enums */ = {
 			isa = PBXGroup;
 			children = (
+				2804D98C1F20C522009ED045 /* Comparator.swift */,
 				850C38261F1D655700F2D116 /* Join.swift */,
+				284E13C91F20D28800FB55DC /* OrderBy.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -181,8 +189,9 @@
 			children = (
 				850C38031F1C52BD00F2D116 /* CollectionExtension.swift */,
 				850C381D1F1C724700F2D116 /* NSAttributeTypeExtension.swift */,
-				850C38041F1C52BD00F2D116 /* StringExtension.swift */,
 				850C381F1F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift */,
+				28C307151F20E55D004D9ED9 /* NSMutableAttributedString.swift */,
+				850C38041F1C52BD00F2D116 /* StringExtension.swift */,
 				850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */,
 				850C38061F1C52BD00F2D116 /* UIColorExtension.swift */,
 				850C382A1F1D7AE800F2D116 /* UINavigationController.swift */,
@@ -315,6 +324,7 @@
 				850C38081F1C52BD00F2D116 /* StringExtension.swift in Sources */,
 				850C382B1F1D7AE800F2D116 /* UINavigationController.swift in Sources */,
 				85E70F7D1F1EF34300F30771 /* UIViewExtension.swift in Sources */,
+				28C307161F20E55D004D9ED9 /* NSMutableAttributedString.swift in Sources */,
 				850C38181F1C63CC00F2D116 /* DatabaseResultViewController.swift in Sources */,
 				850C38291F1D753A00F2D116 /* QueryAction.swift in Sources */,
 				850C38241F1D5DAC00F2D116 /* DatabaseTableViewController.swift in Sources */,
@@ -327,15 +337,17 @@
 				850C381A1F1C63F700F2D116 /* FetchResult.swift in Sources */,
 				85599E2E1F1C45170024FA39 /* DatabaseManager.swift in Sources */,
 				850C38091F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift in Sources */,
-				850C38221F1D58A100F2D116 /* DatabaseQueryPropertiesTableViewController.swift in Sources */,
+				850C38221F1D58A100F2D116 /* DatabaseQueryTableViewController.swift in Sources */,
+				284E13CA1F20D28800FB55DC /* OrderBy.swift in Sources */,
 				850C38201F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift in Sources */,
 				850C38111F1C632800F2D116 /* DuplexCollectionViewLayout.swift in Sources */,
 				850C380F1F1C570400F2D116 /* DatabaseTableListViewController.swift in Sources */,
 				850C38071F1C52BD00F2D116 /* CollectionExtension.swift in Sources */,
 				850C380A1F1C52BD00F2D116 /* UIColorExtension.swift in Sources */,
 				85E70F811F1EF7F800F30771 /* SemiModalPresentationController.swift in Sources */,
+				2804D98D1F20C522009ED045 /* Comparator.swift in Sources */,
 				85E70F831F1F1F1400F30771 /* SemiModalTransistioningDelagate.swift in Sources */,
-				2804D98B1F1E2524009ED045 /* QueryRequestModel.swift in Sources */,
+				2804D98B1F1E2524009ED045 /* QueryRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

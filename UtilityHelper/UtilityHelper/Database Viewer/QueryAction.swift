@@ -8,13 +8,11 @@
 
 import Foundation
 
-typealias TablePropertyPair = (database: String, table: String, property: String)
-
 protocol QueryActionDelegate: class {
-    func didSelect(properties: [(TablePropertyPair)])
-    func didOrderBy(properties: [(TablePropertyPair)])
-    func didGroupBy(properties: [(TablePropertyPair)])
-    func addRelationship(between left: DatabaseTablePair, and right: DatabaseTablePair, joinType: Join)
+    func didSelect(properties: [(AliasProperty)])
+    func didOrderBy(properties: [(DatabaseTableProperty)])
+    func didGroupBy(properties: [(DatabaseTableProperty)])
+    func addRelationship(with: JoinByDatabaseAlias)
 }
 
 enum QueryAction: String, CustomStringConvertible {

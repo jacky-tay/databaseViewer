@@ -10,8 +10,88 @@ import UIKit
 import CoreData
 
 typealias DatabaseTableLitePair = (databaseName: String, tables: [(name: String, count: Int)])
-typealias DatabaseTablePair = (databaseName: String, tableName: String)
+//typealias DatabaseTablePair = (databaseName: String, tableName: String)
 typealias DatabaseTablesPair = (databaseName: String, tables: [Table])
+
+class DatabaseTable: Hashable {
+    let databaseName: String!
+    let tableName: String!
+    
+    init(databaseName: String, tableName: String) {
+        self.databaseName = databaseName
+        self.tableName = tableName
+    }
+    
+    var hashValue: Int {
+        return databaseName.hashValue ^ tableName.hashValue &* 16777619
+    }
+    
+    static func == (lhs: DatabaseTable, rhs: DatabaseTable) -> Bool {
+        return lhs.databaseName == rhs.databaseName &&
+            lhs.tableName == rhs.tableName
+    }
+}
+
+class DatabaseTableProperty: DatabaseTable {
+    let propertyName: String!
+    
+    init(databaseName: String, tableName: String, propertyName: String) {
+        self.propertyName = propertyName
+        super.init(databaseName: databaseName, tableName: tableName)
+    }
+}
+
+class AliasProperty {
+    var alias: String?
+    let propertyName: String
+    
+    init(alias: String?, propertyName: String) {
+        self.alias = alias
+        self.propertyName = propertyName
+    }
+}
+
+class DatabaseTableAlias : DatabaseTable {
+    var alias: String?
+    
+    init(databaseName: String, tableName: String, alias: String?) {
+        self.alias = alias
+        super.init(databaseName: databaseName, tableName: tableName)
+    }
+    
+    func toSelectedTable() -> SelectedTable? {
+        return DatabaseManager.sharedInstance.getTable(from: self)?.toSelectedTable(alias: alias)
+    }
+    
+    func toJoinByDatabaseAlias(join: Join, with other: DatabaseTableAlias, onConditions: [JoinWithDatabaseTableAlias]?) -> JoinByDatabaseAlias {
+        return JoinByDatabaseAlias(databaseName: databaseName, tableName: tableName, alias: alias, join: join, otherTable: other, onConditions: onConditions)
+    }
+}
+
+class JoinWithDatabaseTableAlias {
+    let propertyName: String!
+    let comparator: Comparator!
+    let otherTableProperty: String!
+    
+    init(propertyName: String, comparator: Comparator, otherProperty: String) {
+        self.propertyName = propertyName
+        self.comparator = comparator
+        self.otherTableProperty = otherProperty
+    }
+}
+
+class JoinByDatabaseAlias : DatabaseTableAlias {
+    let joinType: Join!
+    let otherTable: DatabaseTableAlias!
+    let onConditions: [JoinWithDatabaseTableAlias]?
+    
+    init(databaseName: String, tableName: String, alias: String?, join: Join, otherTable: DatabaseTableAlias, onConditions: [JoinWithDatabaseTableAlias]?) {
+        self.joinType = join
+        self.otherTable = otherTable
+        self.onConditions = onConditions
+        super.init(databaseName: databaseName, tableName: tableName, alias: alias)
+    }
+}
 
 public class DatabaseManager {
     private var databases = [DatabaseTablesPair]()
@@ -39,6 +119,10 @@ public class DatabaseManager {
             results.append((database.databaseName, database.tables.map { ($0.name, $0.count) }))
         }
         return results
+    }
+    
+    internal func getTable(from databaseTable: DatabaseTable) -> Table? {
+        return getTableFrom(databaseName: databaseTable.databaseName, tableName: databaseTable.tableName)
     }
 
     internal func getTableFrom(databaseName: String?, tableName: String) -> Table? {

@@ -10,6 +10,11 @@ import UIKit
 import CoreData
 
 extension String {
+    
+    static func nilOrEmpty(_ string: String?) -> Bool {
+        return string == nil || (string?.isEmpty ?? false)
+    }
+    
     func toNSAttributeType() -> NSAttributeType {
         let type = lowercased()
         let stringType = ["character", "varchar", "varying character", "nchar", "native character", "nvarchar", "text", "clob"]
@@ -37,6 +42,10 @@ extension String {
         }
     }
 
+    func joined(contentsOf: [String?]) -> String {
+        return contentsOf.flatMap { String.nilOrEmpty($0) ? nil : $0 }.joined(separator: self)
+    }
+    
     func takeUppercasedCharacter() -> String {
         let uppercase = CharacterSet.uppercaseLetters
         return unicodeScalars.flatMap { uppercase.contains($0) ? String(Character($0)) : nil }.reduce("", +)

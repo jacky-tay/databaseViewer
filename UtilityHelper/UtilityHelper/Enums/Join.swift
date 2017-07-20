@@ -19,6 +19,6 @@ enum Join: String, CustomStringConvertible {
     }
 
     var description: String {
-        return rawValue.capitalized + " Join with"
+        return rawValue.capitalized + " Join"
     }
 }

@@ -96,16 +96,16 @@
             </objects>
             <point key="canvasLocation" x="62" y="577"/>
         </scene>
-        <!--Database Query Properties Table View Controller-->
+        <!--Database Query Table View Controller-->
         <scene sceneID="QDL-8E-Nqg">
             <objects>
-                <tableViewController storyboardIdentifier="DatabaseQueryPropertiesTableViewController" id="uqb-gG-gS2" customClass="DatabaseQueryPropertiesTableViewController" customModule="UtilityHelper" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="DatabaseQueryTableViewController" id="uqb-gG-gS2" customClass="DatabaseQueryTableViewController" customModule="UtilityHelper" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="HgB-vx-Ccy">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatabaseTableRowTableViewCell" textLabel="ltX-gd-W6z" style="IBUITableViewCellStyleDefault" id="cvr-YH-JtO">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="DatabaseTableRowTableViewCell" textLabel="ltX-gd-W6z" style="IBUITableViewCellStyleDefault" id="cvr-YH-JtO">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cvr-YH-JtO" id="wUF-S6-fsM">
@@ -137,7 +137,7 @@
         <scene sceneID="QyY-fc-6wK">
             <objects>
                 <collectionViewController storyboardIdentifier="DatabaseResultViewController" id="exz-wa-4mG" customClass="DatabaseResultViewController" customModule="UtilityHelper" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="CQR-JQ-YxE">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="CQR-JQ-YxE">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

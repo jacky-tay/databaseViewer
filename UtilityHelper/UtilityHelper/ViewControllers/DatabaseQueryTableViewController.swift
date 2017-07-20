@@ -1,5 +1,5 @@
 //
-//  DatabaseQueryPropertiesTableViewController.swift
+//  DatabaseQueryTableViewController.swift
 //  UtilityHelper
 //
 //  Created by Jacky Tay on 18/07/17.
@@ -8,18 +8,21 @@
 
 import UIKit
 
-class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
+protocol DatabaseQueryTableViewControllerDelegate: class {
+    func update(insertRows: [IndexPath], insertSections: [Int])
+}
 
-    internal var table: Table!
-    private var selected = [IndexPath]()
-    var queryRequest: QueryRequestModel!
+class DatabaseQueryTableViewController: DatabaseTableViewController, DatabaseQueryTableViewControllerDelegate {
+    
+    var queryRequest: QueryRequest!
+    var selectedJoinTable: DatabaseTableAlias?
     let semiModalTransitioningDelegate = SemiModalTransistioningDelegate()
 
-    static func getViewController(table: Table) -> DatabaseQueryPropertiesTableViewController? {
-        let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseQueryPropertiesTableViewController.self))
-        let vc = storyboard.instantiateViewController(withIdentifier: "DatabaseQueryPropertiesTableViewController") as? DatabaseQueryPropertiesTableViewController
-        vc?.table = table
-        vc?.queryRequest = QueryRequestModel(from: ("",""))
+    static func getViewController(table: SelectedTable) -> DatabaseQueryTableViewController? {
+        let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseQueryTableViewController.self))
+        let vc = storyboard.instantiateViewController(withIdentifier: "DatabaseQueryTableViewController") as? DatabaseQueryTableViewController
+        vc?.queryRequest = QueryRequest(from: table, delegate: vc)
+        vc?.selectedJoinTable = vc?.queryRequest.from
         return vc
     }
 
@@ -61,14 +64,14 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
         case .execute:
             break
         default:
-            if let vc = DatabaseTableDetailsViewController.getViewController(tables: [table.toSelectedTable()], action: action, delegate: queryRequest) {
+            if let vc = DatabaseTableDetailsViewController.getViewController(queryRequest: queryRequest, action: action) {
                 navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
             }
         }
     }
 
     private func showJoinOptions() {
-        let alert = UIAlertController(title: "Join", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Join With", message: selectedJoinTable?.tableName, preferredStyle: .actionSheet)
         for join in Join.getAllJoins() {
             alert.addAction(UIAlertAction(title: join.description, style: .default) { [weak self] (action) in
                 self?.didSelectedJoin(sender: action)
@@ -82,7 +85,8 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
         guard let join = Join(rawValue: sender.title?.components(separatedBy: " ").first?.uppercased() ?? "") else {
             return
         }
-        if let vc = DatabaseTableListViewController.getViewController(joinType: join, with: table) {
+        if let selectedTable = selectedJoinTable?.toSelectedTable(),
+            let vc = DatabaseTableListViewController.getViewController(joinType: join, with: selectedTable, delegate: queryRequest) {
             navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
         }
     }
@@ -98,8 +102,7 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DatabaseTableRowTableViewCell", for: indexPath)
-        cell.textLabel?.text = table.properties[indexPath.row].name
-//        cell.accessoryType = selected.contains(indexPath) ? .checkmark : .none
+        queryRequest.update(cell: cell, indexPath: indexPath)
         return cell
     }
 
@@ -110,24 +113,19 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         if let view = view as? UITableViewHeaderFooterView {
             view.backgroundColor = UIColor.clear
-            view.backgroundView?.backgroundColor = UIColor(white: 1, alpha: 0.9)
+            view.backgroundView?.backgroundColor = UIColor(white: 0.95, alpha: 0.9)
         }
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 44
     }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
-        if selected.contains(indexPath), let index = selected.index(of: indexPath) {
-            selected.remove(at: index)
-            cell?.accessoryType = .none
-        }
-        else {
-            selected.append(indexPath)
-            cell?.accessoryType = .checkmark
-        }
-        tableView.deselectRow(at: indexPath, animated: true)
+    
+    // DatabaseQueryTableViewControllerDelegate
+    func update(insertRows: [IndexPath], insertSections: [Int]) {
+        tableView.beginUpdates()
+        tableView.insertRows(at: insertRows, with: .automatic)
+        insertSections.forEach { [weak self] in self?.tableView.insertSections(IndexSet(integer: $0), with: .automatic) }
+        tableView.endUpdates()
     }
 }
