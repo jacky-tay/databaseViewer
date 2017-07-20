@@ -96,7 +96,7 @@ public class DatabaseManager {
         if let entities = context.persistentStoreCoordinator?.managedObjectModel.entities.sorted(by: { $0.name ?? "" < $1.name ?? "" }) {
             for entity in entities {
                 if let name = entity.name {
-                    let properties = entity.attributesByName.values.toDictionary(key: { $0.name }, value: { $0.attributeType })
+                    let properties = Array(entity.attributesByName.values).map { Property(name: $0.name , attributeType: $0.attributeType) }
                     results.append(Table(databaseName: databaseName, name: name, properties: properties, relationships: entity.relationshipsByName.flatMap({ $0.value.destinationEntity?.name })))
                 }
             } // for

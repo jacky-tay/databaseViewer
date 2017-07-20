@@ -9,7 +9,7 @@
 import UIKit
 
 class DisplayResult {
-    let title: [String]!
+    let titles: [String]!
     let contents: [[String?]]!
     var columnWidth: [CGFloat]!
 
@@ -19,13 +19,13 @@ class DisplayResult {
     static let displayFont = UIFont(name: "Courier", size: 17) ?? UIFont.monospacedDigitSystemFont(ofSize: 17, weight: UIFontWeightRegular)
     static let margin: CGFloat = 20
 
-    static func prepare(title: [String], contents: [[String?]], completionHandler: @escaping ()->()) -> DisplayResult? {
+    static func prepare(titles: [String], contents: [[String?]], completionHandler: @escaping ()->()) -> DisplayResult? {
         // ensure the contents column count is same as title count
-        guard (contents.reduce(true) { $0 && $1.count == title.count }) else {
+        guard (contents.reduce(true) { $0 && $1.count == titles.count }) else {
             return nil
         }
 
-        let displayResult = DisplayResult(title: title, contents: contents)
+        let displayResult = DisplayResult(titles: titles, contents: contents)
         
         DispatchQueue.global().async {
             displayResult.prepareColumnSize()
@@ -34,8 +34,8 @@ class DisplayResult {
         return displayResult
     }
 
-    private init(title: [String], contents: [[String?]]) {
-        self.title = title
+    private init(titles: [String], contents: [[String?]]) {
+        self.titles = titles
         self.contents = contents
     }
 
@@ -46,8 +46,8 @@ class DisplayResult {
         let margin = DisplayResult.margin
         columnWidth.append(ceil(String(contents.count + 1).calculateFrameSize(width: width, font: font).width * 1.05) + margin)
 
-        for column in 0 ..< title.count {
-            var longestText = title[column]
+        for column in 0 ..< titles.count {
+            var longestText = titles[column]
             for row in contents {
                 if let value = row[column], longestText.characters.count < value.characters.count {
                     longestText = value

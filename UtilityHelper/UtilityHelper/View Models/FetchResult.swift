@@ -13,7 +13,7 @@ class FetchResult {
     func processData(for entityName: String, results: [String : Any], table: Table, displayFields: [String]) {
         var results = [String : Any]()
         for field in displayFields {
-            results[field] = process(field: field, attributedType: table.properties[field], value: results[field])
+            results[field] = process(field: field, attributedType: table.properties.first { $0.name == field }?.attributeType, value: results[field])
         }
     }
 

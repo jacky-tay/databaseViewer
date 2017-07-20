@@ -22,7 +22,7 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
         return vc
     }
 
-    class func getViewController(tables: [Table], action: QueryAction, delegate: QueryActionDelegate?) -> DatabaseTableDetailsViewController? {
+    class func getViewController(tables: [SelectedTable], action: QueryAction, delegate: QueryActionDelegate?) -> DatabaseTableDetailsViewController? {
         let storyboard = UIStoryboard(name: "DatabaseViewer", bundle: Bundle(for: DatabaseTableDetailsViewController.self))
         let vc = storyboard.instantiateViewController(withIdentifier: "DatabaseTableDetailsViewController") as? DatabaseTableDetailsViewController
         vc?.tables = tables
@@ -54,7 +54,7 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
     private dynamic func done(_ sender: AnyObject) {
         let properties = selectedIndexPath.flatMap { [weak self] indexPath -> TablePropertyPair? in
             if let table = self?.tables[indexPath.section] {
-                return (table.databaseName, table.name, table.propertiesName[indexPath.row] )
+                return (table.databaseName, table.name, table.properties[indexPath.row].name )
             }
             return nil
         }
@@ -77,8 +77,8 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return action == .default ? (section == 0 ? tables[section].propertiesName.count : tables[section].relationships?.count ?? 0) :
-            tables[section].propertiesName.count + (action == .select ? 1 : 0)
+        return action == .default ? (section == 0 ? tables[section].properties.count : tables[section].relationships?.count ?? 0) :
+            tables[section].properties.count + (action == .select ? 1 : 0)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -87,9 +87,9 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
             cell.selectionStyle = .none
             cell.accessoryType = .none
             let table = tables[0]
-            if indexPath.section == 0, let property = table.properties[table.propertiesName[indexPath.row]] {
-                cell.textLabel?.text = table.propertiesName[indexPath.row]
-                cell.detailTextLabel?.text = property.description
+            if indexPath.section == 0 {
+                cell.textLabel?.text = table.properties[indexPath.row].name
+                cell.detailTextLabel?.text = table.properties[indexPath.row].attributeType.description
             }
             else if indexPath.section == 1, let relationships = table.relationships {
                 cell.textLabel?.text = relationships[indexPath.row]
@@ -105,7 +105,7 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
                 cell.textLabel?.text = "*"
             }
             else {
-                cell.textLabel?.text = tables[indexPath.section].propertiesName[indexPath.row - offset]
+                cell.textLabel?.text = tables[indexPath.section].properties[indexPath.row - offset].name
             }
             cell.detailTextLabel?.text = nil
         }
@@ -131,7 +131,7 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return action == .default ? (section == 0 ? "Properties" : "Relationships") :
-            tables[section].name + " AS " + (tables[section].customAlias ?? tables[section].alias)
+            tables[section].name + " AS " + ((tables[section] as? SelectedTable)?.alias ?? "")
     }
     
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
@@ -142,7 +142,7 @@ class DatabaseTableDetailsViewController: DatabaseTableViewController {
         if let view = view as? UITableViewHeaderFooterView, view.textLabel?.text?.contains(" AS ") ?? false {
             let attributtedString = NSMutableAttributedString(string: tables[section].name)
             attributtedString.append(NSAttributedString(string: " AS ", attributes: [NSForegroundColorAttributeName : UIColor.blue]))
-            attributtedString.append(NSAttributedString(string: tables[section].customAlias ?? tables[section].alias))
+            attributtedString.append(NSAttributedString(string: (tables[section] as? SelectedTable)?.alias ?? ""))
             view.textLabel?.attributedText = attributtedString
         }
     }

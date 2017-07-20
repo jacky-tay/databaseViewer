@@ -16,7 +16,7 @@ extension NSAttributeType: CustomStringConvertible {
         case .integer16AttributeType:   return "Int 16"
         case .integer32AttributeType:   return "Int 32"
         case .integer64AttributeType:   return "Int 64"
-        case .decimalAttributeType:     return"Decimal"
+        case .decimalAttributeType:     return "Decimal"
         case .doubleAttributeType:      return "Double"
         case .floatAttributeType:       return "Float"
         case .stringAttributeType:      return "String"

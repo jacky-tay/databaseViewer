@@ -112,12 +112,12 @@ class DatabaseTableListViewController: DatabaseTableViewController {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
             let alert = UIAlertController(title: "Alias", message: "Set \(table.name) as:", preferredStyle: .alert)
             alert.addTextField(configurationHandler: { (textField) in
-                textField.text = table.alias
+                textField.text = table.name.takeUppercasedCharacter()
             })
             alert.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
                 tableView.cellForRow(at: indexPath)?.accessoryType = .none
                 if self?.action == .select, let vc = DatabaseQueryPropertiesTableViewController.getViewController(table: table) {
-                    vc.table.customAlias = alert.textFields?.first?.text
+                    
                     self?.navigationController?.pushViewController(vc, animated: true)
                 }
                 else if self?.action == .join, let joinType = self?.joinType, let relationshipWith = self?.relationshipWith {
@@ -135,7 +135,7 @@ class DatabaseTableListViewController: DatabaseTableViewController {
             let databaseName = databases[indexPath.section].databaseName
             DispatchQueue.global().async {
                 if let context = DatabaseManager.sharedInstance.contextDict[databaseName] {
-                    vc.result = DisplayResult.prepare(title: table.propertiesName, contents: context.fetchAll(for: table.name, keys: table.propertiesName)) {
+                    vc.result = DisplayResult.prepare(titles: table.properties.map { $0.name }, contents: context.fetchAll(for: table.name, keys: table.properties.map { $0.name })) {
                         vc.prepareContentLayout()
                     } // prepare
                 } // if let context

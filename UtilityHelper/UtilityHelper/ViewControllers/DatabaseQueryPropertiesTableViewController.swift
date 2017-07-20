@@ -61,7 +61,7 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
         case .execute:
             break
         default:
-            if let vc = DatabaseTableDetailsViewController.getViewController(tables: [table], action: action, delegate: queryRequest) {
+            if let vc = DatabaseTableDetailsViewController.getViewController(tables: [table.toSelectedTable()], action: action, delegate: queryRequest) {
                 navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
             }
         }
@@ -98,7 +98,7 @@ class DatabaseQueryPropertiesTableViewController: DatabaseTableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DatabaseTableRowTableViewCell", for: indexPath)
-        cell.textLabel?.text = table.propertiesName[indexPath.row]
+        cell.textLabel?.text = table.properties[indexPath.row].name
 //        cell.accessoryType = selected.contains(indexPath) ? .checkmark : .none
         return cell
     }

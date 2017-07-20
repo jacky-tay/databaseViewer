@@ -26,7 +26,7 @@ class DatabaseResultViewController: UICollectionViewController {
     func prepareContentLayout() {
         if let viewLayout = collectionView?.collectionViewLayout as? DuplexCollectionViewLayout,
             let result = result,
-            result.title.count + 1 == result.columnWidth.count {
+            result.titles.count + 1 == result.columnWidth.count {
             viewLayout.columnSizes = result.columnWidth.map { CGSize(width: $0, height: DisplayResult.displayHeight) }
             navigationItem.title = "Result (\(result.contents.count))"
         }
@@ -35,7 +35,7 @@ class DatabaseResultViewController: UICollectionViewController {
     }
 
     public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return (result?.title.count ?? -1) + 1 // add title row
+        return (result?.titles.count ?? -1) + 1 // add title row
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -50,7 +50,7 @@ class DatabaseResultViewController: UICollectionViewController {
         if let cell = cell as? DatabaseResultCollectionViewCell, let result = result {
             let isNil = indexPath.section > 0 && indexPath.row > 0 && result.contents[row][column] == nil
             cell.label.text = indexPath.section == 0 && indexPath.row == 0 ? nil :
-                indexPath.section == 0 ? result.title[column] :
+                indexPath.section == 0 ? result.titles[column] :
                 indexPath.row == 0 ? "\(indexPath.section)" :
                 result.contents[row][column] ?? "NULL"
             cell.label.textAlignment = indexPath.row == 0 ? .right : .left
@@ -66,7 +66,7 @@ class DatabaseResultViewController: UICollectionViewController {
         guard indexPath.section > 0 && indexPath.row > 0 else {
             return
         }
-        let columnTitle = result?.title[indexPath.row - 1]
+        let columnTitle = result?.titles[indexPath.row - 1]
         let content = result?.contents[indexPath.section - 1][indexPath.row - 1]
         
         guard content != nil else {

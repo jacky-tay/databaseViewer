@@ -9,22 +9,35 @@
 import CoreData
 import Foundation
 
+struct Property {
+    let name: String!
+    let attributeType: NSAttributeType!
+    
+    init(name: String, attributeType: NSAttributeType) {
+        self.name = name
+        self.attributeType = attributeType
+    }
+}
+
 class Table {
     let databaseName: String
     let name: String
-    let alias: String
-    var customAlias: String?
     var count: Int = 0
-    let propertiesName: [String]
-    let properties: [String : NSAttributeType]
+    let properties: [Property]
     let relationships: [String]?
 
-    init(databaseName: String, name: String, properties: [String : NSAttributeType], relationships: [String]? = nil) {
+    init(databaseName: String, name: String, properties: [Property], relationships: [String]? = nil) {
         self.databaseName = databaseName
         self.name = name
-        alias = name.takeUppercasedCharacter()
-        propertiesName = Array(properties.keys).sorted()
         self.properties = properties
         self.relationships = relationships?.sorted()
     }
+    
+    func toSelectedTable() -> SelectedTable {
+        return SelectedTable(databaseName: databaseName, name: name, properties: properties, relationships: relationships)
+    }
+}
+
+class SelectedTable: Table {
+    var alias: String?
 }
