@@ -24,9 +24,9 @@ class QueryRequest {
     }
     
     func toSelectedTables() -> [SelectedTable] {
-        var list = [SelectedTable]()
-        list.append(contentsOf: Set(joins.flatMap { [$0, $0.otherTable] }).flatMap { $0.toSelectedTable() })
-        return list
+        var list = [from]
+        list.append(contentsOf: joins.flatMap { [$0, $0.otherTable] })
+        return list.flatMap { $0?.toSelectedTable() }
     }
     
     func getRowCount(for section: Int) -> Int {

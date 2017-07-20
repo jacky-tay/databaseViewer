@@ -10,8 +10,10 @@ import UIKit
 
 class SemiModalPresentationController: UIPresentationController {
 
+    private let heightRatio: CGFloat = 0.75
+    
     override var frameOfPresentedViewInContainerView: CGRect {
-        return CGRect(x: 0, y: containerView!.bounds.height * (1 - 0.618), width: containerView!.bounds.width, height: containerView!.bounds.height * 0.618)
+        return CGRect(x: 0, y: containerView!.bounds.height * (1 - heightRatio), width: containerView!.bounds.width, height: containerView!.bounds.height * heightRatio)
     }
 
     override func presentationTransitionWillBegin() {

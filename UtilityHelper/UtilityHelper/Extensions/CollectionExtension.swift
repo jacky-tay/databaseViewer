@@ -19,3 +19,17 @@ public extension Collection {
         return dict
     }
 }
+
+public extension Array {
+ 
+    public func distinct<T : Equatable>() -> [T] {
+        guard let equatableList = self as? [T] else {
+            return []
+        }
+        var result = [T]()
+        for item in equatableList where !result.contains(item) {
+            result.append(item)
+        }
+        return result
+    }
+}
