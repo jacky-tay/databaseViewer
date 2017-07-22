@@ -42,6 +42,10 @@ class Table {
     func toDatabaseTable(alias: String?) -> DatabaseTableAlias {
         return DatabaseTableAlias(databaseName: databaseName, tableName: name, alias: alias)
     }
+    
+    func toDatabaseTableAliasWithPropertiesRelationships() -> DatabaseTableAliasWithPropertiesRelationships {
+        return DatabaseTableAliasWithPropertiesRelationships(databaseName: databaseName, tableName: name, properties: properties, relationships: relationships)
+    }
 }
 
 class SelectedTable: Table {
@@ -53,5 +57,13 @@ class SelectedTable: Table {
     
     func toDatabaseTableAlias() -> DatabaseTableAlias {
         return toDatabaseTable(alias: alias)
+    }
+    
+    func toDatabaseTableAliasWithProperties(includeWildCard: Bool) -> DatabaseTableAliasWithProperties {
+        var propertieStrings = properties.flatMap { $0.name }
+        if includeWildCard {
+            propertieStrings.insert("*", at: 0)
+        }
+        return toDatabaseTableAlias().toDatabaseTableAlias(with: propertieStrings)
     }
 }

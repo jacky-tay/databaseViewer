@@ -8,7 +8,11 @@
 
 import Foundation
 
-enum OrderBy {
-    case asc(DatabaseTableProperty)
-    case desc(DatabaseTableProperty)
+enum OrderBy: CustomStringConvertible {
+    case asc
+    case desc
+    
+    var description: String {
+        return self == .asc ? "ASC" : "DESC"
+    }
 }

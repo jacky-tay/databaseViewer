@@ -10,8 +10,8 @@ import Foundation
 
 protocol QueryActionDelegate: class {
     func didSelect(properties: [(AliasProperty)])
-    func didOrderBy(properties: [(DatabaseTableProperty)])
-    func didGroupBy(properties: [(DatabaseTableProperty)])
+    func didOrderBy(properties: [(AliasPropertyOrder)])
+    func didGroupBy(properties: [(AliasProperty)])
     func addRelationship(with: JoinByDatabaseAlias)
 }
 

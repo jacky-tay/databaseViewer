@@ -13,6 +13,26 @@ typealias DatabaseTableLitePair = (databaseName: String, tables: [(name: String,
 //typealias DatabaseTablePair = (databaseName: String, tableName: String)
 typealias DatabaseTablesPair = (databaseName: String, tables: [Table])
 
+class DatabaseTablesWithCount {
+    let databaseName: String!
+    let tables: [(name: String, count: Int)]
+    
+    init(databaseName: String, tables: [(name: String, count: Int)]) {
+        self.databaseName = databaseName
+        self.tables = tables
+    }
+}
+
+class DatabaseTables {
+    let databaseName: String!
+    var tables: [String]!
+    
+    init(databaseName: String, tables: [String]) {
+        self.databaseName = databaseName
+        self.tables = tables
+    }
+}
+
 class DatabaseTable: Hashable {
     let databaseName: String!
     let tableName: String!
@@ -51,8 +71,21 @@ class AliasProperty {
     }
 }
 
-class DatabaseTableAlias : DatabaseTable {
+class AliasPropertyOrder: AliasProperty {
+    var order = OrderBy.asc
+    
+    init(alias: String?, propertyName: String, order: OrderBy) {
+        self.order = order
+        super.init(alias: alias, propertyName: propertyName)
+    }
+}
+
+class DatabaseTableAlias : DatabaseTable, CustomStringConvertible {
     var alias: String?
+    
+    var description: String {
+        return " AS ".joined(contentsOf: [tableName, alias])
+    }
     
     init(databaseName: String, tableName: String, alias: String?) {
         self.alias = alias
@@ -65,6 +98,30 @@ class DatabaseTableAlias : DatabaseTable {
     
     func toJoinByDatabaseAlias(join: Join, with other: DatabaseTableAlias, onConditions: [JoinWithDatabaseTableAlias]?) -> JoinByDatabaseAlias {
         return JoinByDatabaseAlias(databaseName: databaseName, tableName: tableName, alias: alias, join: join, otherTable: other, onConditions: onConditions)
+    }
+    
+    func toDatabaseTableAlias(with properties: [String]) -> DatabaseTableAliasWithProperties {
+        return DatabaseTableAliasWithProperties(databaseName: databaseName, tableName: tableName, alias: alias, properties: properties)
+    }
+}
+
+class DatabaseTableAliasWithProperties: DatabaseTableAlias {
+    let properties: [String]!
+    
+    init(databaseName: String, tableName: String, alias: String?, properties: [String]) {
+        self.properties = properties
+        super.init(databaseName: databaseName, tableName: tableName, alias: alias)
+    }
+}
+
+class DatabaseTableAliasWithPropertiesRelationships: DatabaseTable {
+    let properties: [Property]!
+    let relationships: [String]!
+    
+    init(databaseName: String, tableName: String, properties: [Property], relationships: [String]?) {
+        self.properties = properties
+        self.relationships = relationships ?? []
+        super.init(databaseName: databaseName, tableName: tableName)
     }
 }
 
@@ -108,7 +165,7 @@ public class DatabaseManager {
     }
 
     public func presentDatabaseViewer(navigationController: UINavigationController?) {
-        if let vc = DatabaseTableListViewController.getViewController() {
+        if let vc = GenericTableViewController.getViewController(viewModel: DatabaseTableView()) {
             navigationController?.presentViewControllerModally(vc)
         }
     }
@@ -117,6 +174,22 @@ public class DatabaseManager {
         var results = [DatabaseTableLitePair]()
         for database in databases {
             results.append((database.databaseName, database.tables.map { ($0.name, $0.count) }))
+        }
+        return results
+    }
+    
+    internal func getDatabaseTablesWithCount() -> [DatabaseTablesWithCount] {
+        var results = [DatabaseTablesWithCount]()
+        for database in databases {
+            results.append(DatabaseTablesWithCount(databaseName: database.databaseName, tables: database.tables.map { ($0.name, $0.count) }))
+        }
+        return results
+    }
+    
+    internal func getDatabaseTables() -> [DatabaseTables] {
+        var results = [DatabaseTables]()
+        for database in databases {
+            results.append(DatabaseTables(databaseName: database.databaseName, tables: database.tables.map { ($0.name) }))
         }
         return results
     }

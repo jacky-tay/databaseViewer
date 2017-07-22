@@ -8,25 +8,46 @@
 
 import Foundation
 
-class QueryRequest {
-    weak var delegate: DatabaseQueryTableViewControllerDelegate?
+class QueryRequest: NSObject {
+    weak var delegate: GenericTableViewModelDelegate?
+    weak var navigationController: UINavigationController?
+    
+    let semiModalTransitioningDelegate = SemiModalTransistioningDelegate()
+    
     var selected = [AliasProperty]()
     var from: DatabaseTableAlias!
     var joins = [JoinByDatabaseAlias]()
     var having = [DatabaseTableProperty]()
-    var groupBy = [DatabaseTableProperty]()
-    var orderBy = [OrderBy]()
+    var groupBy = [AliasProperty]()
+    var orderBy = [AliasPropertyOrder]()
     
-    init(from: SelectedTable, delegate: DatabaseQueryTableViewControllerDelegate?) {
+    init(from: SelectedTable) {
         self.selected = from.propertiesToAliasProperties()
         self.from = from.toDatabaseTableAlias()
-        self.delegate = delegate
+    }
+    
+    func getQueryActionViewModel(action: QueryAction) -> GenericTableViewModel {
+        if action == .join {
+            return joins.isEmpty ? JoinQueryRequest(databaseTableAlias: from, queryRequest: self) : JoinQueryRequestWithTableOptions(queryRequest: self)
+        }
+        else if action == .orderBy {
+            return QueryOrderBy(queryRequest: self, action: .orderBy)
+        }
+        return QuerySelect(queryRequest: self, action: action)
+    }
+    
+    func getSelectableDatabaseTableAlias() -> [DatabaseTableAlias] {
+        var list = [from]
+        list.append(contentsOf: joins.flatMap { [$0, $0.otherTable] })
+        return list.distinct()
+    }
+    
+    func getSelectableDatabaseTableAliasWithProperties(includeWildCard: Bool) -> [DatabaseTableAliasWithProperties] {
+        return toSelectedTables().map { $0.toDatabaseTableAliasWithProperties(includeWildCard: includeWildCard) }
     }
     
     func toSelectedTables() -> [SelectedTable] {
-        var list = [from]
-        list.append(contentsOf: joins.flatMap { [$0, $0.otherTable] })
-        return list.flatMap { $0?.toSelectedTable() }
+        return getSelectableDatabaseTableAlias().flatMap { $0.toSelectedTable() }
     }
     
     func getRowCount(for section: Int) -> Int {
@@ -92,21 +113,111 @@ class QueryRequest {
     }
 }
 
+// MARK: - GenericTableViewModel
+extension QueryRequest: GenericTableViewModel {
+    
+    func viewDidLoad(_ viewController: GenericTableViewController) {
+        setToolbar(viewController)
+        viewController.hidesBottomBarWhenPushed = true
+        viewController.navigationItem.title = "Query"
+        viewController.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Execute", style: .plain, target: self, action: #selector(execute(sender:)))
+    }
+    
+    private func setToolbar(_ viewController: GenericTableViewController) {
+        let items: [QueryAction] = [.select, .join, .where, .groupBy, .having, .orderBy]
+        let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        viewController.toolbarItems = items.enumerated().flatMap { enumerate -> [UIBarButtonItem] in
+            let item = UIBarButtonItem(title: enumerate.element.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
+            return enumerate.offset + 1 < items.count ? [item, space] : [item]
+        }
+    }
+    
+    func viewWillAppear(_ viewController: GenericTableViewController) {
+        navigationController?.setToolbarHidden(false, animated: true)
+    }
+    
+    func viewWillDisappeared() {
+        navigationController?.setToolbarHidden(true, animated: true)
+    }
+    
+    private dynamic func execute(sender: UIBarButtonItem) {
+        
+    }
+    
+    // MARK: - Actions
+    dynamic private func barButtonItemDidClicked(sender: UIBarButtonItem) {
+        guard let action = QueryAction(rawValue: sender.title ?? "") else {
+            return
+        }
+        
+        let vc = GenericTableViewController.getViewController(viewModel: getQueryActionViewModel(action: action))
+        navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
+    }
+    
+    // MARK: - UITableViewDataSource
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2 + // selected + from
+            joins.count +
+            (having.isEmpty ? 0 : 1) +
+            (groupBy.isEmpty ? 0 : 1) +
+            (orderBy.isEmpty ? 0 : 1)
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return selected.count
+        }
+        else if section == 1 {
+            return 1
+        }
+        else if section > 1 && section < joins.count + 2 {
+            return 1
+        }
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = getCell(from: tableView, indexPath: indexPath)
+        cell.detailTextLabel?.text = nil
+        update(cell: cell, indexPath: indexPath)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Select"
+        }
+        else if section == 1 {
+            return "From"
+        }
+        else if section > 1 && section < joins.count + 2 {
+            return joins[section - 2].joinType.description
+        }
+        return nil
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let view = view as? UITableViewHeaderFooterView {
+            view.backgroundColor = UIColor.clear
+            view.backgroundView?.backgroundColor = UIColor(white: 0.95, alpha: 0.9)
+        }
+    }
+}
+
 // MARK: - QueryActionDelegate
 extension QueryRequest: QueryActionDelegate {
     
     func didSelect(properties: [(AliasProperty)]) {
         let startIndex = selected.count
         selected.append(contentsOf: properties)
-        delegate?.update(insertRows: (startIndex ..< (startIndex + properties.count)).map { IndexPath(row: $0, section: 0) } ,
-                         insertSections: [])
+        delegate?.update(insertRows: (startIndex ..< (startIndex + properties.count)).map { IndexPath(row: $0, section: 0) } , insertSections: [])
     }
     
-    func didOrderBy(properties: [(DatabaseTableProperty)]) {
+    func didOrderBy(properties: [(AliasPropertyOrder)]) {
         
     }
     
-    func didGroupBy(properties: [(DatabaseTableProperty)]) {
+    func didGroupBy(properties: [(AliasProperty)]) {
         groupBy.append(contentsOf: properties)
     }
     
