@@ -8,7 +8,9 @@
 
 import Foundation
 
-protocol WhereArgument: CustomStringConvertible { }
+protocol WhereArgument: CustomStringConvertible {
+    func showDisclosureIndicator() -> Bool
+}
 
 enum Comparator: WhereArgument {
     case equal
@@ -27,6 +29,10 @@ enum Comparator: WhereArgument {
         case .lessThanEqual:    return "<="
         case .notEqual:         return "<>"
         }
+    }
+    
+    func showDisclosureIndicator() -> Bool {
+        return true
     }
     
     static func getAll(filterBy: AttributedCategory?) -> [Comparator] {

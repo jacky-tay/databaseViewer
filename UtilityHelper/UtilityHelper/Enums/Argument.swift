@@ -25,6 +25,15 @@ enum Argument: WhereArgument {
         }
     }
     
+    func showDisclosureIndicator() -> Bool {
+        switch self {
+        case .isNull, .isNotNull:
+            return false
+        default:
+            return true
+        }
+    }
+    
     static func getAll(filterBy: AttributedCategory?) -> [Argument] {
         guard let filter = filterBy else {
             return [.in, .isNull, .isNotNull, .between, .like]

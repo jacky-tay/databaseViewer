@@ -52,5 +52,6 @@ class QueryFetchIn: NSObject, GenericTableViewModel {
             selectedIndexPath.append(indexPath)
             cell?.accessoryType = .checkmark
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

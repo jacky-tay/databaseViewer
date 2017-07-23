@@ -38,9 +38,10 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = getCell(from: tableView, indexPath: indexPath)
-        cell.textLabel?.text = list[indexPath.section].1[indexPath.row].description
+        let currentOperator = list[indexPath.section].1[indexPath.row]
+        cell.textLabel?.text = currentOperator.description
         cell.selectionStyle = .default
-        cell.accessoryType = .disclosureIndicator
+        cell.accessoryType = currentOperator.showDisclosureIndicator() ? .disclosureIndicator : .none
         cell.detailTextLabel?.text = nil
         return cell
     }
@@ -61,7 +62,14 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
         if selectedOperator.description == Argument.in.description {
             viewModel = QueryFetchIn(queryRequest: queryRequest, alias: alias, property: property)
         }
-        
+        else if [Argument.isNotNull, Argument.isNull].contains(where: { $0.description == selectedOperator.description }) {
+            tableView.deselectRow(at: indexPath, animated: true)
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+            // TODO add to queryRequest
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) { [weak self] in
+                self?.navigationController?.dismiss(animated: true, completion: nil)
+            }
+        }
         if let viewModel = viewModel,
             let vc = GenericTableViewController.getViewController(viewModel: viewModel) {
             navigationController?.pushViewController(vc, animated: true)
