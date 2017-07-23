@@ -10,10 +10,10 @@ import UIKit
 
 class DatabaseTableJoinSelect: DatabaseTableSelect {
     
-    private let relationshipTitle = "Relationships"
     private weak var queryRequest: QueryRequest?
     private let selectedTable: DatabaseTableAlias
     private var join = Join.full
+    private var hasRelationshipSection = false
     
     init(queryRequest: QueryRequest, selectedTable: DatabaseTableAlias, join: Join) {
         self.queryRequest = queryRequest
@@ -30,23 +30,50 @@ class DatabaseTableJoinSelect: DatabaseTableSelect {
                 }
             }
             if let relationships = table.relationships, !relationships.isEmpty {
-                databases.insert(DatabaseTables(databaseName: relationshipTitle, tables: relationships), at: 0)
+                databases.insert(DatabaseTables(databaseName: "Relationships", tables: relationships), at: 0)
             }
         } // remove table from its database
         super.init(list: databases)
     }
     
-    override func actionAfterSelect(indexPath: IndexPath, alias: String?) {
+    override func viewDidLoad(_ viewController: GenericTableViewController) {
+        viewController.navigationItem.title = join.description
+    }
+    
+    func viewWillAppear(_ viewController: GenericTableViewController) {
+        // pop
+        if !viewController.isMovingToParentViewController, let count = queryRequest?.joins.count {
+            queryRequest?.joins.remove(at: count - 1)
+        }
+    }
+    
+    override func actionAfterSelect(indexPath: IndexPath, alias: String?, cell: UITableViewCell?) {
         let database = list[indexPath.section]
-        if let databaseName = database.databaseName, (indexPath.section == 0 && databaseName == relationshipTitle) {
+        
+        if indexPath.section == 0 && hasRelationshipSection {
             let joinTable = DatabaseTableAlias(databaseName: selectedTable.databaseName, tableName: database.tables[indexPath.row], alias: alias)
             let relationshipWith = selectedTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: nil)
             queryRequest?.addRelationship(with: relationshipWith)
             navigationController?.dismiss(animated: true, completion: nil)
         } // if let join relationships
+        else if let queryRequest = queryRequest {
+            cell?.accessoryType = .disclosureIndicator
+            let joinTable = DatabaseTableAlias(databaseName: database.databaseName, tableName: database.tables[indexPath.row], alias: alias)
+            let relationshipWith = selectedTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: [])
+            queryRequest.addRelationship(with: relationshipWith)
+            if let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest)) {
+                navigationController?.pushViewController(vc, animated: true)
+            }
+        }
     }
     
     override func getUniqueAliasName(input: String) -> String {
         return input
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        cell.accessoryType = hasRelationshipSection && indexPath.section == 0 ? .none : .disclosureIndicator
+        return cell
     }
 }

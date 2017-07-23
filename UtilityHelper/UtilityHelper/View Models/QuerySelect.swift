@@ -12,12 +12,16 @@ class QuerySelect: NSObject, GenericTableViewModel {
     
     weak var navigationController: UINavigationController?
     internal var list = [DatabaseTableAliasWithProperties]()
-    private weak var queryRequest: QueryRequest?
-    private var selectedIndexPath = [IndexPath]()
-    private var action = QueryAction.default
+    internal weak var queryRequest: QueryRequest?
+    internal var selectedIndexPath = [IndexPath]()
+    internal var action = QueryAction.default
     
-    init(queryRequest: QueryRequest, action: QueryAction) {
+    init(queryRequest: QueryRequest) {
         self.queryRequest = queryRequest
+    }
+    
+    convenience init(queryRequest: QueryRequest, action: QueryAction) {
+        self.init(queryRequest: queryRequest)
         self.action = action
         self.list = queryRequest.getSelectableDatabaseTableAliasWithProperties(includeWildCard: action == .select)
     }
@@ -31,7 +35,7 @@ class QuerySelect: NSObject, GenericTableViewModel {
     func doneIsClicked() {
         let properties = selectedIndexPath.flatMap { [weak self] indexPath -> AliasProperty? in
             if let table = self?.list[indexPath.section] {
-                return AliasProperty(alias: table.alias, propertyName: table.properties[indexPath.row])
+                return AliasProperty(alias: table.alias, propertyName: table.properties[indexPath.row].name)
             }
             return nil
         }
@@ -54,7 +58,7 @@ class QuerySelect: NSObject, GenericTableViewModel {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = getCell(from: tableView, indexPath: indexPath)
-        cell.textLabel?.text = list[indexPath.section].properties[indexPath.row]
+        cell.textLabel?.text = list[indexPath.section].properties[indexPath.row].name
         cell.selectionStyle = .default
         cell.accessoryType = selectedIndexPath.contains(indexPath) ? .checkmark : .none
         cell.detailTextLabel?.text = nil

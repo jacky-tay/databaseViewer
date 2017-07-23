@@ -15,4 +15,16 @@ enum Comparator: String {
     case greaterThanEqual = ">="
     case lessThanEqual = "<="
     case notEqual = "<>"
+    
+    static func getAll(filterBy: AttributedCategory? = nil) -> [Comparator] {
+        guard let filter = filterBy else {
+            return [.equal, .greaterThan, .lessThan, .greaterThanEqual, .lessThanEqual, .notEqual]
+        }
+        switch filter {
+        case .text, .objectId, .boolean, .binary:
+            return [.equal, .notEqual]
+        default:
+            return [.equal, .greaterThan, .lessThan, .greaterThanEqual, .lessThanEqual, .notEqual]
+        }
+    }
 }

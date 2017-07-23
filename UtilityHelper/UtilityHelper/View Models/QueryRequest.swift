@@ -28,7 +28,7 @@ class QueryRequest: NSObject {
     
     func getQueryActionViewModel(action: QueryAction) -> GenericTableViewModel {
         if action == .join {
-            return joins.isEmpty ? JoinQueryRequest(databaseTableAlias: from, queryRequest: self) : JoinQueryRequestWithTableOptions(queryRequest: self)
+            return joins.isEmpty ? QueryJoinRequest(databaseTableAlias: from, queryRequest: self) : QueryJoinRequestWithTableOptions(queryRequest: self)
         }
         else if action == .orderBy {
             return QueryOrderBy(queryRequest: self, action: .orderBy)
@@ -50,40 +50,6 @@ class QueryRequest: NSObject {
         return getSelectableDatabaseTableAlias().flatMap { $0.toSelectedTable() }
     }
     
-    func getRowCount(for section: Int) -> Int {
-        if section == 0 {
-            return selected.count
-        }
-        else if section == 1 {
-            return 1
-        }
-        else if section > 1 && section < joins.count + 2 {
-            return 1
-        }
-        return 0
-    }
-    
-    func getSectionCount() -> Int {
-        return 2 + // selected + from
-            joins.count +
-            (having.isEmpty ? 0 : 1) +
-            (groupBy.isEmpty ? 0 : 1) +
-            (orderBy.isEmpty ? 0 : 1)
-    }
-    
-    func getSectionTitle(section: Int) -> String? {
-        if section == 0 {
-            return "Select"
-        }
-        else if section == 1 {
-            return "From"
-        }
-        else if section > 1 && section < joins.count + 2 {
-            return joins[section - 2].joinType.description
-        }
-        return nil
-    }
-    
     func update(cell: UITableViewCell, indexPath: IndexPath) {
         let section = indexPath.section
         let row = indexPath.row
@@ -103,12 +69,18 @@ class QueryRequest: NSObject {
                               (" AS ", Material.blue),
                               (from.alias, nil)])
         }
-        else if section > 1 && section < joins.count + 2 {
+        else if section > 1 && section < joins.count + 2, row == 0 {
             let join = joins[section - 2]
             cell.textLabel?.attributedText = NSMutableAttributedString
                 .build(from: [(join.otherTable.tableName, nil),
                               (" AS ", Material.blue),
                               (join.otherTable.alias, nil)])
+            cell.detailTextLabel?.text = !(join.onConditions?.isEmpty ?? true) ? "ON" : nil
+        }
+        else if section > 1 && section < joins.count + 2 {
+            cell.textLabel?.text = joins[section - 2].getConditionDescription(at: row - 1)
+            let conditionCount = joins[section - 2].onConditions?.count ?? 0
+            cell.detailTextLabel?.text = row - 2 < conditionCount ? "AND" : nil
         }
     }
 }
@@ -133,11 +105,12 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func viewWillAppear(_ viewController: GenericTableViewController) {
-        navigationController?.setToolbarHidden(false, animated: true)
+        viewController.tableView.reloadData()
+        viewController.navigationController?.setToolbarHidden(false, animated: true)
     }
     
-    func viewWillDisappeared() {
-        navigationController?.setToolbarHidden(true, animated: true)
+    func viewWillDisappeared(_ viewController: GenericTableViewController) {
+        viewController.navigationController?.setToolbarHidden(true, animated: true)
     }
     
     private dynamic func execute(sender: UIBarButtonItem) {
@@ -171,7 +144,7 @@ extension QueryRequest: GenericTableViewModel {
             return 1
         }
         else if section > 1 && section < joins.count + 2 {
-            return 1
+            return (joins[section - 2].onConditions?.count ?? 0) + 1
         }
         return 0
     }
@@ -198,8 +171,7 @@ extension QueryRequest: GenericTableViewModel {
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         if let view = view as? UITableViewHeaderFooterView {
-            view.backgroundColor = UIColor.clear
-            view.backgroundView?.backgroundColor = UIColor(white: 0.95, alpha: 0.9)
+            view.contentView.backgroundColor = UIColor(white: 0.95, alpha: 0.9)
         }
     }
 }

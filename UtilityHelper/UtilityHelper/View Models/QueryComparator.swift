@@ -1,51 +1,51 @@
 //
-//  JoinQueryRequestWithTableOptions.swift
+//  QueryComparator.swift
 //  UtilityHelper
 //
-//  Created by Jacky Tay on 21/07/17.
+//  Created by Jacky Tay on 22/07/17.
 //  Copyright © 2017 JackyTay. All rights reserved.
 //
 
 import UIKit
 
-class JoinQueryRequestWithTableOptions: NSObject, GenericTableViewModel {
-    
+class QueryComparator: NSObject, GenericTableViewModel {
     weak var navigationController: UINavigationController?
     private weak var queryRequest: QueryRequest?
-    private let databaseTableAliases: [DatabaseTableAlias]!
+    private let list: [Comparator]!
+    private let action: QueryAction!
+    internal var sectionTitle: String?
     
-    init(queryRequest: QueryRequest) {
+    init(queryRequest: QueryRequest, action: QueryAction, filterBy category: AttributedCategory?) {
         self.queryRequest = queryRequest
-        self.databaseTableAliases = queryRequest.getSelectableDatabaseTableAlias()
+        self.list = Comparator.getAll(filterBy: category)
+        self.action = action
     }
     
     func viewDidLoad(_ viewController: GenericTableViewController) {
         viewController.navigationItem.title = "Select"
-        addCloseOnLeftHandSide(viewController)
     }
     
-    // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return databaseTableAliases.count
+        return list.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = getCell(from: tableView, indexPath: indexPath)
-        cell.textLabel?.text = databaseTableAliases[indexPath.row].tableName
-        cell.accessoryType = .disclosureIndicator
+        cell.textLabel?.text = list[indexPath.row].rawValue
         cell.detailTextLabel?.text = nil
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
     
-    // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let queryRequest = queryRequest,
-            let vc = GenericTableViewController.getViewController(viewModel: JoinQueryRequest(databaseTableAlias: databaseTableAliases[indexPath.row], queryRequest: queryRequest)) {
+        let comparator = list[indexPath.row]
+        if action == .join, let queryRequest = queryRequest, let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest)) {
+            queryRequest.joins.last?.onConditions?.last?.comparator = comparator
             navigationController?.pushViewController(vc, animated: true)
         }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Table to Join"
+        return sectionTitle
     }
 }

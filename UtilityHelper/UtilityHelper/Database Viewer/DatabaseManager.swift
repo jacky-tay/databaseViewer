@@ -9,8 +9,6 @@
 import UIKit
 import CoreData
 
-typealias DatabaseTableLitePair = (databaseName: String, tables: [(name: String, count: Int)])
-//typealias DatabaseTablePair = (databaseName: String, tableName: String)
 typealias DatabaseTablesPair = (databaseName: String, tables: [Table])
 
 class DatabaseTablesWithCount {
@@ -100,15 +98,15 @@ class DatabaseTableAlias : DatabaseTable, CustomStringConvertible {
         return JoinByDatabaseAlias(databaseName: databaseName, tableName: tableName, alias: alias, join: join, otherTable: other, onConditions: onConditions)
     }
     
-    func toDatabaseTableAlias(with properties: [String]) -> DatabaseTableAliasWithProperties {
+    func toDatabaseTableAlias(with properties: [Property]) -> DatabaseTableAliasWithProperties {
         return DatabaseTableAliasWithProperties(databaseName: databaseName, tableName: tableName, alias: alias, properties: properties)
     }
 }
 
 class DatabaseTableAliasWithProperties: DatabaseTableAlias {
-    let properties: [String]!
+    let properties: [Property]!
     
-    init(databaseName: String, tableName: String, alias: String?, properties: [String]) {
+    init(databaseName: String, tableName: String, alias: String?, properties: [Property]) {
         self.properties = properties
         super.init(databaseName: databaseName, tableName: tableName, alias: alias)
     }
@@ -126,9 +124,13 @@ class DatabaseTableAliasWithPropertiesRelationships: DatabaseTable {
 }
 
 class JoinWithDatabaseTableAlias {
-    let propertyName: String!
-    let comparator: Comparator!
-    let otherTableProperty: String!
+    var propertyName: String?
+    var comparator: Comparator?
+    var otherTableProperty: String?
+    
+    init() {
+        
+    }
     
     init(propertyName: String, comparator: Comparator, otherProperty: String) {
         self.propertyName = propertyName
@@ -140,13 +142,23 @@ class JoinWithDatabaseTableAlias {
 class JoinByDatabaseAlias : DatabaseTableAlias {
     let joinType: Join!
     let otherTable: DatabaseTableAlias!
-    let onConditions: [JoinWithDatabaseTableAlias]?
+    var onConditions: [JoinWithDatabaseTableAlias]?
     
     init(databaseName: String, tableName: String, alias: String?, join: Join, otherTable: DatabaseTableAlias, onConditions: [JoinWithDatabaseTableAlias]?) {
         self.joinType = join
         self.otherTable = otherTable
         self.onConditions = onConditions
         super.init(databaseName: databaseName, tableName: tableName, alias: alias)
+    }
+    
+    func getConditionDescription(at index: Int) -> String {
+        guard let conditions = onConditions else {
+            return ""
+        }
+        let condition = conditions[index]
+        let otherProperty = ".".joined(contentsOf: [otherTable.alias, condition.otherTableProperty])
+        let property = ".".joined(contentsOf: [alias, condition.propertyName])
+        return " ".joined(contentsOf: [otherProperty, condition.comparator?.rawValue, property])
     }
 }
 
@@ -168,14 +180,6 @@ public class DatabaseManager {
         if let vc = GenericTableViewController.getViewController(viewModel: DatabaseTableView()) {
             navigationController?.presentViewControllerModally(vc)
         }
-    }
-
-    internal func getDatabaseTableLitePairs() -> [DatabaseTableLitePair] {
-        var results = [DatabaseTableLitePair]()
-        for database in databases {
-            results.append((database.databaseName, database.tables.map { ($0.name, $0.count) }))
-        }
-        return results
     }
     
     internal func getDatabaseTablesWithCount() -> [DatabaseTablesWithCount] {

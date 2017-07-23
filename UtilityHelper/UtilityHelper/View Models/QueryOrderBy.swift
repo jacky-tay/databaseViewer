@@ -10,17 +10,12 @@ import UIKit
 
 class QueryOrderBy: QuerySelect {
 
-    private weak var queryRequest: QueryRequest?
     private var selectedOrderedIndexPath = [(IndexPath, OrderBy)]()
-    
-    override init(queryRequest: QueryRequest, action: QueryAction) {
-        super.init(queryRequest: queryRequest, action: action)
-    }
     
     override func doneIsClicked() {
         let properties = selectedOrderedIndexPath.flatMap { [weak self] item -> AliasPropertyOrder? in
             if let table = self?.list[item.0.section] {
-                return AliasPropertyOrder(alias: table.alias, propertyName: table.properties[item.0.row], order: item.1)
+                return AliasPropertyOrder(alias: table.alias, propertyName: table.properties[item.0.row].name, order: item.1)
             }
             return nil
         }
@@ -30,7 +25,7 @@ class QueryOrderBy: QuerySelect {
     // MARK: - UITableViewDataSource
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = getRightDetailCell(from: tableView, indexPath: indexPath)
-        cell.textLabel?.text = list[indexPath.section].properties[indexPath.row]
+        cell.textLabel?.text = list[indexPath.section].properties[indexPath.row].name
         cell.selectionStyle = .default
         cell.accessoryType = .none
         cell.detailTextLabel?.text = nil

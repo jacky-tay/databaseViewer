@@ -1,5 +1,5 @@
 //
-//  JoinQueryRequest.swift
+//  QueryJoinRequestWithTableOptions.swift
 //  UtilityHelper
 //
 //  Created by Jacky Tay on 21/07/17.
@@ -8,49 +8,44 @@
 
 import UIKit
 
-class JoinQueryRequest: NSObject, GenericTableViewModel {
+class QueryJoinRequestWithTableOptions: NSObject, GenericTableViewModel {
     
     weak var navigationController: UINavigationController?
-    private let databaseTableAlias: DatabaseTableAlias!
     private weak var queryRequest: QueryRequest?
-    private let joinTypes = Join.getAllJoins()
+    private let databaseTableAliases: [DatabaseTableAlias]!
     
-    init(databaseTableAlias: DatabaseTableAlias, queryRequest: QueryRequest) {
-        self.databaseTableAlias = databaseTableAlias
+    init(queryRequest: QueryRequest) {
         self.queryRequest = queryRequest
+        self.databaseTableAliases = queryRequest.getSelectableDatabaseTableAlias()
     }
     
     func viewDidLoad(_ viewController: GenericTableViewController) {
-        viewController.navigationItem.title = "Join With"
+        viewController.navigationItem.title = "Select"
         addCloseOnLeftHandSide(viewController)
     }
     
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return joinTypes.count
+        return databaseTableAliases.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = getCell(from: tableView, indexPath: indexPath)
-        cell.textLabel?.text = joinTypes[indexPath.row].description
+        cell.textLabel?.text = databaseTableAliases[indexPath.row].tableName
         cell.accessoryType = .disclosureIndicator
         cell.detailTextLabel?.text = nil
         return cell
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return databaseTableAlias.description
-    }
-    
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let queryRequest = queryRequest,
-            let vc = GenericTableViewController.getViewController(viewModel: DatabaseTableJoinSelect(queryRequest: queryRequest, selectedTable: databaseTableAlias, join: joinTypes[indexPath.row])) {
+            let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequest(databaseTableAlias: databaseTableAliases[indexPath.row], queryRequest: queryRequest)) {
             navigationController?.pushViewController(vc, animated: true)
         }
     }
     
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        applyHeaderLayout(view: view)
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Table to Join"
     }
 }

@@ -60,9 +60,9 @@ class SelectedTable: Table {
     }
     
     func toDatabaseTableAliasWithProperties(includeWildCard: Bool) -> DatabaseTableAliasWithProperties {
-        var propertieStrings = properties.flatMap { $0.name }
+        var propertieStrings = properties.flatMap { $0 }
         if includeWildCard {
-            propertieStrings.insert("*", at: 0)
+            propertieStrings.insert(Property(name: "*", attributeType: .undefinedAttributeType), at: 0)
         }
         return toDatabaseTableAlias().toDatabaseTableAlias(with: propertieStrings)
     }

@@ -9,7 +9,37 @@
 import CoreData
 import Foundation
 
+enum AttributedCategory {
+    case undefined
+    case text
+    case number
+    case date
+    case binary
+    case boolean
+    case objectId
+}
+
 extension NSAttributeType: CustomStringConvertible {
+    
+    func getCategory() -> AttributedCategory {
+        switch self {
+        case .undefinedAttributeType:
+            return .undefined
+        case .stringAttributeType:
+            return .text
+        case .integer16AttributeType, .integer32AttributeType, .integer64AttributeType, .decimalAttributeType, .doubleAttributeType, .floatAttributeType:
+            return .number
+        case .dateAttributeType:
+            return .date
+        case .binaryDataAttributeType, .transformableAttributeType:
+            return .binary
+        case .objectIDAttributeType:
+            return .objectId
+        case .booleanAttributeType:
+            return .boolean
+        }
+    }
+    
     public var description: String {
         switch self {
         case .undefinedAttributeType:   return "Undefined"
