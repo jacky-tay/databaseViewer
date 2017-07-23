@@ -22,9 +22,26 @@ extension NSManagedObjectContext {
                         columns.append(value == "<null>" ? nil : value)
                     }
                     results.append(columns)
-                }
-            } //
+                } // for
+            } // try? fetch
         } // performAndWait
         return results
+    }
+    
+    func fetchValuesIn(for entityName: String, key: String) -> [String] {
+        var results = [String]()
+        performAndWait { [weak self] in
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+            fetchRequest.returnsDistinctResults = true
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: key, ascending: true)]
+            if let fetchResults = (try? self?.fetch(fetchRequest)) as? [NSManagedObject] {
+                for fetchResult in fetchResults {
+                    if let value = (fetchResult.value(forKey: key) as AnyObject).description {
+                        results.append(value)
+                    } // if let
+                } // for
+            } // try? fetch
+        } // performAndWait
+        return results.distinct()
     }
 }

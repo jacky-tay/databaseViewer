@@ -30,8 +30,11 @@ class QueryRequest: NSObject {
         if action == .join {
             return joins.isEmpty ? QueryJoinRequest(databaseTableAlias: from, queryRequest: self) : QueryJoinRequestWithTableOptions(queryRequest: self)
         }
+        else if action == .where {
+            return QueryWhere(queryRequest: self, action: action)
+        }
         else if action == .orderBy {
-            return QueryOrderBy(queryRequest: self, action: .orderBy)
+            return QueryOrderBy(queryRequest: self, action: action)
         }
         return QuerySelect(queryRequest: self, action: action)
     }
@@ -48,6 +51,10 @@ class QueryRequest: NSObject {
     
     func toSelectedTables() -> [SelectedTable] {
         return getSelectableDatabaseTableAlias().flatMap { $0.toSelectedTable() }
+    }
+    
+    func getDatabaseTableAlias(from alias: String) -> DatabaseTableAlias? {
+        return getSelectableDatabaseTableAlias().first { $0.alias == alias }
     }
     
     func update(cell: UITableViewCell, indexPath: IndexPath) {

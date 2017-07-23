@@ -31,7 +31,7 @@ class QueryComparator: NSObject, GenericTableViewModel {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = getCell(from: tableView, indexPath: indexPath)
-        cell.textLabel?.text = list[indexPath.row].rawValue
+        cell.textLabel?.text = list[indexPath.row].description
         cell.detailTextLabel?.text = nil
         cell.accessoryType = .disclosureIndicator
         return cell

@@ -39,7 +39,7 @@ class Table {
         return table
     }
     
-    func toDatabaseTable(alias: String?) -> DatabaseTableAlias {
+    func toDatabaseTable(alias: String) -> DatabaseTableAlias {
         return DatabaseTableAlias(databaseName: databaseName, tableName: name, alias: alias)
     }
     
@@ -49,7 +49,7 @@ class Table {
 }
 
 class SelectedTable: Table {
-    var alias: String?
+    var alias: String!
     
     func propertiesToAliasProperties() -> [AliasProperty] {
         return properties.map { AliasProperty(alias: alias, propertyName: $0.name) }

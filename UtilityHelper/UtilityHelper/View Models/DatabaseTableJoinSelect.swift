@@ -47,7 +47,7 @@ class DatabaseTableJoinSelect: DatabaseTableSelect {
         }
     }
     
-    override func actionAfterSelect(indexPath: IndexPath, alias: String?, cell: UITableViewCell?) {
+    override func actionAfterSelect(indexPath: IndexPath, alias: String, cell: UITableViewCell?) {
         let database = list[indexPath.section]
         
         if indexPath.section == 0 && hasRelationshipSection {

@@ -21,7 +21,7 @@ class DatabaseTableSelect: NSObject, GenericTableViewModel {
         viewController.navigationItem.title = "Select"
     }
     
-    func actionAfterSelect(indexPath: IndexPath, alias: String?, cell: UITableViewCell?) {
+    func actionAfterSelect(indexPath: IndexPath, alias: String, cell: UITableViewCell?) {
         if let table = DatabaseManager.sharedInstance.getTableFrom(databaseName: list[indexPath.section].databaseName, tableName: list[indexPath.section].tables[indexPath.row]),
             let vc = GenericTableViewController.getViewController(viewModel: QueryRequest(from: table.toSelectedTable(alias: alias))) {
             (vc.viewModel as? QueryRequest)?.delegate = vc
@@ -58,7 +58,9 @@ class DatabaseTableSelect: NSObject, GenericTableViewModel {
         })
         alert.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
             tableView.cellForRow(at: indexPath)?.accessoryType = .none
-            self?.actionAfterSelect(indexPath: indexPath, alias: alert.textFields?.first?.text, cell: tableView.cellForRow(at: indexPath))
+            if let alias = alert.textFields?.first?.text {
+                self?.actionAfterSelect(indexPath: indexPath, alias: alias, cell: tableView.cellForRow(at: indexPath))
+            }
         })
         navigationController?.present(alert, animated: true, completion: nil)
     }

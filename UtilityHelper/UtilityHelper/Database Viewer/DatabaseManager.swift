@@ -79,13 +79,13 @@ class AliasPropertyOrder: AliasProperty {
 }
 
 class DatabaseTableAlias : DatabaseTable, CustomStringConvertible {
-    var alias: String?
+    var alias: String!
     
     var description: String {
         return " AS ".joined(contentsOf: [tableName, alias])
     }
     
-    init(databaseName: String, tableName: String, alias: String?) {
+    init(databaseName: String, tableName: String, alias: String) {
         self.alias = alias
         super.init(databaseName: databaseName, tableName: tableName)
     }
@@ -106,7 +106,7 @@ class DatabaseTableAlias : DatabaseTable, CustomStringConvertible {
 class DatabaseTableAliasWithProperties: DatabaseTableAlias {
     let properties: [Property]!
     
-    init(databaseName: String, tableName: String, alias: String?, properties: [Property]) {
+    init(databaseName: String, tableName: String, alias: String, properties: [Property]) {
         self.properties = properties
         super.init(databaseName: databaseName, tableName: tableName, alias: alias)
     }
@@ -144,7 +144,7 @@ class JoinByDatabaseAlias : DatabaseTableAlias {
     let otherTable: DatabaseTableAlias!
     var onConditions: [JoinWithDatabaseTableAlias]?
     
-    init(databaseName: String, tableName: String, alias: String?, join: Join, otherTable: DatabaseTableAlias, onConditions: [JoinWithDatabaseTableAlias]?) {
+    init(databaseName: String, tableName: String, alias: String, join: Join, otherTable: DatabaseTableAlias, onConditions: [JoinWithDatabaseTableAlias]?) {
         self.joinType = join
         self.otherTable = otherTable
         self.onConditions = onConditions
@@ -158,7 +158,7 @@ class JoinByDatabaseAlias : DatabaseTableAlias {
         let condition = conditions[index]
         let otherProperty = ".".joined(contentsOf: [otherTable.alias, condition.otherTableProperty])
         let property = ".".joined(contentsOf: [alias, condition.propertyName])
-        return " ".joined(contentsOf: [otherProperty, condition.comparator?.rawValue, property])
+        return " ".joined(contentsOf: [otherProperty, condition.comparator?.description, property])
     }
 }
 
