@@ -45,6 +45,10 @@ extension GenericTableViewModel {
         return tableView.dequeueReusableCell(withIdentifier: "DatabaseTableRowRightTableViewCell", for: indexPath)
     }
     
+    func getTextFieldCell(from tableView: UITableView, indexPath: IndexPath) -> TextFieldTableViewCell? {
+        return tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+    }
+    
     func applyHeaderLayout(view: UIView) {
         if let headerView = view as? UITableViewHeaderFooterView,
             let header = headerView.textLabel?.text {

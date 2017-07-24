@@ -9,7 +9,10 @@
 import CoreData
 import Foundation
 
+let nullTag = "<null>"
+
 extension NSManagedObjectContext {
+    
     func fetchAll(for entityName: String, keys: [String]) -> [[String?]] {
         var results = [[String?]]()
         performAndWait { [weak self] in
@@ -19,7 +22,7 @@ extension NSManagedObjectContext {
                     var columns = [String?]()
                     for key in keys {
                         let value = (fetchResult.value(forKey: key) as AnyObject).description
-                        columns.append(value == "<null>" ? nil : value)
+                        columns.append(value == nullTag ? nil : value)
                     }
                     results.append(columns)
                 } // for
@@ -36,7 +39,7 @@ extension NSManagedObjectContext {
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: key, ascending: true)]
             if let fetchResults = (try? self?.fetch(fetchRequest)) as? [NSManagedObject] {
                 for fetchResult in fetchResults {
-                    if let value = (fetchResult.value(forKey: key) as AnyObject).description {
+                    if let value = (fetchResult.value(forKey: key) as? AnyObject)?.description.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines), value != nullTag && !value.isEmpty {
                         results.append(value)
                     } // if let
                 } // for

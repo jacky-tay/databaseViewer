@@ -28,6 +28,8 @@
 		2836E4C81F24AD0600815D65 /* QueryWhereOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4C71F24AD0600815D65 /* QueryWhereOperators.swift */; };
 		2836E4CA1F24B6DB00815D65 /* QueryWhere.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4C91F24B6DB00815D65 /* QueryWhere.swift */; };
 		2836E4CC1F24BEBC00815D65 /* QueryFetchIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4CB1F24BEBC00815D65 /* QueryFetchIn.swift */; };
+		2836E4CE1F25E32900815D65 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4CD1F25E32900815D65 /* TextFieldTableViewCell.swift */; };
+		2836E4D01F25F7B600815D65 /* QueryOperatorTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4CF1F25F7B600815D65 /* QueryOperatorTextInput.swift */; };
 		28436D871F22C0B300C366E6 /* DatabaseTableJoinSelect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28436D861F22C0B300C366E6 /* DatabaseTableJoinSelect.swift */; };
 		28436D8E1F2311B100C366E6 /* Aggregate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28436D8D1F2311B100C366E6 /* Aggregate.swift */; };
 		28436D901F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28436D8F1F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift */; };
@@ -75,6 +77,8 @@
 		2836E4C71F24AD0600815D65 /* QueryWhereOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryWhereOperators.swift; sourceTree = "<group>"; };
 		2836E4C91F24B6DB00815D65 /* QueryWhere.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryWhere.swift; sourceTree = "<group>"; };
 		2836E4CB1F24BEBC00815D65 /* QueryFetchIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryFetchIn.swift; sourceTree = "<group>"; };
+		2836E4CD1F25E32900815D65 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
+		2836E4CF1F25F7B600815D65 /* QueryOperatorTextInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryOperatorTextInput.swift; sourceTree = "<group>"; };
 		28436D861F22C0B300C366E6 /* DatabaseTableJoinSelect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableJoinSelect.swift; sourceTree = "<group>"; };
 		28436D8D1F2311B100C366E6 /* Aggregate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Aggregate.swift; sourceTree = "<group>"; };
 		28436D8F1F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryJoinRequestTablePropertySelect.swift; sourceTree = "<group>"; };
@@ -133,6 +137,7 @@
 				850C38151F1C63AD00F2D116 /* DatabaseResultCollectionViewCell.swift */,
 				850C380B1F1C52DC00F2D116 /* DatabaseViewer.storyboard */,
 				850C38101F1C632800F2D116 /* DuplexCollectionViewLayout.swift */,
+				2836E4CD1F25E32900815D65 /* TextFieldTableViewCell.swift */,
 			);
 			name = "UI Interfaces";
 			path = UIInterfaces;
@@ -163,6 +168,7 @@
 				28C3071B1F218B58004D9ED9 /* QueryJoinRequestWithTableOptions.swift */,
 				28436D8F1F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift */,
 				2804D98A1F1E2524009ED045 /* QueryRequest.swift */,
+				2836E4CF1F25F7B600815D65 /* QueryOperatorTextInput.swift */,
 				28C3071F1F21C888004D9ED9 /* QueryOrderBy.swift */,
 				28C3071D1F21A143004D9ED9 /* QuerySelect.swift */,
 				2836E4C91F24B6DB00815D65 /* QueryWhere.swift */,
@@ -384,10 +390,12 @@
 				28EFDDF51F22293200557145 /* DatabaseTableView.swift in Sources */,
 				850C381A1F1C63F700F2D116 /* FetchResult.swift in Sources */,
 				85599E2E1F1C45170024FA39 /* DatabaseManager.swift in Sources */,
+				2836E4D01F25F7B600815D65 /* QueryOperatorTextInput.swift in Sources */,
 				28436D901F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift in Sources */,
 				28EFDDF31F221D4300557145 /* PropertyRelationship.swift in Sources */,
 				850C38091F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift in Sources */,
 				28C3071C1F218B58004D9ED9 /* QueryJoinRequestWithTableOptions.swift in Sources */,
+				2836E4CE1F25E32900815D65 /* TextFieldTableViewCell.swift in Sources */,
 				28C307201F21C888004D9ED9 /* QueryOrderBy.swift in Sources */,
 				284E13CA1F20D28800FB55DC /* OrderBy.swift in Sources */,
 				28C3071A1F217836004D9ED9 /* QueryJoinRequest.swift in Sources */,
