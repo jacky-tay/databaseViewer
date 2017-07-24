@@ -41,6 +41,7 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0, let textFieldCell = getTextFieldCell(from: tableView, indexPath: indexPath) {
+            textFieldCell.updateContent(attributeType: property.attributeType)
             return textFieldCell
         }
         let cell = getCell(from: tableView, indexPath: indexPath)
@@ -57,6 +58,6 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return section == 1 ? "Value" : nil
+        return section == 1 ? "Or add from" : nil
     }
 }

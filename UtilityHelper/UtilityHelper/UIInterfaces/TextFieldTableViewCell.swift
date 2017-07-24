@@ -7,7 +7,14 @@
 //
 
 import UIKit
+import CoreData
 
 class TextFieldTableViewCell: UITableViewCell {
     @IBOutlet weak var textField: UITextField!
+    
+    func updateContent(attributeType: NSAttributeType? = nil) {
+        if let type = attributeType {
+            textField.keyboardType = type.getKeyboardType()
+        }
+    }
 }

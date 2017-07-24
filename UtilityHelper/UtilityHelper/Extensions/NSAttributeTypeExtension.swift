@@ -40,6 +40,22 @@ extension NSAttributeType: CustomStringConvertible {
         }
     }
     
+    public func getKeyboardType() -> UIKeyboardType {
+        switch self {
+        case .integer16AttributeType, .integer32AttributeType, .integer64AttributeType:
+            return .numberPad
+        case .decimalAttributeType, .doubleAttributeType, .floatAttributeType:
+            return .decimalPad
+        case .dateAttributeType:
+            return .default // TODO: datetime picker
+        case .booleanAttributeType:
+            return .default // TODO: boolean picker
+        default:
+            return .asciiCapable
+        }
+
+    }
+    
     public var description: String {
         switch self {
         case .undefinedAttributeType:   return "Undefined"
