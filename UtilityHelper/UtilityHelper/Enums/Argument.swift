@@ -42,10 +42,10 @@ enum Argument: WhereArgument {
         switch filter {
         case .text:
             return [.in, .isNull, .isNotNull, .like]
-        case .text, .objectId, .boolean, .binary:
+        case .objectId, .boolean, .binary:
             return [.in, .isNull, .isNotNull]
         default:
-            return [.isNull, .isNotNull, .between]
+            return [.in, .isNull, .isNotNull, .between]
         }
     }
 }

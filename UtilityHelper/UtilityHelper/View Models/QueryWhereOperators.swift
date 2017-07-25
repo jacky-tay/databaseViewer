@@ -76,6 +76,7 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
         
         if let viewModel = viewModel,
             let vc = GenericTableViewController.getViewController(viewModel: viewModel) {
+            (viewModel as? QueryOperatorTextInput)?.delegate = vc
             navigationController?.pushViewController(vc, animated: true)
         }
     }

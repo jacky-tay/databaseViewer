@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol GenericTableViewModelDelegate: class {
+    func update(insertRows: [IndexPath], insertSections: [Int])
+    func remove(rows: [IndexPath])
+}
+
 class GenericTableViewController: UITableViewController, GenericTableViewModelDelegate {
 
     internal var viewModel: GenericTableViewModel!
@@ -70,5 +75,11 @@ class GenericTableViewController: UITableViewController, GenericTableViewModelDe
 //        tableView.insertRows(at: insertRows, with: .automatic)
 //        insertSections.forEach { [weak self] in self?.tableView.insertSections(IndexSet(integer: $0), with: .automatic) }
 //        tableView.endUpdates()
+    }
+    
+    func remove(rows: [IndexPath]) {
+        tableView.beginUpdates()
+        tableView.deleteRows(at: rows, with: .automatic)
+        tableView.endUpdates()
     }
 }

@@ -8,10 +8,6 @@
 
 import UIKit
 
-protocol GenericTableViewModelDelegate: class {
-    func update(insertRows: [IndexPath], insertSections: [Int])
-}
-
 @objc protocol GenericTableViewModel: UITableViewDataSource, UITableViewDelegate {
     weak var navigationController: UINavigationController? { get set }
     func viewDidLoad(_ viewController: GenericTableViewController)

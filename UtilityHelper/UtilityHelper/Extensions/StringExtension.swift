@@ -54,4 +54,23 @@ extension String {
     func calculateFrameSize(width: CGFloat = CGFloat.greatestFiniteMagnitude, height: CGFloat = CGFloat.greatestFiniteMagnitude, font: UIFont) -> CGSize {
         return self.boundingRect(with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading, .truncatesLastVisibleLine], attributes: [NSFontAttributeName: font], context: nil).size
     }
+    
+    func getNSRanges(for query: String?) -> [NSRange] {
+        guard let query = query else {
+            return []
+        }
+        
+        var searchRanges = [NSRange]()
+        let len = characters.count
+        var range = NSMakeRange(0, len)
+        while range.location != NSNotFound {
+            range = NSString(string: self).range(of: query, options: .caseInsensitive, range: range)
+            if range.location != NSNotFound {
+                searchRanges.append(range)
+                let location = range.length + range.location
+                range = NSMakeRange(location, len - location)
+            }
+        } // while
+        return searchRanges
+    }
 }
