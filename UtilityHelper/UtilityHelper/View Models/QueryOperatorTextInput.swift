@@ -14,8 +14,8 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel {
     weak var delegate: GenericTableViewModelDelegate?
     
     private weak var queryRequest: QueryRequest?
-    private var list = [String]()
-    private var filteredList = [Int]()
+    internal var list = [String]()
+    internal var filteredList = [Int]()
     private let alias: String!
     private let property: Property!
     private let whereArgument: WhereArgument!
@@ -70,8 +70,10 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
-            // TODO
+            (tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell)?.textField.text = list[filteredList[indexPath.row]]
+            // TODO remove all other
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -94,6 +96,6 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel {
             return nil
         }
         
-        delegate?.update(insertRows: [], insertSections: [1])
+        delegate?.update(insertRows: [], insertSections: [1]) // TODO
     }
 }

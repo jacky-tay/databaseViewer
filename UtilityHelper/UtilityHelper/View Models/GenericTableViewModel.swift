@@ -42,7 +42,10 @@ extension GenericTableViewModel {
     }
     
     func getTextFieldCell(from tableView: UITableView, indexPath: IndexPath) -> TextFieldTableViewCell? {
-        return tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+        cell?.selectionStyle = .none
+        cell?.accessoryType = .none
+        return cell
     }
     
     func applyHeaderLayout(view: UIView) {

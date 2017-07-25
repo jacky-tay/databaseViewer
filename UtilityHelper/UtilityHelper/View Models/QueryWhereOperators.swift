@@ -70,6 +70,9 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
                 self?.navigationController?.dismiss(animated: true, completion: nil)
             }
         }
+        else if Argument.between.description == selectedOperator.description {
+            viewModel = QueryBetweenOperatorTextInput(queryRequest: queryRequest, alias: alias, property: property, whereArgument: selectedOperator)
+        }
         else {
             viewModel = QueryOperatorTextInput(queryRequest: queryRequest, alias: alias, property: property, whereArgument: selectedOperator)
         }
