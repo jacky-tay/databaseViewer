@@ -32,4 +32,14 @@ public extension Array {
         }
         return result
     }
+
+    public func difference<T : Equatable>(from array: [T]) -> (unchanged: [Int], inserted: [Int], deleted: [Int]) {
+        guard let list = self as? [T] else {
+            return ([], [], [])
+        }
+        let unchanged = list.enumerated().flatMap { array.contains($0.element) ? $0.offset : nil }
+        let deleted = list.enumerated().flatMap { !array.contains($0.element) ? $0.offset : nil }
+        let inserted = array.enumerated().flatMap { !list.contains($0.element) ? $0.offset : nil }
+        return (unchanged, inserted, deleted)
+    }
 }

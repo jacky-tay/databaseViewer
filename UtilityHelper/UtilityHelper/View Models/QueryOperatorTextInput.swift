@@ -8,7 +8,7 @@
 
 import UIKit
 
-class QueryOperatorTextInput: NSObject, GenericTableViewModel {
+class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelegate {
     
     weak var navigationController: UINavigationController?
     weak var delegate: GenericTableViewModelDelegate?
@@ -49,6 +49,7 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel {
         if indexPath.section == 0, let textFieldCell = getTextFieldCell(from: tableView, indexPath: indexPath) {
             textFieldCell.updateContent(attributeType: property.attributeType)
             textFieldCell.textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
+            textFieldCell.textField.delegate = self
             return textFieldCell
         }
         let cell = getCell(from: tableView, indexPath: indexPath)
@@ -81,21 +82,32 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel {
     }
     
     dynamic private func textFieldDidChange(textField: UITextField) {
-        guard let text = textField.text else {
-            queryText = nil
-            return
-        }
+
         let previous = filteredList
-        queryText = text
-        filteredList = list.enumerated().flatMap { [weak self] item -> Int? in
-            let ranges = item.element.getNSRanges(for: text)
-            if !ranges.isEmpty {
-                self?.queryDict[item.offset] = ranges
-                return item.offset
-            }
-            return nil
+
+        if let text = textField.text, !text.isEmpty {
+            queryText = text
+            filteredList = list.enumerated().flatMap { [weak self] item -> Int? in
+                let ranges = item.element.getNSRanges(for: text)
+                if !ranges.isEmpty {
+                    self?.queryDict[item.offset] = ranges
+                    return item.offset
+                }
+                return nil
+            } // flatMap
         }
-        
-        delegate?.update(insertRows: [], insertSections: [1]) // TODO
+        else {
+            queryText = nil
+            filteredList = list.enumerated().map { $0.offset }
+        }
+
+        let diff = previous.difference(from: filteredList)
+        delegate?.animateTable(in: 1, reloadRows: diff.unchanged, insertRows: diff.inserted, deleteRows: diff.deleted)
+    }
+
+    // MARK: - UITextFieldDelegate
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return false
     }
 }

@@ -11,6 +11,7 @@ import UIKit
 protocol GenericTableViewModelDelegate: class {
     func update(insertRows: [IndexPath], insertSections: [Int])
     func remove(rows: [IndexPath])
+    func animateTable(in section: Int, reloadRows: [Int], insertRows: [Int], deleteRows: [Int])
 }
 
 class GenericTableViewController: UITableViewController, GenericTableViewModelDelegate {
@@ -76,10 +77,18 @@ class GenericTableViewController: UITableViewController, GenericTableViewModelDe
 //        insertSections.forEach { [weak self] in self?.tableView.insertSections(IndexSet(integer: $0), with: .automatic) }
 //        tableView.endUpdates()
     }
-    
+
     func remove(rows: [IndexPath]) {
         tableView.beginUpdates()
         tableView.deleteRows(at: rows, with: .automatic)
+        tableView.endUpdates()
+    }
+
+    func animateTable(in section: Int, reloadRows: [Int], insertRows: [Int], deleteRows: [Int]) {
+        tableView.beginUpdates()
+        tableView.reloadRows(at: reloadRows.map { IndexPath(row: $0, section: section) }, with: .automatic)
+        tableView.deleteRows(at: deleteRows.map { IndexPath(row: $0, section: section) }, with: .automatic)
+        tableView.insertRows(at: insertRows.map { IndexPath(row: $0, section: section) }, with: .automatic)
         tableView.endUpdates()
     }
 }
