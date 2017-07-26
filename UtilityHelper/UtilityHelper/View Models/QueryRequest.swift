@@ -12,7 +12,16 @@ class QueryRequest: NSObject {
     weak var delegate: GenericTableViewModelDelegate?
     weak var navigationController: UINavigationController?
     
-    let semiModalTransitioningDelegate = SemiModalTransistioningDelegate()
+    enum BarButton: String {
+        case execute = "Execute"
+        case done = "Done"
+        case edit = "Edit"
+    }
+    
+    fileprivate let semiModalTransitioningDelegate = SemiModalTransistioningDelegate()
+    fileprivate var excuteButton: UIBarButtonItem!
+    fileprivate var doneButton: UIBarButtonItem!
+    fileprivate var editButton: UIBarButtonItem!
     
     var selected = [AliasProperty]()
     var from: DatabaseTableAlias!
@@ -24,6 +33,11 @@ class QueryRequest: NSObject {
     init(from: SelectedTable) {
         self.selected = from.propertiesToAliasProperties()
         self.from = from.toDatabaseTableAlias()
+        super.init()
+        
+        excuteButton = UIBarButtonItem(title: BarButton.execute.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
+        doneButton = UIBarButtonItem(title: BarButton.done.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
+        editButton = UIBarButtonItem(image: StyleKit.imageOfReorder, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
     }
     
     func getQueryActionViewModel(action: QueryAction) -> GenericTableViewModel {
@@ -90,6 +104,22 @@ class QueryRequest: NSObject {
             cell.detailTextLabel?.text = row - 2 < conditionCount ? "AND" : nil
         }
     }
+ 
+    // MARK: - Actions
+    dynamic fileprivate func barButtonItemDidClicked(sender: UIBarButtonItem) {
+        if let action = QueryAction(rawValue: sender.title ?? "") {
+            let vc = GenericTableViewController.getViewController(viewModel: getQueryActionViewModel(action: action))
+            navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
+        }
+        else if sender.image != nil {
+            delegate?.update(editing: true)
+            delegate?.update(rightBarButtons: [doneButton])
+        }
+        else if sender.title == BarButton.done.rawValue {
+            delegate?.update(editing: false)
+            delegate?.update(rightBarButtons: [excuteButton, editButton])
+        }
+    }
 }
 
 // MARK: - GenericTableViewModel
@@ -99,7 +129,7 @@ extension QueryRequest: GenericTableViewModel {
         setToolbar(viewController)
         viewController.hidesBottomBarWhenPushed = true
         viewController.navigationItem.title = "Query"
-        viewController.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Execute", style: .plain, target: self, action: #selector(execute(sender:)))
+        viewController.navigationItem.rightBarButtonItems = [excuteButton, editButton]
     }
     
     private func setToolbar(_ viewController: GenericTableViewController) {
@@ -118,20 +148,6 @@ extension QueryRequest: GenericTableViewModel {
     
     func viewWillDisappeared(_ viewController: GenericTableViewController) {
         viewController.navigationController?.setToolbarHidden(true, animated: true)
-    }
-    
-    private dynamic func execute(sender: UIBarButtonItem) {
-        
-    }
-    
-    // MARK: - Actions
-    dynamic private func barButtonItemDidClicked(sender: UIBarButtonItem) {
-        guard let action = QueryAction(rawValue: sender.title ?? "") else {
-            return
-        }
-        
-        let vc = GenericTableViewController.getViewController(viewModel: getQueryActionViewModel(action: action))
-        navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
     }
     
     // MARK: - UITableViewDataSource
@@ -180,6 +196,51 @@ extension QueryRequest: GenericTableViewModel {
         if let view = view as? UITableViewHeaderFooterView {
             view.contentView.backgroundColor = UIColor(white: 0.95, alpha: 0.9)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return indexPath.section != 1
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true//indexPath.section == 0
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        guard indexPath.section != 1 else {
+            return nil
+        }
+        let edit = UITableViewRowAction(style: .normal, title: "Edit", handler: { [weak self] (action, removeIndexPath) in
+            self?.remove(tableView, at: removeIndexPath)
+        })
+        
+        let remove = UITableViewRowAction(style: .destructive, title: "Remove", handler: { [weak self] (action, removeIndexPath) in
+            self?.remove(tableView, at: removeIndexPath)
+        })
+        return indexPath.section == 0 ? [remove, edit] : [remove]
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+    }
+    
+    func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        if sourceIndexPath.section != proposedDestinationIndexPath.section {
+            let row = sourceIndexPath.section < proposedDestinationIndexPath.section ? tableView.numberOfRows(inSection: sourceIndexPath.section) - 2 : 0
+            return IndexPath(row: row, section: sourceIndexPath.section)
+        }
+        //        else if proposedDestinationIndexPath.row + 1 == fields[proposedDestinationIndexPath.section].fields.count {
+        //            return IndexPath(row: proposedDestinationIndexPath.row - 1, section: proposedDestinationIndexPath.section)
+        //        }
+        return proposedDestinationIndexPath
+    }
+    
+    private func remove(_ tableView: UITableView, at indexPath: IndexPath) {
+        //        fields[indexPath.section].fields.remove(at: indexPath.row)
+        tableView.beginUpdates()
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.endUpdates()
+        tableView.isEditing = false
     }
 }
 

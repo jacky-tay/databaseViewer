@@ -16,7 +16,7 @@ protocol QueryActionDelegate: class {
 }
 
 enum QueryAction: String, CustomStringConvertible {
-    case `default` = ""
+    case `default` = "-"
     case join = "Join", execute = "Execute", `where` = "Where", orderBy = "Order", groupBy = "Group", select = "Select", having = "Having"
 
     var description: String {

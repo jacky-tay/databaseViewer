@@ -31,6 +31,7 @@
 		2836E4CE1F25E32900815D65 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4CD1F25E32900815D65 /* TextFieldTableViewCell.swift */; };
 		2836E4D01F25F7B600815D65 /* QueryOperatorTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4CF1F25F7B600815D65 /* QueryOperatorTextInput.swift */; };
 		2836E4D21F275BC600815D65 /* QueryBetweenOperatorTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4D11F275BC600815D65 /* QueryBetweenOperatorTextInput.swift */; };
+		2836E4D41F28A03D00815D65 /* StyleKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4D31F28A03D00815D65 /* StyleKit.swift */; };
 		28436D871F22C0B300C366E6 /* DatabaseTableJoinSelect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28436D861F22C0B300C366E6 /* DatabaseTableJoinSelect.swift */; };
 		28436D8E1F2311B100C366E6 /* Aggregate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28436D8D1F2311B100C366E6 /* Aggregate.swift */; };
 		28436D901F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28436D8F1F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift */; };
@@ -81,6 +82,7 @@
 		2836E4CD1F25E32900815D65 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		2836E4CF1F25F7B600815D65 /* QueryOperatorTextInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryOperatorTextInput.swift; sourceTree = "<group>"; };
 		2836E4D11F275BC600815D65 /* QueryBetweenOperatorTextInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryBetweenOperatorTextInput.swift; sourceTree = "<group>"; };
+		2836E4D31F28A03D00815D65 /* StyleKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleKit.swift; sourceTree = "<group>"; };
 		28436D861F22C0B300C366E6 /* DatabaseTableJoinSelect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableJoinSelect.swift; sourceTree = "<group>"; };
 		28436D8D1F2311B100C366E6 /* Aggregate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Aggregate.swift; sourceTree = "<group>"; };
 		28436D8F1F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryJoinRequestTablePropertySelect.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 		85E70F7E1F1EF52900F30771 /* Styles */ = {
 			isa = PBXGroup;
 			children = (
+				2836E4D31F28A03D00815D65 /* StyleKit.swift */,
 				85E70F7F1F1EF75B00F30771 /* Semi Modal Presenter */,
 			);
 			path = Styles;
@@ -375,6 +378,7 @@
 				850C38081F1C52BD00F2D116 /* StringExtension.swift in Sources */,
 				28C3071E1F21A143004D9ED9 /* QuerySelect.swift in Sources */,
 				850C382B1F1D7AE800F2D116 /* UINavigationController.swift in Sources */,
+				2836E4D41F28A03D00815D65 /* StyleKit.swift in Sources */,
 				85E70F7D1F1EF34300F30771 /* UIViewExtension.swift in Sources */,
 				28C307161F20E55D004D9ED9 /* NSMutableAttributedString.swift in Sources */,
 				28436D941F235ACC00C366E6 /* QueryJoinOnConditions.swift in Sources */,
