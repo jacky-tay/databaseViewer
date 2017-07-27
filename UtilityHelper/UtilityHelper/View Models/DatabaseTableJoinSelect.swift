@@ -53,14 +53,15 @@ class DatabaseTableJoinSelect: DatabaseTableSelect {
         if indexPath.section == 0 && hasRelationshipSection {
             let joinTable = DatabaseTableAlias(databaseName: selectedTable.databaseName, tableName: database.tables[indexPath.row], alias: alias)
             let relationshipWith = selectedTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: nil)
-            queryRequest?.addRelationship(with: relationshipWith)
+            queryRequest?.joins.append(relationshipWith)
+            queryRequest?.reload()
             navigationController?.dismiss(animated: true, completion: nil)
         } // if let join relationships
         else if let queryRequest = queryRequest {
             cell?.accessoryType = .disclosureIndicator
             let joinTable = DatabaseTableAlias(databaseName: database.databaseName, tableName: database.tables[indexPath.row], alias: alias)
             let relationshipWith = selectedTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: [])
-            queryRequest.addRelationship(with: relationshipWith)
+            queryRequest.joins.append(relationshipWith)
             if let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest)) {
                 navigationController?.pushViewController(vc, animated: true)
             }

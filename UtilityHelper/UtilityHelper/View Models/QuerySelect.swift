@@ -40,11 +40,15 @@ class QuerySelect: NSObject, GenericTableViewModel {
             return nil
         }
         if action == .select {
-            queryRequest?.didSelect(properties: properties)
+            queryRequest?.selected.append(contentsOf: properties)
         }
         else if action == .groupBy {
-            queryRequest?.didGroupBy(properties: properties)
+            queryRequest?.groupBy.append(contentsOf: properties)
         }
+        else if action == .having {
+            queryRequest?.having.append(contentsOf: properties)
+        }
+        queryRequest?.reload()
     }
     
     // MARK: - UITableViewDataSource

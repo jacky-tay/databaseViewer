@@ -8,16 +8,16 @@
 
 import Foundation
 
-protocol QueryActionDelegate: class {
-    func didSelect(properties: [(AliasProperty)])
-    func didOrderBy(properties: [(AliasPropertyOrder)])
-    func didGroupBy(properties: [(AliasProperty)])
-    func addRelationship(with: JoinByDatabaseAlias)
-}
-
 enum QueryAction: String, CustomStringConvertible {
     case `default` = "-"
-    case join = "Join", execute = "Execute", `where` = "Where", orderBy = "Order", groupBy = "Group", select = "Select", having = "Having"
+    case execute = "Execute"
+    case select = "Select"
+    case from = "From"
+    case join = "Join"
+    case `where` = "Where"
+    case groupBy = "Group"
+    case having = "Having"
+    case orderBy = "Order"
 
     var description: String {
         switch self {

@@ -9,6 +9,7 @@
 import UIKit
 
 protocol GenericTableViewModelDelegate: class {
+    func reload()
     func update(editing: Bool)
     func update(rightBarButtons: [UIBarButtonItem])
     func update(insertRows: [IndexPath], insertSections: [Int])
@@ -72,6 +73,10 @@ class GenericTableViewController: UITableViewController, GenericTableViewModelDe
     }
     
     // GenericTableViewModelDelegate
+    func reload() {
+        tableView.reloadData()
+    }
+    
     func update(editing: Bool) {
         view.endEditing(true)
         tableView.setEditing(editing, animated: true)

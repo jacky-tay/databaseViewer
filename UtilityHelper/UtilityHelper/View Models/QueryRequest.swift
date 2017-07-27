@@ -26,8 +26,9 @@ class QueryRequest: NSObject {
     var selected = [AliasProperty]()
     var from: DatabaseTableAlias!
     var joins = [JoinByDatabaseAlias]()
-    var having = [DatabaseTableProperty]()
+    var wheres = [AliasProperty]()
     var groupBy = [AliasProperty]()
+    var having = [AliasProperty]()
     var orderBy = [AliasPropertyOrder]()
     
     init(from: SelectedTable) {
@@ -71,6 +72,23 @@ class QueryRequest: NSObject {
         return getSelectableDatabaseTableAlias().first { $0.alias == alias }
     }
     
+    func reload() {
+        delegate?.reload()
+    }
+    
+    fileprivate func getSection(of section: QueryAction) -> Int {
+        switch section {
+        case .select:   return 0
+        case .from:     return 1
+        case .join:     return 2
+        case .where:    return (wheres.isEmpty ? 1 : 2) + joins.count
+        case .groupBy:  return (groupBy.isEmpty ? 0 : 1) + getSection(of: .where)
+        case .having:   return (having.isEmpty ? 0 : 1) + getSection(of: .groupBy)
+        case .orderBy:  return (orderBy.isEmpty ? 0 : 1) + getSection(of: .having)
+        default:        return 0
+        }
+    }
+    
     func update(cell: UITableViewCell, indexPath: IndexPath) {
         let section = indexPath.section
         let row = indexPath.row
@@ -103,8 +121,20 @@ class QueryRequest: NSObject {
             let conditionCount = joins[section - 2].onConditions?.count ?? 0
             cell.detailTextLabel?.text = row - 2 < conditionCount ? "AND" : nil
         }
+        else if section == getSection(of: .where) {
+            cell.textLabel?.text = "WIP"
+        }
+        else if section == getSection(of: .groupBy) {
+            cell.textLabel?.text = groupBy[row].description
+        }
+        else if section == getSection(of: .having) {
+            cell.textLabel?.text = having[row].description
+        }
+        else if section == getSection(of: .orderBy) {
+            cell.textLabel?.text = orderBy[row].description
+        }
     }
- 
+    
     // MARK: - Actions
     dynamic fileprivate func barButtonItemDidClicked(sender: UIBarButtonItem) {
         if let action = QueryAction(rawValue: sender.title ?? "") {
@@ -160,16 +190,16 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return selected.count
+        switch section {
+        case 0:     return selected.count
+        case 1:     return 1
+        case 2 ..< (2 + joins.count):   return (joins[section - 2].onConditions?.count ?? 0) + 1
+        case getSection(of: .where):   return wheres.count
+        case getSection(of: .groupBy):  return groupBy.count
+        case getSection(of: .having):   return having.count
+        case getSection(of: .orderBy):  return orderBy.count
+        default:    return 0
         }
-        else if section == 1 {
-            return 1
-        }
-        else if section > 1 && section < joins.count + 2 {
-            return (joins[section - 2].onConditions?.count ?? 0) + 1
-        }
-        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -180,16 +210,18 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Select"
+        var queryAction: QueryAction?
+        switch section {
+        case 0:     queryAction = .select
+        case 1:     queryAction = .from
+        case 2 ..< (2 + joins.count):   return joins[section - 2].joinType.description
+        case getSection(of: .where):   queryAction = .where
+        case getSection(of: .groupBy):  queryAction = .groupBy
+        case getSection(of: .having):   queryAction = .having
+        case getSection(of: .orderBy):  queryAction = .orderBy
+        default:    return nil
         }
-        else if section == 1 {
-            return "From"
-        }
-        else if section > 1 && section < joins.count + 2 {
-            return joins[section - 2].joinType.description
-        }
-        return nil
+        return queryAction?.description
     }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
@@ -241,28 +273,5 @@ extension QueryRequest: GenericTableViewModel {
         tableView.deleteRows(at: [indexPath], with: .automatic)
         tableView.endUpdates()
         tableView.isEditing = false
-    }
-}
-
-// MARK: - QueryActionDelegate
-extension QueryRequest: QueryActionDelegate {
-    
-    func didSelect(properties: [(AliasProperty)]) {
-        let startIndex = selected.count
-        selected.append(contentsOf: properties)
-        delegate?.update(insertRows: (startIndex ..< (startIndex + properties.count)).map { IndexPath(row: $0, section: 0) } , insertSections: [])
-    }
-    
-    func didOrderBy(properties: [(AliasPropertyOrder)]) {
-        
-    }
-    
-    func didGroupBy(properties: [(AliasProperty)]) {
-        groupBy.append(contentsOf: properties)
-    }
-    
-    func addRelationship(with: JoinByDatabaseAlias) {
-        joins.append(with)
-        delegate?.update(insertRows: [], insertSections: [1 + joins.count])
     }
 }

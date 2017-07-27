@@ -19,7 +19,8 @@ class QueryOrderBy: QuerySelect {
             }
             return nil
         }
-        queryRequest?.didOrderBy(properties: properties)
+        queryRequest?.orderBy.append(contentsOf: properties)
+        queryRequest?.reload()
     }
     
     // MARK: - UITableViewDataSource

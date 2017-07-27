@@ -34,7 +34,7 @@ class QueryJoinOnConditions: NSObject, GenericTableViewModel {
     }
     
     func doneIsClicked() {
-        queryRequest?.delegate?.update(insertRows: [], insertSections: [])
+        queryRequest?.reload()
     }
     
     func viewWillAppear(_ viewController: GenericTableViewController) {

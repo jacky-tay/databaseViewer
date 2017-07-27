@@ -59,9 +59,13 @@ class DatabaseTableProperty: DatabaseTable {
     }
 }
 
-class AliasProperty {
+class AliasProperty: CustomStringConvertible {
     var alias: String?
     let propertyName: String
+    
+    var description: String {
+        return ".".joined(contentsOf: [alias, propertyName])
+    }
     
     init(alias: String?, propertyName: String) {
         self.alias = alias
@@ -71,6 +75,10 @@ class AliasProperty {
 
 class AliasPropertyOrder: AliasProperty {
     var order = OrderBy.asc
+    
+    override var description: String {
+        return super.description + " " + order.description
+    }
     
     init(alias: String?, propertyName: String, order: OrderBy) {
         self.order = order
