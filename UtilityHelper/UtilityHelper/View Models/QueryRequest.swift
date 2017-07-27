@@ -235,7 +235,7 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return true//indexPath.section == 0
+        return indexPath.section == 0 || indexPath.section == getSection(of: .orderBy)
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
