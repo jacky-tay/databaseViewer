@@ -10,7 +10,14 @@ import UIKit
 import CoreData
 
 extension String {
-    
+
+    static func `is`(_ lhs: String?, smallerThan rhs: String?) -> Bool {
+        guard let lhs = lhs, let rhs = rhs else {
+            return false
+        }
+        return lhs < rhs
+    }
+
     static func nilOrEmpty(_ string: String?) -> Bool {
         return string == nil || (string?.isEmpty ?? false)
     }

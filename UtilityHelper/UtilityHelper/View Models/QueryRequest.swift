@@ -182,11 +182,11 @@ extension QueryRequest: GenericTableViewModel {
     
     // MARK: - UITableViewDataSource
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2 + // selected + from
-            joins.count +
-            (having.isEmpty ? 0 : 1) +
-            (groupBy.isEmpty ? 0 : 1) +
-            (orderBy.isEmpty ? 0 : 1)
+        let whereCount = wheres.isEmpty ? 0 : 1
+        let havingCount = (having.isEmpty ? 0 : 1)
+        let groupCount = (groupBy.isEmpty ? 0 : 1)
+        let orderCount = (orderBy.isEmpty ? 0 : 1)
+        return 2 + joins.count + whereCount + havingCount + groupCount + orderCount
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
