@@ -62,6 +62,17 @@ extension String {
         return self.boundingRect(with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude), options: [.usesLineFragmentOrigin, .usesFontLeading, .truncatesLastVisibleLine], attributes: [NSFontAttributeName: font], context: nil).size
     }
     
+    func toAttributedString(highlights: [String : UIColor]) -> NSAttributedString {
+        let attributed = NSMutableAttributedString(string: self)
+        for highlight in highlights {
+            let ranges = getNSRanges(for: highlight.key)
+            for _range in ranges {
+                attributed.addAttribute(NSForegroundColorAttributeName, value: highlight.value, range: _range)
+            }
+        }
+        return attributed
+    }
+    
     func getNSRanges(for query: String?) -> [NSRange] {
         guard let query = query else {
             return []

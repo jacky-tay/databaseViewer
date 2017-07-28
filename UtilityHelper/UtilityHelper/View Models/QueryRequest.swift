@@ -102,9 +102,11 @@ class QueryRequest: NSObject {
     func update(cell: UITableViewCell, indexPath: IndexPath) {
         let section = indexPath.section
         let row = indexPath.row
+        cell.selectionStyle = .none
         cell.detailTextLabel?.text = nil
         if section == 0, joins.isEmpty {
             cell.textLabel?.text = selected[row].propertyName
+            cell.selectionStyle = .default
         }
         else if section == 0, !joins.isEmpty {
             cell.textLabel?.text = ".".joined(contentsOf: [selected[row].alias, selected[row].propertyName])
@@ -141,7 +143,8 @@ class QueryRequest: NSObject {
             cell.textLabel?.text = having[row].description
         }
         else if section == getSection(of: .orderBy) {
-            cell.textLabel?.text = orderBy[row].description
+            cell.selectionStyle = .default
+            cell.textLabel?.attributedText = orderBy[row].getAttributedString()
         }
     }
     
@@ -217,6 +220,14 @@ extension QueryRequest: GenericTableViewModel {
         cell.detailTextLabel?.text = nil
         update(cell: cell, indexPath: indexPath)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == getSection(of: .orderBy) {
+            orderBy[indexPath.row].toggleOrder()
+            tableView.cellForRow(at: indexPath)?.textLabel?.attributedText = orderBy[indexPath.row].getAttributedString()
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
