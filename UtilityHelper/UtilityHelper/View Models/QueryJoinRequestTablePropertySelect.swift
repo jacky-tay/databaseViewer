@@ -48,10 +48,10 @@ class QueryJoinRequestTablePropertySelect: QuerySelect {
         let property = list[indexPath.section].properties[indexPath.row]
         if createNewOnConditions,
             let queryRequest = queryRequest,
-            let vc = GenericTableViewController.getViewController(viewModel: QueryComparator(queryRequest: queryRequest, action: .join, filterBy: property.attributeType.getCategory())) {
+            let vc = GenericTableViewController.getViewController(viewModel: QueryComparator(queryRequest: queryRequest, action: .join, aliasProperty: AliasProperty(alias: queryRequest.joins.last?.otherTable?.alias, propertyName: property.name), category: property.attributeType.getCategory())) {
             let lastJoin = queryRequest.joins.last
             lastJoin?.onConditions?.last?.otherTableProperty = property.name
-            (vc.viewModel as? QueryComparator)?.sectionTitle = ".".joined(contentsOf: [lastJoin?.otherTable?.alias, property.name])
+            //(vc.viewModel as? QueryComparator)?.sectionTitle = ".".joined(contentsOf: [lastJoin?.otherTable?.alias, property.name])
             navigationController?.pushViewController(vc, animated: true)
         }
         else if let queryRequest = queryRequest,

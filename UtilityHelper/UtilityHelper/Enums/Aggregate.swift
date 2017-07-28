@@ -8,13 +8,20 @@
 
 import Foundation
 
-enum Aggregate {
+enum Aggregate: CustomStringConvertible {
     case average
     case count
     case maximum
-    case nanmean
-    case median
     case minimum
-    case mode
     case sum
+    
+    var description: String {
+        switch self {
+        case .average: return "Avg"
+        case .count: return "Count"
+        case .maximum:   return "Max"
+        case .minimum:   return "Min"
+        case .sum:   return "Sum"
+        }
+    }
 }

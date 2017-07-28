@@ -13,10 +13,11 @@ class QueryComparator: NSObject, GenericTableViewModel {
     private weak var queryRequest: QueryRequest?
     private let list: [Comparator]!
     private let action: QueryAction!
-    internal var sectionTitle: String?
+    private let aliasProperty: AliasProperty!
     
-    init(queryRequest: QueryRequest, action: QueryAction, filterBy category: AttributedCategory?) {
+    init(queryRequest: QueryRequest, action: QueryAction, aliasProperty: AliasProperty, category: AttributedCategory) {
         self.queryRequest = queryRequest
+        self.aliasProperty = aliasProperty
         self.list = Comparator.getAll(filterBy: category)
         self.action = action
     }
@@ -43,9 +44,14 @@ class QueryComparator: NSObject, GenericTableViewModel {
             queryRequest.joins.last?.onConditions?.last?.comparator = comparator
             navigationController?.pushViewController(vc, animated: true)
         }
+        else if let queryRequest = queryRequest,
+            let aliasProperty = aliasProperty,
+            let vc = GenericTableViewController.getViewController(viewModel: QueryAggregateTextInput(queryRequest: queryRequest, aliasProperty: aliasProperty, whereArgument: comparator)) {
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionTitle
+        return aliasProperty.description
     }
 }

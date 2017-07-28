@@ -12,19 +12,17 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
     weak var navigationController: UINavigationController?
     weak var queryRequest: QueryRequest?
     internal var list: [(String, [WhereArgument])] = []
-    private let alias: String!
-    private let property: Property!
+    private let aliasProperty: AliasProperty!
     
     init(queryRequest: QueryRequest, alias: String, property: Property) {
         self.queryRequest = queryRequest
         list = [("Comparison Operator", Comparator.getAll(filterBy: property.attributeType.getCategory())),
                 ("Operator", Argument.getAll(filterBy: property.attributeType.getCategory()))]
-        self.alias = alias
-        self.property = property
+        self.aliasProperty = AliasProperty(alias: alias, propertyName: property.name)
     }
     
     func viewDidLoad(_ viewController: GenericTableViewController) {
-        viewController.navigationItem.title = ".".joined(contentsOf: [alias, property?.name])
+        viewController.navigationItem.title = aliasProperty.description
     }
     
     // MARK: - UITableViewDataSource
@@ -60,7 +58,7 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
         let selectedOperator = list[indexPath.section].1[indexPath.row]
         var viewModel: GenericTableViewModel?
         if selectedOperator.description == Argument.in.description {
-            viewModel = QueryFetchIn(queryRequest: queryRequest, alias: alias, property: property)
+            viewModel = QueryFetchIn(queryRequest: queryRequest, aliasProperty: aliasProperty)
         }
         else if [Argument.isNotNull, Argument.isNull].contains(where: { $0.description == selectedOperator.description }) {
             tableView.deselectRow(at: indexPath, animated: true)
@@ -71,10 +69,10 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
             }
         }
         else if Argument.between.description == selectedOperator.description {
-            viewModel = QueryBetweenOperatorTextInput(queryRequest: queryRequest, alias: alias, property: property, whereArgument: selectedOperator)
+            viewModel = QueryBetweenOperatorTextInput(queryRequest: queryRequest, aliasProperty: aliasProperty, whereArgument: selectedOperator)
         }
         else {
-            viewModel = QueryOperatorTextInput(queryRequest: queryRequest, alias: alias, property: property, whereArgument: selectedOperator)
+            viewModel = QueryOperatorTextInput(queryRequest: queryRequest, aliasProperty: aliasProperty, whereArgument: selectedOperator)
         }
         
         if let viewModel = viewModel,

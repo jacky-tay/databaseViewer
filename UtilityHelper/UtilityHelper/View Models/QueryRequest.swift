@@ -48,6 +48,9 @@ class QueryRequest: NSObject {
         else if action == .where {
             return QueryWhere(queryRequest: self, action: action)
         }
+        else if action == .having {
+            return QueryHaving(queryRequest: self)
+        }
         else if action == .orderBy {
             return QueryOrderBy(queryRequest: self, action: action)
         }
@@ -70,6 +73,13 @@ class QueryRequest: NSObject {
     
     func getDatabaseTableAlias(from alias: String) -> DatabaseTableAlias? {
         return getSelectableDatabaseTableAlias().first { $0.alias == alias }
+    }
+    
+    func getProperty(from aliasProperty: AliasProperty) -> Property? {
+        guard let alias = aliasProperty.alias, let propertyName = aliasProperty.propertyName else {
+            return nil
+        }
+        return getDatabaseTableAlias(from: alias)?.toSelectedTable()?.properties.first { $0.name == propertyName }
     }
     
     func reload() {
@@ -235,7 +245,7 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return indexPath.section == 0 || indexPath.section == getSection(of: .orderBy)
+        return (indexPath.section == 0 || indexPath.section == getSection(of: .orderBy)) && self.tableView(tableView, numberOfRowsInSection: indexPath.section) > 1
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -253,7 +263,14 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        
+        if sourceIndexPath.section == 0 {
+            let select = selected.remove(at: sourceIndexPath.row)
+            selected.insert(select, at: destinationIndexPath.row)
+        }
+        else if sourceIndexPath.section == getSection(of: .orderBy) {
+            let order = orderBy.remove(at: sourceIndexPath.row)
+            orderBy.insert(order, at: destinationIndexPath.row)
+        }
     }
     
     func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {

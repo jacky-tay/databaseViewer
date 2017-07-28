@@ -13,15 +13,15 @@ class QueryFetchIn: NSObject, GenericTableViewModel {
     private weak var queryRequest: QueryRequest?
     private var list = [String]()
     private var selectedIndexPath = [IndexPath]()
-    private let alias: String!
-    private let property: Property!
+    private let aliasProperty: AliasProperty!
     
-    init(queryRequest: QueryRequest, alias: String, property: Property) {
+    init(queryRequest: QueryRequest, aliasProperty: AliasProperty) {
         self.queryRequest = queryRequest
-        self.alias = alias
-        self.property = property
-        if let databaseTable = queryRequest.getDatabaseTableAlias(from: alias) {
-            self.list = DatabaseManager.sharedInstance.contextDict[databaseTable.databaseName]?.fetchValuesIn(for: databaseTable.tableName, key: property.name) ?? []
+        self.aliasProperty = aliasProperty
+        if let alias = aliasProperty.alias,
+            let propertyName = aliasProperty.propertyName,
+            let databaseTable = queryRequest.getDatabaseTableAlias(from: alias) {
+            self.list = DatabaseManager.sharedInstance.contextDict[databaseTable.databaseName]?.fetchValuesIn(for: databaseTable.tableName, key: propertyName) ?? []
         }
     }
     

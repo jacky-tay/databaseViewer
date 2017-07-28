@@ -13,32 +13,36 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     weak var navigationController: UINavigationController?
     weak var delegate: GenericTableViewModelDelegate?
     
-    private weak var queryRequest: QueryRequest?
+    internal weak var queryRequest: QueryRequest?
     internal var list = [String]()
     internal var filteredList = [Int]()
-    private let alias: String!
-    private let property: Property!
-    private let whereArgument: WhereArgument!
+    internal var aliasProperty: AliasProperty!
+    internal var whereArgument: WhereArgument!
     private var queryText: String? = nil
     private var queryDict = [Int : [NSRange]]()
     
-    init(queryRequest: QueryRequest, alias: String, property: Property, whereArgument: WhereArgument) {
+    init(queryRequest: QueryRequest, aliasProperty: AliasProperty, whereArgument: WhereArgument) {
         self.queryRequest = queryRequest
-        self.alias = alias
-        self.property = property
+        self.aliasProperty = aliasProperty
         self.whereArgument = whereArgument
-        if let databaseTable = queryRequest.getDatabaseTableAlias(from: alias) {
-            self.list = DatabaseManager.sharedInstance.contextDict[databaseTable.databaseName]?.fetchValuesIn(for: databaseTable.tableName, key: property.name) ?? []
+    }
+    
+    func setupContent() {
+        if let alias = aliasProperty.alias,
+            let propertyName = aliasProperty.propertyName,
+            let databaseTable = queryRequest?.getDatabaseTableAlias(from: alias) {
+            self.list = DatabaseManager.sharedInstance.contextDict[databaseTable.databaseName]?.fetchValuesIn(for: databaseTable.tableName, key: propertyName) ?? []
             self.filteredList = list.enumerated().map { $0.offset }
         }
     }
     
     func viewDidLoad(_ viewController: GenericTableViewController) {
         viewController.navigationItem.title = whereArgument.description
+        setupContent()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return list.isEmpty ? 1 : 2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -46,7 +50,9 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0, let textFieldCell = getTextFieldCell(from: tableView, indexPath: indexPath) {
+        if indexPath.section == 0,
+            let property = queryRequest?.getProperty(from: aliasProperty),
+            let textFieldCell = getTextFieldCell(from: tableView, indexPath: indexPath) {
             textFieldCell.updateContent(attributeType: property.attributeType)
             textFieldCell.textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
             textFieldCell.textField.delegate = self
@@ -78,7 +84,7 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return section == 1 ? "Or add from" : nil
+        return section == 1 && !list.isEmpty ? "Or add from" : nil
     }
     
     dynamic private func textFieldDidChange(textField: UITextField) {
