@@ -61,13 +61,13 @@ class DatabaseTableProperty: DatabaseTable {
 
 class AliasProperty: CustomStringConvertible {
     var alias: String?
-    let propertyName: String
+    let propertyName: String?
     
     var description: String {
         return ".".joined(contentsOf: [alias, propertyName])
     }
     
-    init(alias: String?, propertyName: String) {
+    init(alias: String?, propertyName: String?) {
         self.alias = alias
         self.propertyName = propertyName
     }
@@ -262,7 +262,7 @@ public class DatabaseManager {
 
     private func prepareTables(for context: NSManagedObjectContext, databaseName: String) -> [Table] {
         var results = [Table]()
-        if let entities = context.persistentStoreCoordinator?.managedObjectModel.entities.sorted(by: { $0.name ?? "" < $1.name ?? "" }) {
+        if let entities = context.persistentStoreCoordinator?.managedObjectModel.entities.sorted(by: { String.is($0.name, smallerThan: $1.name) }) {
             for entity in entities {
                 if let name = entity.name {
                     let properties = Array(entity.attributesByName.values).map { Property(name: $0.name , attributeType: $0.attributeType) }

@@ -33,20 +33,19 @@ class QuerySelect: NSObject, GenericTableViewModel {
     }
     
     func doneIsClicked() {
-        let properties = selectedIndexPath.flatMap { [weak self] indexPath -> AliasProperty? in
-            if let table = self?.list[indexPath.section] {
-                return AliasProperty(alias: table.alias, propertyName: table.properties[indexPath.row].name)
-            }
-            return nil
+        var properties = [AliasProperty]()
+        for indexPath in selectedIndexPath {
+            let table = list[indexPath.section]
+            let name = table.properties[indexPath.row].name
+            properties.append(AliasProperty(alias: table.alias, propertyName: name))
         }
-        if action == .select {
-            queryRequest?.selected.append(contentsOf: properties)
-        }
-        else if action == .groupBy {
-            queryRequest?.groupBy.append(contentsOf: properties)
-        }
-        else if action == .having {
-            queryRequest?.having.append(contentsOf: properties)
+
+        switch action {
+        case .select:   queryRequest?.selected.append(contentsOf: properties)
+        case .groupBy:  queryRequest?.groupBy.append(contentsOf: properties)
+        case .having:   queryRequest?.having.append(contentsOf: properties)
+        default:
+            break
         }
         queryRequest?.reload()
     }
