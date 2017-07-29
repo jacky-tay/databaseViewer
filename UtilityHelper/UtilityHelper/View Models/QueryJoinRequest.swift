@@ -11,12 +11,12 @@ import UIKit
 class QueryJoinRequest: NSObject, GenericTableViewModel {
     
     weak var navigationController: UINavigationController?
-    private let databaseTableAlias: DatabaseTableAlias!
+    private let databaseAliasTable: DatabaseAliasTable!
     private weak var queryRequest: QueryRequest?
     private let joinTypes = Join.getAllJoins()
     
-    init(databaseTableAlias: DatabaseTableAlias, queryRequest: QueryRequest) {
-        self.databaseTableAlias = databaseTableAlias
+    init(databaseAliasTable: DatabaseAliasTable, queryRequest: QueryRequest) {
+        self.databaseAliasTable = databaseAliasTable
         self.queryRequest = queryRequest
     }
     
@@ -39,13 +39,13 @@ class QueryJoinRequest: NSObject, GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return databaseTableAlias.description
+        return databaseAliasTable.description
     }
     
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let queryRequest = queryRequest,
-            let vc = GenericTableViewController.getViewController(viewModel: DatabaseTableJoinSelect(queryRequest: queryRequest, selectedTable: databaseTableAlias, join: joinTypes[indexPath.row])) {
+            let vc = GenericTableViewController.getViewController(viewModel: DatabaseTableJoinSelect(queryRequest: queryRequest, aliasTable: databaseAliasTable, join: joinTypes[indexPath.row])) {
             navigationController?.pushViewController(vc, animated: true)
         }
     }

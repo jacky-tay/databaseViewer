@@ -11,9 +11,9 @@ import UIKit
 class PropertyRelationship: NSObject, GenericTableViewModel {
     
     weak var navigationController: UINavigationController?
-    private let databaseTable: DatabaseTableAliasWithPropertiesRelationships!
+    private let databaseTable: DatabaseAliasTableWithPropertiesRelationships!
     
-    init(databaseTable: DatabaseTableAliasWithPropertiesRelationships) {
+    init(databaseTable: DatabaseAliasTableWithPropertiesRelationships) {
         self.databaseTable = databaseTable
     }
     

@@ -24,16 +24,16 @@ class QueryRequest: NSObject {
     fileprivate var editButton: UIBarButtonItem!
     
     var selected = [AliasProperty]()
-    var from: DatabaseTableAlias!
+    var from: DatabaseAliasTable!
     var joins = [JoinByDatabaseAlias]()
-    var wheres = [AliasProperty]()
+    var wheres = [WhereClause]()
     var groupBy = [AliasProperty]()
     var having = [AliasProperty]()
     var orderBy = [AliasPropertyOrder]()
     
-    init(from: SelectedTable) {
+    init(from: AliasTable) {
         self.selected = from.propertiesToAliasProperties()
-        self.from = from.toDatabaseTableAlias()
+        self.from = from.toDatabaseAliasTable()
         super.init()
         
         excuteButton = UIBarButtonItem(title: BarButton.execute.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
@@ -43,7 +43,7 @@ class QueryRequest: NSObject {
     
     func getQueryActionViewModel(action: QueryAction) -> GenericTableViewModel {
         if action == .join {
-            return joins.isEmpty ? QueryJoinRequest(databaseTableAlias: from, queryRequest: self) : QueryJoinRequestWithTableOptions(queryRequest: self)
+            return joins.isEmpty ? QueryJoinRequest(databaseAliasTable: from, queryRequest: self) : QueryJoinRequestWithTableOptions(queryRequest: self)
         }
         else if action == .where {
             return QueryWhere(queryRequest: self, action: action)
@@ -57,29 +57,29 @@ class QueryRequest: NSObject {
         return QuerySelect(queryRequest: self, action: action)
     }
     
-    func getSelectableDatabaseTableAlias() -> [DatabaseTableAlias] {
+    func getSelectableDatabaseAliasTables() -> [DatabaseAliasTable] {
         var list = [from]
         list.append(contentsOf: joins.flatMap { [$0, $0.otherTable] })
         return list.distinct()
     }
     
-    func getSelectableDatabaseTableAliasWithProperties(includeWildCard: Bool) -> [DatabaseTableAliasWithProperties] {
-        return toSelectedTables().map { $0.toDatabaseTableAliasWithProperties(includeWildCard: includeWildCard) }
+    func getSelectableDatabaseAliasTableWithProperties(includeWildCard: Bool) -> [DatabaseAliasTableWithProperties] {
+        return toAliasTables().map { $0.toDatabaseAliasTableWithProperties(includeWildCard: includeWildCard) }
     }
     
-    func toSelectedTables() -> [SelectedTable] {
-        return getSelectableDatabaseTableAlias().flatMap { $0.toSelectedTable() }
+    func toAliasTables() -> [AliasTable] {
+        return getSelectableDatabaseAliasTables().flatMap { $0.toAliasTable() }
     }
     
-    func getDatabaseTableAlias(from alias: String) -> DatabaseTableAlias? {
-        return getSelectableDatabaseTableAlias().first { $0.alias == alias }
+    func getDatabaseAliasTable(from alias: String) -> DatabaseAliasTable? {
+        return getSelectableDatabaseAliasTables().first { $0.alias == alias }
     }
     
     func getProperty(from aliasProperty: AliasProperty) -> Property? {
         guard let alias = aliasProperty.alias, let propertyName = aliasProperty.propertyName else {
             return nil
         }
-        return getDatabaseTableAlias(from: alias)?.toSelectedTable()?.properties.first { $0.name == propertyName }
+        return getDatabaseAliasTable(from: alias)?.toAliasTable()?.properties.first { $0.name == propertyName }
     }
     
     func reload() {

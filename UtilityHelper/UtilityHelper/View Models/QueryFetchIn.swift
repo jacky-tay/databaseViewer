@@ -20,7 +20,7 @@ class QueryFetchIn: NSObject, GenericTableViewModel {
         self.aliasProperty = aliasProperty
         if let alias = aliasProperty.alias,
             let propertyName = aliasProperty.propertyName,
-            let databaseTable = queryRequest.getDatabaseTableAlias(from: alias) {
+            let databaseTable = queryRequest.getDatabaseAliasTable(from: alias) {
             self.list = DatabaseManager.sharedInstance.contextDict[databaseTable.databaseName]?.fetchValuesIn(for: databaseTable.tableName, key: propertyName) ?? []
         }
     }

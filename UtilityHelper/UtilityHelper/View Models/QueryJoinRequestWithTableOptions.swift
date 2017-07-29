@@ -12,11 +12,11 @@ class QueryJoinRequestWithTableOptions: NSObject, GenericTableViewModel {
     
     weak var navigationController: UINavigationController?
     private weak var queryRequest: QueryRequest?
-    private let databaseTableAliases: [DatabaseTableAlias]!
+    private let databaseAliasTables: [DatabaseAliasTable]!
     
     init(queryRequest: QueryRequest) {
         self.queryRequest = queryRequest
-        self.databaseTableAliases = queryRequest.getSelectableDatabaseTableAlias()
+        self.databaseAliasTables = queryRequest.getSelectableDatabaseAliasTables()
     }
     
     func viewDidLoad(_ viewController: GenericTableViewController) {
@@ -26,12 +26,12 @@ class QueryJoinRequestWithTableOptions: NSObject, GenericTableViewModel {
     
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return databaseTableAliases.count
+        return databaseAliasTables.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = getCell(from: tableView, indexPath: indexPath)
-        cell.textLabel?.text = databaseTableAliases[indexPath.row].tableName
+        cell.textLabel?.text = databaseAliasTables[indexPath.row].tableName
         cell.accessoryType = .disclosureIndicator
         cell.detailTextLabel?.text = nil
         return cell
@@ -40,7 +40,7 @@ class QueryJoinRequestWithTableOptions: NSObject, GenericTableViewModel {
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let queryRequest = queryRequest,
-            let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequest(databaseTableAlias: databaseTableAliases[indexPath.row], queryRequest: queryRequest)) {
+            let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequest(databaseAliasTable: databaseAliasTables[indexPath.row], queryRequest: queryRequest)) {
             navigationController?.pushViewController(vc, animated: true)
         }
     }

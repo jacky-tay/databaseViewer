@@ -11,7 +11,7 @@ import UIKit
 class QuerySelect: NSObject, GenericTableViewModel {
     
     weak var navigationController: UINavigationController?
-    internal var list = [DatabaseTableAliasWithProperties]()
+    internal var list = [DatabaseAliasTableWithProperties]()
     internal weak var queryRequest: QueryRequest?
     internal var selectedIndexPath = [IndexPath]()
     internal var action = QueryAction.default
@@ -23,7 +23,7 @@ class QuerySelect: NSObject, GenericTableViewModel {
     convenience init(queryRequest: QueryRequest, action: QueryAction) {
         self.init(queryRequest: queryRequest)
         self.action = action
-        self.list = queryRequest.getSelectableDatabaseTableAliasWithProperties(includeWildCard: action == .select)
+        self.list = queryRequest.getSelectableDatabaseAliasTableWithProperties(includeWildCard: action == .select)
     }
     
     func viewDidLoad(_ viewController: GenericTableViewController) {

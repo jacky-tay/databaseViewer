@@ -11,18 +11,18 @@ import UIKit
 class DatabaseTableJoinSelect: DatabaseTableSelect {
     
     private weak var queryRequest: QueryRequest?
-    private let selectedTable: DatabaseTableAlias
+    private let aliasTable: DatabaseAliasTable
     private var join = Join.full
     private var hasRelationshipSection = false
     
-    init(queryRequest: QueryRequest, selectedTable: DatabaseTableAlias, join: Join) {
+    init(queryRequest: QueryRequest, aliasTable: DatabaseAliasTable, join: Join) {
         self.queryRequest = queryRequest
-        self.selectedTable = selectedTable
+        self.aliasTable = aliasTable
         self.join = join
         var databases = DatabaseManager.sharedInstance.getDatabaseTables()
-        if let databaseIndex = databases.index(where: { $0.databaseName == selectedTable.databaseName }),
-            let table = selectedTable.toSelectedTable() {
-            var removeTableNames = [selectedTable.tableName ?? ""]
+        if let databaseIndex = databases.index(where: { $0.databaseName == aliasTable.databaseName }),
+            let table = aliasTable.toAliasTable() {
+            var removeTableNames = [aliasTable.tableName ?? ""]
             removeTableNames.append(contentsOf: table.relationships ?? [])
             for tableName in removeTableNames {
                 if let tableIndex = databases[databaseIndex].tables.index(where: { $0 == tableName }) {
@@ -51,16 +51,16 @@ class DatabaseTableJoinSelect: DatabaseTableSelect {
         let database = list[indexPath.section]
         
         if indexPath.section == 0 && hasRelationshipSection {
-            let joinTable = DatabaseTableAlias(databaseName: selectedTable.databaseName, tableName: database.tables[indexPath.row], alias: alias)
-            let relationshipWith = selectedTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: nil)
+            let joinTable = DatabaseAliasTable(databaseName: aliasTable.databaseName, tableName: database.tables[indexPath.row], alias: alias)
+            let relationshipWith = aliasTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: nil)
             queryRequest?.joins.append(relationshipWith)
             queryRequest?.reload()
             navigationController?.dismiss(animated: true, completion: nil)
         } // if let join relationships
         else if let queryRequest = queryRequest {
             cell?.accessoryType = .disclosureIndicator
-            let joinTable = DatabaseTableAlias(databaseName: database.databaseName, tableName: database.tables[indexPath.row], alias: alias)
-            let relationshipWith = selectedTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: [])
+            let joinTable = DatabaseAliasTable(databaseName: database.databaseName, tableName: database.tables[indexPath.row], alias: alias)
+            let relationshipWith = aliasTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: [])
             queryRequest.joins.append(relationshipWith)
             if let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest)) {
                 navigationController?.pushViewController(vc, animated: true)

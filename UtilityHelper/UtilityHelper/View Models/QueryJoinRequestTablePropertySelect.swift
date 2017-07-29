@@ -22,11 +22,11 @@ class QueryJoinRequestTablePropertySelect: QuerySelect {
         self.action = .join
 
         // insert otherPropertyName first, then propertyName
-        if createNewOnConditions, let properties = queryRequest.joins.last?.otherTable.toSelectedTable()?.toDatabaseTableAliasWithProperties(includeWildCard: false) {
+        if createNewOnConditions, let properties = queryRequest.joins.last?.otherTable.toAliasTable()?.toDatabaseAliasTableWithProperties(includeWildCard: false) {
             self.list = [properties]
-            queryRequest.joins.last?.onConditions?.append(JoinWithDatabaseTableAlias())
+            queryRequest.joins.last?.onConditions?.append(JoinWithDatabaseAliasTable())
         }
-        else if let properties = queryRequest.joins.last?.toSelectedTable()?.toDatabaseTableAliasWithProperties(includeWildCard: false) {
+        else if let properties = queryRequest.joins.last?.toAliasTable()?.toDatabaseAliasTableWithProperties(includeWildCard: false) {
             self.list = [properties]
         }
     }
@@ -51,7 +51,6 @@ class QueryJoinRequestTablePropertySelect: QuerySelect {
             let vc = GenericTableViewController.getViewController(viewModel: QueryComparator(queryRequest: queryRequest, action: .join, aliasProperty: AliasProperty(alias: queryRequest.joins.last?.otherTable?.alias, propertyName: property.name), category: property.attributeType.getCategory())) {
             let lastJoin = queryRequest.joins.last
             lastJoin?.onConditions?.last?.otherTableProperty = property.name
-            //(vc.viewModel as? QueryComparator)?.sectionTitle = ".".joined(contentsOf: [lastJoin?.otherTable?.alias, property.name])
             navigationController?.pushViewController(vc, animated: true)
         }
         else if let queryRequest = queryRequest,

@@ -21,6 +21,10 @@ public extension Collection {
 }
 
 public extension Array {
+    
+    public func toString(separator: String = " ") -> String {
+        return self.map { ($0 as AnyObject).description }.joined(separator: separator)
+    }
  
     public func distinct<T : Equatable>() -> [T] {
         guard let equatableList = self as? [T] else {

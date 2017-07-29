@@ -50,6 +50,21 @@
 		28F8CDD51F2B1D4900325516 /* QueryHaving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDD41F2B1D4900325516 /* QueryHaving.swift */; };
 		28F8CDD71F2B202C00325516 /* QueryHavingSelect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDD61F2B202C00325516 /* QueryHavingSelect.swift */; };
 		28F8CDD91F2B4B4F00325516 /* QueryAggregateTextInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDD81F2B4B4F00325516 /* QueryAggregateTextInput.swift */; };
+		28F8CDDC1F2C66AE00325516 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDDB1F2C66AE00325516 /* Statement.swift */; };
+		28F8CDDE1F2C6B0B00325516 /* WhereClause.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDDD1F2C6B0B00325516 /* WhereClause.swift */; };
+		28F8CDE01F2CAD7800325516 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDDF1F2CAD7800325516 /* Property.swift */; };
+		28F8CDE21F2CADA000325516 /* AliasTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDE11F2CADA000325516 /* AliasTable.swift */; };
+		28F8CDE41F2CB7E500325516 /* DatabaseTablesWithCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDE31F2CB7E500325516 /* DatabaseTablesWithCount.swift */; };
+		28F8CDE61F2CB80000325516 /* DatabaseTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDE51F2CB80000325516 /* DatabaseTables.swift */; };
+		28F8CDE81F2CB82D00325516 /* DatabaseTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDE71F2CB82D00325516 /* DatabaseTable.swift */; };
+		28F8CDEA1F2CB85F00325516 /* DatabaseTableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDE91F2CB85F00325516 /* DatabaseTableProperty.swift */; };
+		28F8CDEC1F2CB87900325516 /* AliasProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDEB1F2CB87900325516 /* AliasProperty.swift */; };
+		28F8CDEE1F2CB89200325516 /* AliasPropertyOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDED1F2CB89200325516 /* AliasPropertyOrder.swift */; };
+		28F8CDF01F2CB8B000325516 /* DatabaseAliasTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDEF1F2CB8B000325516 /* DatabaseAliasTable.swift */; };
+		28F8CDF21F2CB8CA00325516 /* DatabaseAliasTableWithProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDF11F2CB8CA00325516 /* DatabaseAliasTableWithProperties.swift */; };
+		28F8CDF41F2CB8DE00325516 /* DatabaseAliasTableWithPropertiesRelationships.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDF31F2CB8DE00325516 /* DatabaseAliasTableWithPropertiesRelationships.swift */; };
+		28F8CDF61F2CB8F600325516 /* JoinWithDatabaseAliasTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDF51F2CB8F600325516 /* JoinWithDatabaseAliasTable.swift */; };
+		28F8CDF81F2CB91000325516 /* JoinByDatabaseAlias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F8CDF71F2CB91000325516 /* JoinByDatabaseAlias.swift */; };
 		850C38071F1C52BD00F2D116 /* CollectionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38031F1C52BD00F2D116 /* CollectionExtension.swift */; };
 		850C38081F1C52BD00F2D116 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38041F1C52BD00F2D116 /* StringExtension.swift */; };
 		850C38091F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */; };
@@ -104,6 +119,21 @@
 		28F8CDD41F2B1D4900325516 /* QueryHaving.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryHaving.swift; sourceTree = "<group>"; };
 		28F8CDD61F2B202C00325516 /* QueryHavingSelect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryHavingSelect.swift; sourceTree = "<group>"; };
 		28F8CDD81F2B4B4F00325516 /* QueryAggregateTextInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryAggregateTextInput.swift; sourceTree = "<group>"; };
+		28F8CDDB1F2C66AE00325516 /* Statement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
+		28F8CDDD1F2C6B0B00325516 /* WhereClause.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhereClause.swift; sourceTree = "<group>"; };
+		28F8CDDF1F2CAD7800325516 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		28F8CDE11F2CADA000325516 /* AliasTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliasTable.swift; sourceTree = "<group>"; };
+		28F8CDE31F2CB7E500325516 /* DatabaseTablesWithCount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTablesWithCount.swift; sourceTree = "<group>"; };
+		28F8CDE51F2CB80000325516 /* DatabaseTables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTables.swift; sourceTree = "<group>"; };
+		28F8CDE71F2CB82D00325516 /* DatabaseTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTable.swift; sourceTree = "<group>"; };
+		28F8CDE91F2CB85F00325516 /* DatabaseTableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableProperty.swift; sourceTree = "<group>"; };
+		28F8CDEB1F2CB87900325516 /* AliasProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliasProperty.swift; sourceTree = "<group>"; };
+		28F8CDED1F2CB89200325516 /* AliasPropertyOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliasPropertyOrder.swift; sourceTree = "<group>"; };
+		28F8CDEF1F2CB8B000325516 /* DatabaseAliasTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseAliasTable.swift; sourceTree = "<group>"; };
+		28F8CDF11F2CB8CA00325516 /* DatabaseAliasTableWithProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseAliasTableWithProperties.swift; sourceTree = "<group>"; };
+		28F8CDF31F2CB8DE00325516 /* DatabaseAliasTableWithPropertiesRelationships.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseAliasTableWithPropertiesRelationships.swift; sourceTree = "<group>"; };
+		28F8CDF51F2CB8F600325516 /* JoinWithDatabaseAliasTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinWithDatabaseAliasTable.swift; sourceTree = "<group>"; };
+		28F8CDF71F2CB91000325516 /* JoinByDatabaseAlias.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinByDatabaseAlias.swift; sourceTree = "<group>"; };
 		850C38031F1C52BD00F2D116 /* CollectionExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionExtension.swift; sourceTree = "<group>"; };
 		850C38041F1C52BD00F2D116 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		850C38051F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICollectionViewLayoutAttributesExtension.swift; sourceTree = "<group>"; };
@@ -141,6 +171,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		28F8CDDA1F2C666D00325516 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				28F8CDEB1F2CB87900325516 /* AliasProperty.swift */,
+				28F8CDED1F2CB89200325516 /* AliasPropertyOrder.swift */,
+				28F8CDE11F2CADA000325516 /* AliasTable.swift */,
+				28F8CDEF1F2CB8B000325516 /* DatabaseAliasTable.swift */,
+				28F8CDF11F2CB8CA00325516 /* DatabaseAliasTableWithProperties.swift */,
+				28F8CDF31F2CB8DE00325516 /* DatabaseAliasTableWithPropertiesRelationships.swift */,
+				28F8CDE71F2CB82D00325516 /* DatabaseTable.swift */,
+				28F8CDE91F2CB85F00325516 /* DatabaseTableProperty.swift */,
+				28F8CDE51F2CB80000325516 /* DatabaseTables.swift */,
+				28F8CDE31F2CB7E500325516 /* DatabaseTablesWithCount.swift */,
+				28F8CDF71F2CB91000325516 /* JoinByDatabaseAlias.swift */,
+				28F8CDF51F2CB8F600325516 /* JoinWithDatabaseAliasTable.swift */,
+				28F8CDDF1F2CAD7800325516 /* Property.swift */,
+				28F8CDDB1F2C66AE00325516 /* Statement.swift */,
+				85599E2F1F1C45420024FA39 /* Table.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		850C37FA1F1C520A00F2D116 /* UI Interfaces */ = {
 			isa = PBXGroup;
 			children = (
@@ -200,6 +252,8 @@
 				2804D98C1F20C522009ED045 /* Comparator.swift */,
 				850C38261F1D655700F2D116 /* Join.swift */,
 				284E13C91F20D28800FB55DC /* OrderBy.swift */,
+				850C38281F1D753A00F2D116 /* QueryAction.swift */,
+				28F8CDDD1F2C6B0B00325516 /* WhereClause.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -226,6 +280,7 @@
 				85599E2C1F1C44DE0024FA39 /* Database Viewer */,
 				850C38251F1D650B00F2D116 /* Enums */,
 				85599E311F1C461D0024FA39 /* Extensions */,
+				28F8CDDA1F2C666D00325516 /* Models */,
 				85E70F7E1F1EF52900F30771 /* Styles */,
 				850C37FA1F1C520A00F2D116 /* UI Interfaces */,
 				850C38121F1C636900F2D116 /* View Models */,
@@ -240,8 +295,6 @@
 			isa = PBXGroup;
 			children = (
 				85599E2D1F1C45170024FA39 /* DatabaseManager.swift */,
-				850C38281F1D753A00F2D116 /* QueryAction.swift */,
-				85599E2F1F1C45420024FA39 /* Table.swift */,
 			);
 			path = "Database Viewer";
 			sourceTree = "<group>";
@@ -383,14 +436,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28F8CDEA1F2CB85F00325516 /* DatabaseTableProperty.swift in Sources */,
 				85E70F851F1F200100F30771 /* SemiModalTransitionAnimator.swift in Sources */,
 				850C38081F1C52BD00F2D116 /* StringExtension.swift in Sources */,
+				28F8CDEE1F2CB89200325516 /* AliasPropertyOrder.swift in Sources */,
+				28F8CDE61F2CB80000325516 /* DatabaseTables.swift in Sources */,
 				28C3071E1F21A143004D9ED9 /* QuerySelect.swift in Sources */,
+				28F8CDE41F2CB7E500325516 /* DatabaseTablesWithCount.swift in Sources */,
 				850C382B1F1D7AE800F2D116 /* UINavigationController.swift in Sources */,
 				2836E4D41F28A03D00815D65 /* StyleKit.swift in Sources */,
 				85E70F7D1F1EF34300F30771 /* UIViewExtension.swift in Sources */,
+				28F8CDE01F2CAD7800325516 /* Property.swift in Sources */,
 				28C307161F20E55D004D9ED9 /* NSMutableAttributedString.swift in Sources */,
 				28436D941F235ACC00C366E6 /* QueryJoinOnConditions.swift in Sources */,
+				28F8CDE81F2CB82D00325516 /* DatabaseTable.swift in Sources */,
 				850C38181F1C63CC00F2D116 /* DatabaseResultViewController.swift in Sources */,
 				28C307181F217661004D9ED9 /* GenericTableViewController.swift in Sources */,
 				850C38291F1D753A00F2D116 /* QueryAction.swift in Sources */,
@@ -403,6 +462,7 @@
 				28436D871F22C0B300C366E6 /* DatabaseTableJoinSelect.swift in Sources */,
 				850C38141F1C638800F2D116 /* DisplayResult.swift in Sources */,
 				850C381E1F1C724800F2D116 /* NSAttributeTypeExtension.swift in Sources */,
+				28F8CDEC1F2CB87900325516 /* AliasProperty.swift in Sources */,
 				28EFDDF51F22293200557145 /* DatabaseTableView.swift in Sources */,
 				28F8CDD71F2B202C00325516 /* QueryHavingSelect.swift in Sources */,
 				850C381A1F1C63F700F2D116 /* FetchResult.swift in Sources */,
@@ -411,26 +471,34 @@
 				28436D901F23144B00C366E6 /* QueryJoinRequestTablePropertySelect.swift in Sources */,
 				28EFDDF31F221D4300557145 /* PropertyRelationship.swift in Sources */,
 				2836E4D21F275BC600815D65 /* QueryBetweenOperatorTextInput.swift in Sources */,
+				28F8CDDE1F2C6B0B00325516 /* WhereClause.swift in Sources */,
 				850C38091F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift in Sources */,
 				28C3071C1F218B58004D9ED9 /* QueryJoinRequestWithTableOptions.swift in Sources */,
 				2836E4CE1F25E32900815D65 /* TextFieldTableViewCell.swift in Sources */,
 				28C307201F21C888004D9ED9 /* QueryOrderBy.swift in Sources */,
 				284E13CA1F20D28800FB55DC /* OrderBy.swift in Sources */,
 				28C3071A1F217836004D9ED9 /* QueryJoinRequest.swift in Sources */,
+				28F8CDF01F2CB8B000325516 /* DatabaseAliasTable.swift in Sources */,
 				850C38201F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift in Sources */,
+				28F8CDF21F2CB8CA00325516 /* DatabaseAliasTableWithProperties.swift in Sources */,
 				28436D8E1F2311B100C366E6 /* Aggregate.swift in Sources */,
 				850C38111F1C632800F2D116 /* DuplexCollectionViewLayout.swift in Sources */,
 				28F8CDD51F2B1D4900325516 /* QueryHaving.swift in Sources */,
 				850C38071F1C52BD00F2D116 /* CollectionExtension.swift in Sources */,
+				28F8CDDC1F2C66AE00325516 /* Statement.swift in Sources */,
 				850C380A1F1C52BD00F2D116 /* UIColorExtension.swift in Sources */,
 				85E70F811F1EF7F800F30771 /* SemiModalPresentationController.swift in Sources */,
 				2804D98D1F20C522009ED045 /* Comparator.swift in Sources */,
 				2836E4C41F2442B800815D65 /* GenericTableViewModel.swift in Sources */,
 				28EFDDF71F2233B000557145 /* DatabaseTableSelect.swift in Sources */,
 				2836E4C81F24AD0600815D65 /* QueryWhereOperators.swift in Sources */,
+				28F8CDF61F2CB8F600325516 /* JoinWithDatabaseAliasTable.swift in Sources */,
+				28F8CDE21F2CADA000325516 /* AliasTable.swift in Sources */,
 				85E70F831F1F1F1400F30771 /* SemiModalTransistioningDelagate.swift in Sources */,
 				28F8CDD91F2B4B4F00325516 /* QueryAggregateTextInput.swift in Sources */,
+				28F8CDF41F2CB8DE00325516 /* DatabaseAliasTableWithPropertiesRelationships.swift in Sources */,
 				28436D921F234E1400C366E6 /* QueryComparator.swift in Sources */,
+				28F8CDF81F2CB91000325516 /* JoinByDatabaseAlias.swift in Sources */,
 				2804D98B1F1E2524009ED045 /* QueryRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

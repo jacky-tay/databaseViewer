@@ -73,7 +73,7 @@ class DatabaseTableView: NSObject, GenericTableViewModel {
     func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
         let database = list[indexPath.section]
         if let table = DatabaseManager.sharedInstance.getTable(from: DatabaseTable(databaseName: database.databaseName, tableName: database.tables[indexPath.row].name)),
-            let vc = GenericTableViewController.getViewController(viewModel: PropertyRelationship(databaseTable: table.toDatabaseTableAliasWithPropertiesRelationships())) {
+            let vc = GenericTableViewController.getViewController(viewModel: PropertyRelationship(databaseTable: table.toDatabaseAliasTableWithPropertiesRelationships())) {
             navigationController?.pushViewController(vc, animated: true)
         }
     }

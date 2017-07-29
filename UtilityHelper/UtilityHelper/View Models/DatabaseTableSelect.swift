@@ -23,7 +23,7 @@ class DatabaseTableSelect: NSObject, GenericTableViewModel {
     
     func actionAfterSelect(indexPath: IndexPath, alias: String, cell: UITableViewCell?) {
         if let table = DatabaseManager.sharedInstance.getTableFrom(databaseName: list[indexPath.section].databaseName, tableName: list[indexPath.section].tables[indexPath.row]),
-            let vc = GenericTableViewController.getViewController(viewModel: QueryRequest(from: table.toSelectedTable(alias: alias))) {
+            let vc = GenericTableViewController.getViewController(viewModel: QueryRequest(from: table.toAliasTable(alias: alias))) {
             (vc.viewModel as? QueryRequest)?.delegate = vc
             navigationController?.pushViewController(vc, animated: true)
         }

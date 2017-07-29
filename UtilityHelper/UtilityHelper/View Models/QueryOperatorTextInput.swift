@@ -30,7 +30,7 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     func setupContent() {
         if let alias = aliasProperty.alias,
             let propertyName = aliasProperty.propertyName,
-            let databaseTable = queryRequest?.getDatabaseTableAlias(from: alias) {
+            let databaseTable = queryRequest?.getDatabaseAliasTable(from: alias) {
             self.list = DatabaseManager.sharedInstance.contextDict[databaseTable.databaseName]?.fetchValuesIn(for: databaseTable.tableName, key: propertyName) ?? []
             self.filteredList = list.enumerated().map { $0.offset }
         }
@@ -38,7 +38,16 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     
     func viewDidLoad(_ viewController: GenericTableViewController) {
         viewController.navigationItem.title = whereArgument.description
+        addDoneOnRightHandSide(viewController)
         setupContent()
+    }
+    
+    func doneIsClicked() {
+        if let cell = delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell,
+            let text = cell.textField.text {
+            let statement = Statement(aliasProperty: aliasProperty, argument: whereArgument, values: [text])
+            // TODO
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
