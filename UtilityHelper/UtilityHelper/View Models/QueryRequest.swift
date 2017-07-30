@@ -46,7 +46,7 @@ class QueryRequest: NSObject {
             return joins.isEmpty ? QueryJoinRequest(databaseAliasTable: from, queryRequest: self) : QueryJoinRequestWithTableOptions(queryRequest: self)
         }
         else if action == .where {
-            return QueryWhere(queryRequest: self, action: action)
+            return QueryWhereInitiate(queryRequest: self, bracketHasEnded: false)
         }
         else if action == .having {
             return QueryHaving(queryRequest: self)
@@ -80,6 +80,11 @@ class QueryRequest: NSObject {
             return nil
         }
         return getDatabaseAliasTable(from: alias)?.toAliasTable()?.properties.first { $0.name == propertyName }
+    }
+    
+    func insertStatement(_ statement: Statement) {
+        let clause = wheres.remove(at: wheres.count - 1)
+        wheres.append(clause.insert(statement: statement))
     }
     
     func reload() {
@@ -134,7 +139,14 @@ class QueryRequest: NSObject {
             cell.detailTextLabel?.text = row - 2 < conditionCount ? "AND" : nil
         }
         else if section == getSection(of: .where) {
-            cell.textLabel?.text = "WIP"
+            // var index = 0
+            // var count = wheres[0].getCount()
+            // while count < row && index + 1 < wheres.count {
+            //    count += wheres[index + 1].getCount()
+            //    index += 1
+            //}
+            // TODO
+            // cell.textLabel?.text = wheres[index].getDescription(row: row - count)
         }
         else if section == getSection(of: .groupBy) {
             cell.textLabel?.text = groupBy[row].description
@@ -207,7 +219,7 @@ extension QueryRequest: GenericTableViewModel {
         case 0:     return selected.count
         case 1:     return 1
         case 2 ..< (2 + joins.count):   return (joins[section - 2].onConditions?.count ?? 0) + 1
-        case getSection(of: .where):   return wheres.count
+        case getSection(of: .where):    return wheres.reduce(0) { $0 + $1.getCount() }
         case getSection(of: .groupBy):  return groupBy.count
         case getSection(of: .having):   return having.count
         case getSection(of: .orderBy):  return orderBy.count

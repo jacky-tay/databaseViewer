@@ -30,6 +30,13 @@ class QueryFetchIn: NSObject, GenericTableViewModel {
         addDoneOnRightHandSide(viewController)
     }
     
+    func doneIsClicked() {
+        let options = selectedIndexPath.flatMap { [weak self] in self?.list[$0.row] }
+        let statement = Statement(aliasProperty: aliasProperty, argument: Argument.in, values: options)
+        queryRequest?.insertStatement(statement)
+        queryRequest?.reload()
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return list.count
     }

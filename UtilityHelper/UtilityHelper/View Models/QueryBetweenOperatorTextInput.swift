@@ -17,6 +17,15 @@ class QueryBetweenOperatorTextInput: QueryOperatorTextInput {
         return section == 1 ? super.tableView(tableView, numberOfRowsInSection: section) : (firstText == nil ? 1 : 3)
     }
     
+    override func doneIsClicked() {
+        if let first = (delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell)?.textField.text,
+            let second = (delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell)?.textField.text {
+            let statement = Statement(aliasProperty: aliasProperty, argument: Argument.between, values: [first, second])
+            queryRequest?.insertStatement(statement)
+            queryRequest?.reload()
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 && indexPath.row == 1 {
             let cell = getCell(from: tableView, indexPath: indexPath)

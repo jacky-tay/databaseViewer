@@ -11,7 +11,7 @@ import UIKit
 class DatabaseTableJoinSelect: DatabaseTableSelect {
     
     private weak var queryRequest: QueryRequest?
-    private let aliasTable: DatabaseAliasTable
+    private let aliasTable: DatabaseAliasTable!
     private var join = Join.full
     private var hasRelationshipSection = false
     

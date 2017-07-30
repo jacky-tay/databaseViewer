@@ -12,25 +12,48 @@ indirect enum WhereClause {
     case add([WhereClause])
     case or([WhereClause])
     case bracket([WhereClause])
-    case root(Statement)
+    case base(Statement?)
+    
+    func isBase() -> Bool {
+        if case .base(_) = self {
+            return true
+        }
+        return false
+    }
+    
+    func getDescription(row: Int) -> String {
+        if case .base(let statement) = self {
+            return statement?.description ?? ""
+        }
+        else if case .add(let list) = self {
+            return list[row].getDescription(row: row)
+        }
+        else if case .or(let list) = self {
+            return list[row].getDescription(row: row)
+        }
+        else if case .bracket(let list) = self {
+            return list[row].getDescription(row: row)
+        }
+        return ""
+    }
     
     func insert(statement: Statement) -> WhereClause {
         if case .add(let list) = self {
             var array = list
-            array.append(.root(statement))
+            array.append(.base(statement))
             return .add(array)
         }
         else if case .or(let list) = self {
             var array = list
-            array.append(.root(statement))
+            array.append(.base(statement))
             return .or(array)
         }
         else if case .bracket(let list) = self {
             var array = list
-            array.append(.root(statement))
+            array.append(.base(statement))
             return .bracket(array)
         }
-        return .root(statement)
+        return .base(statement)
     }
     
     func getCount() -> Int {
@@ -43,6 +66,9 @@ indirect enum WhereClause {
         else if case .bracket(let list) = self {
             return list.reduce(0) { $0 + $1.getCount() }
         }
-        return 1
+        else if case .base(let statement) = self {
+            return statement != nil ? 1 : 0
+        }
+        return 0
     }
 }

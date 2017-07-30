@@ -46,7 +46,8 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
         if let cell = delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell,
             let text = cell.textField.text {
             let statement = Statement(aliasProperty: aliasProperty, argument: whereArgument, values: [text])
-            // TODO
+            queryRequest?.insertStatement(statement)
+            queryRequest?.reload()
         }
     }
     

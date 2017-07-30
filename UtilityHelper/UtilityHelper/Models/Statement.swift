@@ -14,7 +14,7 @@ class Statement: CustomStringConvertible {
     var values: [Any] = []
     
     var description: String {
-        var valueText = ""
+        var valueText = values.toString()
         if argument.description == Argument.in.description {
             valueText = "(\(values.toString(separator: ", ")))"
         }
