@@ -14,6 +14,7 @@ import UIKit
     @objc optional func viewWillAppear(_ viewController: GenericTableViewController)
     @objc optional func viewWillDisappeared(_ viewController: GenericTableViewController)
     @objc optional func doneIsClicked()
+    @objc optional func dismissKeyboard()
 }
 
 extension GenericTableViewModel {
@@ -43,8 +44,15 @@ extension GenericTableViewModel {
     
     func getTextFieldCell(from tableView: UITableView, indexPath: IndexPath) -> TextFieldTableViewCell? {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as? TextFieldTableViewCell
+
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        toolbar.items = [UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                         UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissKeyboard))]
+        cell?.textField.inputAccessoryView = toolbar
         cell?.selectionStyle = .none
         cell?.accessoryType = .none
+
         return cell
     }
     

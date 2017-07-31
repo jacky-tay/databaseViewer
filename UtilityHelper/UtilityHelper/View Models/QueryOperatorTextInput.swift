@@ -50,6 +50,10 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
             queryRequest?.reload()
         }
     }
+
+    func dismissKeyboard() {
+        delegate?.dismissKeyboard()
+    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return list.isEmpty ? 1 : 2

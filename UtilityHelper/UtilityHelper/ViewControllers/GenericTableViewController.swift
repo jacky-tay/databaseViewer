@@ -16,6 +16,7 @@ protocol GenericTableViewModelDelegate: class {
     func update(insertRows: [IndexPath], insertSections: [Int])
     func remove(rows: [IndexPath])
     func animateTable(in section: Int, reloadRows: [Int], insertRows: [Int], deleteRows: [Int])
+    func dismissKeyboard()
 }
 
 class GenericTableViewController: UITableViewController, GenericTableViewModelDelegate {
@@ -76,6 +77,10 @@ class GenericTableViewController: UITableViewController, GenericTableViewModelDe
     // GenericTableViewModelDelegate
     func reload() {
         tableView.reloadData()
+    }
+
+    func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     func getCellRow(at indexPath: IndexPath) -> UITableViewCell? {
