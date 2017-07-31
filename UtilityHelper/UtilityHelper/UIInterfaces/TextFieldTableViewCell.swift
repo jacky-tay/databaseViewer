@@ -16,5 +16,17 @@ class TextFieldTableViewCell: UITableViewCell {
         if let type = attributeType {
             textField.keyboardType = type.getKeyboardType()
         }
+        if let type = attributeType, type == NSAttributeType.dateAttributeType {
+            let datePicker = UIDatePicker()
+            datePicker.addTarget(self, action: #selector(dateDidChanged(_:)), for: .valueChanged)
+            datePicker.sizeToFit()
+            datePicker.datePickerMode = .dateAndTime
+            textField.inputView = datePicker
+        }
+    }
+
+    private dynamic func dateDidChanged(_ sender: UIDatePicker) {
+        // TODO time format
+        textField.text = String(describing: sender.date)
     }
 }
