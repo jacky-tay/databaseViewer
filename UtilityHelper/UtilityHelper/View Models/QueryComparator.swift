@@ -15,7 +15,7 @@ class QueryComparator: NSObject, GenericTableViewModel {
     private let action: QueryAction!
     private let aliasProperty: AliasProperty!
     
-    init(queryRequest: QueryRequest, action: QueryAction, aliasProperty: AliasProperty, category: AttributedCategory) {
+    init(queryRequest: QueryRequest, action: QueryAction, aliasProperty: AliasProperty, category: AttributeCategory) {
         self.queryRequest = queryRequest
         self.aliasProperty = aliasProperty
         self.list = Comparator.getAll(filterBy: category)

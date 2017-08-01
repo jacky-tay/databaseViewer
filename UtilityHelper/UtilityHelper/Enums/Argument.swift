@@ -34,7 +34,7 @@ enum Argument: WhereArgument {
         }
     }
     
-    static func getAll(filterBy: AttributedCategory?) -> [Argument] {
+    static func getAll(filterBy: AttributeCategory?) -> [Argument] {
         guard let filter = filterBy else {
             return [.in, .isNull, .isNotNull, .between, .like]
         }

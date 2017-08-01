@@ -10,23 +10,29 @@ import UIKit
 import CoreData
 
 class TextFieldTableViewCell: UITableViewCell {
+
+    static let fromDate = "FromDate"
+    static let toDate = "ToDate"
     @IBOutlet weak var textField: UITextField!
     
-    func updateContent(attributeType: NSAttributeType? = nil) {
-        if let type = attributeType {
-            textField.keyboardType = type.getKeyboardType()
-        }
-        if let type = attributeType, type == NSAttributeType.dateAttributeType {
+    func updateContent(attributeType: NSAttributeType, extraDetails: [String : Any]) {
+
+        if attributeType == NSAttributeType.dateAttributeType {
             let datePicker = UIDatePicker()
             datePicker.addTarget(self, action: #selector(dateDidChanged(_:)), for: .valueChanged)
             datePicker.sizeToFit()
             datePicker.datePickerMode = .dateAndTime
+            datePicker.minimumDate = (extraDetails[TextFieldTableViewCell.fromDate] as? Date)
+            datePicker.maximumDate = (extraDetails[TextFieldTableViewCell.toDate] as? Date)
             textField.inputView = datePicker
+        }
+        else {
+            textField.keyboardType = attributeType.getKeyboardType()
         }
     }
 
     private dynamic func dateDidChanged(_ sender: UIDatePicker) {
-        // TODO time format
-        textField.text = String(describing: sender.date)
+        let dateFormatter = DatabaseManager.sharedInstance.dateFormatter
+        textField.text = dateFormatter.string(from: sender.date)
     }
 }

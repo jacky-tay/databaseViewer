@@ -25,22 +25,37 @@ class QueryBetweenOperatorTextInput: QueryOperatorTextInput {
             queryRequest?.reload()
         }
     }
-    
+
+    override func getExtraInfoForCell(at indexPath: IndexPath) -> [String : Any] {
+        guard attributeCategory == .date else {
+            return [:]
+        }
+        var dict = [String : Any]()
+        if let firstText = firstText {
+            dict[TextFieldTableViewCell.fromDate] = DatabaseManager.sharedInstance.dateFormatter.date(from: firstText)
+        }
+        if let secondText = secondText {
+            dict[TextFieldTableViewCell.fromDate] = DatabaseManager.sharedInstance.dateFormatter.date(from: secondText)
+        }
+        return dict
+    }
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 && indexPath.row == 1 {
             let cell = getCell(from: tableView, indexPath: indexPath)
             cell.textLabel?.text = "AND"
+            cell.textLabel?.textColor = UIColor.darkGray
             cell.detailTextLabel?.text = nil
             cell.accessoryType = .none
             cell.selectionStyle = .none
             return cell
         }
-        else if indexPath.section == 0, let cell = getTextFieldCell(from: tableView, indexPath: indexPath) {
-            cell.textField.text = indexPath.row == 0 ? firstText : secondText
-            return cell
-        }
         else {
-           return super.tableView(tableView, cellForRowAt: indexPath)
+            let cell = super.tableView(tableView, cellForRowAt: indexPath)
+            if indexPath.section == 0, let textFieldCell = cell as? TextFieldTableViewCell {
+                textFieldCell.textField.text = indexPath.row == 0 ? firstText : secondText
+            }
+            return cell
         }
     }
     

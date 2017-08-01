@@ -18,6 +18,7 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     internal var filteredList = [Int]()
     internal var aliasProperty: AliasProperty!
     internal var whereArgument: WhereArgument!
+    internal let attributeCategory: AttributeCategory!
     private var queryText: String? = nil
     private var queryDict = [Int : [NSRange]]()
     
@@ -25,6 +26,7 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
         self.queryRequest = queryRequest
         self.aliasProperty = aliasProperty
         self.whereArgument = whereArgument
+        self.attributeCategory = queryRequest.getProperty(from: aliasProperty)?.attributeType.getCategory() ?? .undefined
     }
     
     func setupContent() {
@@ -52,6 +54,9 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     }
 
     func dismissKeyboard() {
+        if attributeCategory == .date {
+            
+        }
         delegate?.dismissKeyboard()
     }
     
@@ -62,12 +67,16 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return section == 0 ? 1 : (queryText != nil ? filteredList.count : list.count)
     }
+
+    func getExtraInfoForCell(at indexPath: IndexPath) -> [String : Any] {
+        return [:]
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0,
             let property = queryRequest?.getProperty(from: aliasProperty),
             let textFieldCell = getTextFieldCell(from: tableView, indexPath: indexPath) {
-            textFieldCell.updateContent(attributeType: property.attributeType)
+            textFieldCell.updateContent(attributeType: property.attributeType, extraDetails: getExtraInfoForCell(at: indexPath))
             textFieldCell.textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
             textFieldCell.textField.delegate = self
             return textFieldCell

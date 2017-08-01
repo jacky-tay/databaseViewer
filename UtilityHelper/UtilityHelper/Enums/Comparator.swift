@@ -35,7 +35,7 @@ enum Comparator: WhereArgument {
         return true
     }
     
-    static func getAll(filterBy: AttributedCategory?) -> [Comparator] {
+    static func getAll(filterBy: AttributeCategory?) -> [Comparator] {
         guard let filter = filterBy else {
             return [.equal, .greaterThan, .lessThan, .greaterThanEqual, .lessThanEqual, .notEqual]
         }

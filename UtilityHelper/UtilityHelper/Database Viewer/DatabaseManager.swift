@@ -12,11 +12,17 @@ import CoreData
 typealias DatabaseTablesPair = (databaseName: String, tables: [Table])
 
 public class DatabaseManager {
+    private let dateFormat = "yyyy-MM-dd HH:mm:ssZ"
     private var databases = [DatabaseTablesPair]()
     internal var contextDict = [String : NSManagedObjectContext]()
     private var sqliteNames = [String]()
+    internal let dateFormatter = DateFormatter()
 
     public static let sharedInstance = DatabaseManager()
+
+    init() {
+        dateFormatter.dateFormat = dateFormat
+    }
 
     public func prepareDatabases(with contexts: [NSManagedObjectContext?], and sqlites: [String]) {
         databases.removeAll()
