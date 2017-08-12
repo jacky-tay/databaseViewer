@@ -53,7 +53,10 @@ extension String {
         return contentsOf.flatMap { String.nilOrEmpty($0) ? nil : $0 }.joined(separator: self)
     }
     
-    func takeUppercasedCharacter() -> String {
+    func buildAliasName() -> String {
+        guard contains("_") else {
+            return "".joined(contentsOf: components(separatedBy: "_").map { $0.characters.first?.toString() })
+        }
         let uppercase = CharacterSet.uppercaseLetters
         return unicodeScalars.flatMap { uppercase.contains($0) ? String(Character($0)) : nil }.reduce("", +)
     }

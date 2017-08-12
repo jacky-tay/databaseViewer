@@ -54,7 +54,7 @@ class DatabaseTableSelect: NSObject, GenericTableViewModel {
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         let alert = UIAlertController(title: "Alias", message: "Set \(tableName) as:", preferredStyle: .alert)
         alert.addTextField(configurationHandler: { [weak self] (textField) in
-            textField.text = self?.getUniqueAliasName(input: tableName.takeUppercasedCharacter())
+            textField.text = self?.getUniqueAliasName(input: tableName.buildAliasName())
         })
         alert.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
             tableView.cellForRow(at: indexPath)?.accessoryType = .none

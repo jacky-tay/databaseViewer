@@ -11,15 +11,15 @@ import UIKit
 class QueryWhereInitiate: NSObject, GenericTableViewModel {
     weak var navigationController: UINavigationController?
     private weak var queryReuest: QueryRequest!
-    private var list = [(String, [WhereOptions])]()
+    private var list = [(WhereCategory, [WhereOptions])]()
     
     init(queryRequest: QueryRequest, bracketHasEnded: Bool) {
         self.queryReuest = queryRequest
-        list = [("and", [.andWithBracket, .andWithoutBracket]),
-                ("or", [.orWithBracket, .orWithoutBracket])]
+        list = [(.and, [.andWithBracket, .andWithoutBracket]),
+                (.or, [.orWithBracket, .orWithoutBracket])]
         
         if !bracketHasEnded && (queryRequest.wheres?.isBracket() ?? false || queryRequest.wheres?.getLast()?.isBracket() ?? false) {
-            list.insert(("", [.endBracket]), at: 0)
+            list.insert((.default, [.endBracket]), at: 0)
         }
     }
     
@@ -45,7 +45,7 @@ class QueryWhereInitiate: NSObject, GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return list[section].0
+        return list[section].0.description
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -58,13 +58,15 @@ class QueryWhereInitiate: NSObject, GenericTableViewModel {
             viewModel = QueryWhereInitiate(queryRequest: queryRequest, bracketHasEnded: true)
         }
         else {
-            viewModel = QueryWhere(queryRequest: queryRequest, action: .where)
+            viewModel = QueryWhere(queryRequest: queryRequest, action: .where, whereOption: option)
         }
         
         if !(queryRequest.wheres?.isAdd() ?? true) && option.isAnd() {
+            queryRequest.convertWhereClauseToBracketIfNeeded()
             queryRequest.insert(clause: .add([]))
         }
         else if !(queryRequest.wheres?.isOr() ?? true) && option.isOr() {
+            queryRequest.convertWhereClauseToBracketIfNeeded()
             queryRequest.insert(clause: .or([]))
         }
         

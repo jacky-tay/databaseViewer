@@ -82,6 +82,12 @@ class QueryRequest: NSObject {
         return getDatabaseAliasTable(from: alias)?.toAliasTable()?.properties.first { $0.name == propertyName }
     }
     
+    func convertWhereClauseToBracketIfNeeded() {
+        if wheres?.isOr() ?? false || wheres?.isAdd() ?? false {
+            wheres = .bracket(wheres)
+        }
+    }
+    
     func insert(clause: WhereClause) {
         if wheres == nil {
             wheres = clause
@@ -150,7 +156,7 @@ class QueryRequest: NSObject {
             cell.detailTextLabel?.text = row - 2 < conditionCount ? "AND" : nil
         }
         else if section == getSection(of: .where) {
-            cell.textLabel?.text = wheres?.getDescription(row: row, prefix: "")
+            cell.textLabel?.text = wheres?.getDescription(row: row)
         }
         else if section == getSection(of: .groupBy) {
             cell.textLabel?.text = groupBy[row].description

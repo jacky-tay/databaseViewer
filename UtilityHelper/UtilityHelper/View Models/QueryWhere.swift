@@ -10,8 +10,15 @@ import UIKit
 
 class QueryWhere: QuerySelect {
     
+    private var whereOption: WhereOptions?
+    
+    convenience init(queryRequest: QueryRequest, action: QueryAction, whereOption: WhereOptions) {
+        self.init(queryRequest: queryRequest, action: action)
+        self.whereOption = whereOption
+    }
+    
     override func viewDidLoad(_ viewController: GenericTableViewController) {
-        viewController.navigationItem.title = action.description
+        viewController.navigationItem.title = whereOption?.description ?? action.description
         addCloseOnLeftHandSide(viewController)
     }
     

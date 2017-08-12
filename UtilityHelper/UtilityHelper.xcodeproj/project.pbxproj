@@ -23,6 +23,7 @@
 /* Begin PBXBuildFile section */
 		2804D98B1F1E2524009ED045 /* QueryRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804D98A1F1E2524009ED045 /* QueryRequest.swift */; };
 		2804D98D1F20C522009ED045 /* Comparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2804D98C1F20C522009ED045 /* Comparator.swift */; };
+		2822436A1F3F0D15005501BE /* CharacterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282243691F3F0D15005501BE /* CharacterExtension.swift */; };
 		2836E4C41F2442B800815D65 /* GenericTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4C31F2442B800815D65 /* GenericTableViewModel.swift */; };
 		2836E4C61F24AB7700815D65 /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4C51F24AB7700815D65 /* Argument.swift */; };
 		2836E4C81F24AD0600815D65 /* QueryWhereOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2836E4C71F24AD0600815D65 /* QueryWhereOperators.swift */; };
@@ -95,6 +96,7 @@
 /* Begin PBXFileReference section */
 		2804D98A1F1E2524009ED045 /* QueryRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryRequest.swift; sourceTree = "<group>"; };
 		2804D98C1F20C522009ED045 /* Comparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comparator.swift; sourceTree = "<group>"; };
+		282243691F3F0D15005501BE /* CharacterExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterExtension.swift; sourceTree = "<group>"; };
 		2836E4C31F2442B800815D65 /* GenericTableViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericTableViewModel.swift; sourceTree = "<group>"; };
 		2836E4C51F24AB7700815D65 /* Argument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Argument.swift; sourceTree = "<group>"; };
 		2836E4C71F24AD0600815D65 /* QueryWhereOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryWhereOperators.swift; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 		85599E311F1C461D0024FA39 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				282243691F3F0D15005501BE /* CharacterExtension.swift */,
 				850C38031F1C52BD00F2D116 /* CollectionExtension.swift */,
 				850C381D1F1C724700F2D116 /* NSAttributeTypeExtension.swift */,
 				850C381F1F1C7EC500F2D116 /* NSManagedObjectContextExtension.swift */,
@@ -470,6 +473,7 @@
 				2836E4C61F24AB7700815D65 /* Argument.swift in Sources */,
 				28436D871F22C0B300C366E6 /* DatabaseTableJoinSelect.swift in Sources */,
 				850C38141F1C638800F2D116 /* DisplayResult.swift in Sources */,
+				2822436A1F3F0D15005501BE /* CharacterExtension.swift in Sources */,
 				850C381E1F1C724800F2D116 /* NSAttributeTypeExtension.swift in Sources */,
 				28F8CDEC1F2CB87900325516 /* AliasProperty.swift in Sources */,
 				28EFDDF51F22293200557145 /* DatabaseTableView.swift in Sources */,

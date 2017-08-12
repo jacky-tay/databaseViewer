@@ -8,6 +8,30 @@
 
 import Foundation
 
+enum WhereCategory: CustomStringConvertible {
+    case bracketStart
+    case bracketEnd
+    case and
+    case or
+    case `default`
+    
+    var description: String {
+        switch self {
+        case .and:  return "AND"
+        case .bracketEnd:   return ")"
+        case .bracketStart: return "("
+        case .or:   return "OR"
+        default:    return ""
+        }
+    }
+}
+
+func + (lhs: [WhereCategory], rhs: WhereCategory) -> [WhereCategory] {
+    var list = lhs
+    list.append(rhs)
+    return list
+}
+
 enum WhereOptions: CustomStringConvertible {
     case endBracket
     case andWithBracket
