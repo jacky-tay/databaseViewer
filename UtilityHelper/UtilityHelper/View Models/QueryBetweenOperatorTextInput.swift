@@ -21,7 +21,7 @@ class QueryBetweenOperatorTextInput: QueryOperatorTextInput {
         if let first = (delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell)?.textField.text,
             let second = (delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell)?.textField.text {
             let statement = Statement(aliasProperty: aliasProperty, argument: Argument.between, values: [first, second])
-            queryRequest?.insertStatement(statement)
+            queryRequest?.insert(statement: statement)
             queryRequest?.reload()
         }
     }

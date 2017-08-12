@@ -32,9 +32,11 @@ class QueryFetchIn: NSObject, GenericTableViewModel {
     
     func doneIsClicked() {
         let options = selectedIndexPath.flatMap { [weak self] in self?.list[$0.row] }
-        let statement = Statement(aliasProperty: aliasProperty, argument: Argument.in, values: options)
-        queryRequest?.insertStatement(statement)
-        queryRequest?.reload()
+        if !options.isEmpty {
+            let statement = Statement(aliasProperty: aliasProperty, argument: Argument.in, values: options)
+            queryRequest?.insert(statement: statement)
+            queryRequest?.reload()
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

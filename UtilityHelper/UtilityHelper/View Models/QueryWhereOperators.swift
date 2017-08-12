@@ -65,7 +65,8 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
             // TODO add to queryRequest
             let statement = Statement(aliasProperty: aliasProperty, argument: selectedOperator, values: [])
-            queryRequest.wheres.append(.base(statement))
+            queryRequest.insert(statement: statement)
+            queryRequest.reload()
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) { [weak self] in
                 self?.navigationController?.dismiss(animated: true, completion: nil)
             }

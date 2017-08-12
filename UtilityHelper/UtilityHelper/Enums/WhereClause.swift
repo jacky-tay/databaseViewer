@@ -11,8 +11,17 @@ import Foundation
 indirect enum WhereClause {
     case add([WhereClause])
     case or([WhereClause])
-    case bracket([WhereClause])
-    case base(Statement?)
+    case bracket(WhereClause?)
+    case base(Statement)
+    
+    static func canAppend(lhs: WhereClause, rhs: WhereClause) -> Bool {
+        switch (lhs, rhs) {
+        case (.add, .base), (.add, .bracket), (.or, .base), (.or, .bracket):
+            return true
+        default:
+            return false
+        }
+    }
     
     func isBase() -> Bool {
         if case .base(_) = self {
@@ -21,39 +30,97 @@ indirect enum WhereClause {
         return false
     }
     
-    func getDescription(row: Int) -> String {
-        if case .base(let statement) = self {
-            return statement?.description ?? ""
+    func isAdd() -> Bool {
+        if case .add(_) = self {
+            return true
         }
-        else if case .add(let list) = self {
-            return list[row].getDescription(row: row)
-        }
-        else if case .or(let list) = self {
-            return list[row].getDescription(row: row)
-        }
-        else if case .bracket(let list) = self {
-            return list[row].getDescription(row: row)
-        }
-        return ""
+        return false
     }
     
-    func insert(statement: Statement) -> WhereClause {
+    func isOr() -> Bool {
+        if case .or(_) = self {
+            return true
+        }
+        return false
+    }
+    
+    func isBracket() -> Bool {
+        if case .bracket(_) = self {
+            return true
+        }
+        return false
+    }
+    
+    func getLast() -> WhereClause? {
+        if case .add(let list) = self {
+            return list.last?.getLast()
+        }
+        else if case .or(let list) = self {
+            return list.last?.getLast()
+        }
+        else if case .bracket(let clause) = self {
+            return clause?.getLast()
+        }
+        return self
+    }
+    
+    func getDescription(row: Int, prefix: String) -> String? {
+        if case .base(let statement) = self {
+            return " ".joined(contentsOf: [prefix, statement.description])
+        }
+        else if case .add(let list) = self {
+            return getDescription(row: row, prefix: prefix + "AND", list: list)
+        }
+        else if case .or(let list) = self {
+            return getDescription(row: row, prefix: prefix + "OR", list: list)
+        }
+        else if case .bracket(let clause) = self {
+            return clause?.getDescription(row: row, prefix: prefix + "(")
+        }
+        return nil
+    }
+    
+    private func getDescription(row: Int, prefix: String, list: [WhereClause]) -> String? {
+        var count = 0
+        var index = -1
+        repeat {
+            index += 1
+            count += list[index].getCount()
+        } while index + 1 < list.count && row >= count
+        return list[index].getDescription(row: row - count + list[index].getCount(), prefix: prefix)
+    }
+    
+    func insert(whereClause: WhereClause) -> WhereClause {
         if case .add(let list) = self {
             var array = list
-            array.append(.base(statement))
+            array.insert(whereClause, at: 0)
             return .add(array)
         }
         else if case .or(let list) = self {
             var array = list
-            array.append(.base(statement))
+            array.insert(whereClause, at: 0)
             return .or(array)
         }
-        else if case .bracket(let list) = self {
-            var array = list
-            array.append(.base(statement))
-            return .bracket(array)
+        else {
+            return whereClause.append(whereClause: self)
         }
-        return .base(statement)
+    }
+    
+    func append(whereClause: WhereClause) -> WhereClause {
+        if case .add(let list) = self {
+            var array = list
+            array.append(whereClause)
+            return .add(array)
+        }
+        else if case .or(let list) = self {
+            var array = list
+            array.append(whereClause)
+            return .or(array)
+        }
+        else if case .bracket(let clause) = self, clause == nil {
+            return .bracket(whereClause)
+        }
+        return whereClause
     }
     
     func getCount() -> Int {
@@ -63,11 +130,11 @@ indirect enum WhereClause {
         else if case .or(let list) = self {
             return list.reduce(0) { $0 + $1.getCount() }
         }
-        else if case .bracket(let list) = self {
-            return list.reduce(0) { $0 + $1.getCount() }
+        else if case .bracket(let clause) = self {
+            return clause?.getCount() ?? 0
         }
-        else if case .base(let statement) = self {
-            return statement != nil ? 1 : 0
+        else if case .base = self {
+            return 1
         }
         return 0
     }

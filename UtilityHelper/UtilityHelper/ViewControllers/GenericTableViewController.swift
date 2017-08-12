@@ -12,7 +12,7 @@ protocol GenericTableViewModelDelegate: class {
     func reload()
     func getCellRow(at indexPath: IndexPath) -> UITableViewCell?
     func update(editing: Bool)
-    func update(rightBarButtons: [UIBarButtonItem])
+    func update(rightBarButton: UIBarButtonItem)
     func update(insertRows: [IndexPath], insertSections: [Int])
     func remove(rows: [IndexPath])
     func animateTable(in section: Int, reloadRows: [Int], insertRows: [Int], deleteRows: [Int])
@@ -92,8 +92,8 @@ class GenericTableViewController: UITableViewController, GenericTableViewModelDe
         tableView.setEditing(editing, animated: true)
     }
     
-    func update(rightBarButtons: [UIBarButtonItem]) {
-        navigationItem.rightBarButtonItems = rightBarButtons
+    func update(rightBarButton: UIBarButtonItem) {
+        navigationItem.rightBarButtonItem = rightBarButton
     }
     
     func update(insertRows: [IndexPath], insertSections: [Int]) {

@@ -9,19 +9,31 @@
 import Foundation
 
 enum WhereOptions: CustomStringConvertible {
-    case startWithBracket
-    case startWithoutBracket
     case endBracket
-    case and
-    case or
+    case andWithBracket
+    case andWithoutBracket
+    case orWithBracket
+    case orWithoutBracket
     
     var description: String {
         switch self {
-        case .startWithBracket: return "Start with new bracket"
-        case .startWithoutBracket:  return "Start without bracket"
         case .endBracket:   return "Close previous bracket"
-        case .and:  return "AND"
-        case .or:   return "OR"
+        case .andWithBracket:  return "AND with new bracket"
+        case .andWithoutBracket:    return "AND without bracket"
+        case .orWithBracket:   return "OR with new bracket"
+        case .orWithoutBracket: return "OR without bracket"
         }
+    }
+    
+    func isAnd() -> Bool {
+        return [.andWithBracket, .andWithoutBracket].contains(self)
+    }
+    
+    func isOr() -> Bool {
+        return [.orWithBracket, .orWithoutBracket].contains(self)
+    }
+    
+    func isBracket() -> Bool {
+        return [.orWithBracket, .andWithBracket].contains(self)
     }
 }

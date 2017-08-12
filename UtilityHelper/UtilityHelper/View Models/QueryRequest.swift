@@ -13,20 +13,18 @@ class QueryRequest: NSObject {
     weak var navigationController: UINavigationController?
     
     enum BarButton: String {
-        case execute = "Execute"
         case done = "Done"
         case edit = "Edit"
     }
     
     fileprivate let semiModalTransitioningDelegate = SemiModalTransistioningDelegate()
-    fileprivate var excuteButton: UIBarButtonItem!
     fileprivate var doneButton: UIBarButtonItem!
     fileprivate var editButton: UIBarButtonItem!
     
     var selected = [AliasProperty]()
     var from: DatabaseAliasTable!
     var joins = [JoinByDatabaseAlias]()
-    var wheres = [WhereClause]()
+    var wheres: WhereClause?
     var groupBy = [AliasProperty]()
     var having = [AliasProperty]()
     var orderBy = [AliasPropertyOrder]()
@@ -36,17 +34,19 @@ class QueryRequest: NSObject {
         self.from = from.toDatabaseAliasTable()
         super.init()
         
-        excuteButton = UIBarButtonItem(title: BarButton.execute.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
         doneButton = UIBarButtonItem(title: BarButton.done.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
-        editButton = UIBarButtonItem(image: StyleKit.imageOfReorder, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
+        editButton = UIBarButtonItem(title: BarButton.edit.rawValue, style: .plain, target: self, action: #selector(barButtonItemDidClicked(sender:)))
     }
     
     func getQueryActionViewModel(action: QueryAction) -> GenericTableViewModel {
         if action == .join {
             return joins.isEmpty ? QueryJoinRequest(databaseAliasTable: from, queryRequest: self) : QueryJoinRequestWithTableOptions(queryRequest: self)
         }
-        else if action == .where {
+        else if action == .where && wheres != nil {
             return QueryWhereInitiate(queryRequest: self, bracketHasEnded: false)
+        }
+        else if action == .where {
+            return QueryWhere(queryRequest: self, action: action)
         }
         else if action == .having {
             return QueryHaving(queryRequest: self)
@@ -82,9 +82,20 @@ class QueryRequest: NSObject {
         return getDatabaseAliasTable(from: alias)?.toAliasTable()?.properties.first { $0.name == propertyName }
     }
     
-    func insertStatement(_ statement: Statement) {
-        let clause = wheres.remove(at: wheres.count - 1)
-        wheres.append(clause.insert(statement: statement))
+    func insert(clause: WhereClause) {
+        if wheres == nil {
+            wheres = clause
+        }
+        else if let selected = wheres, WhereClause.canAppend(lhs: selected, rhs: clause) {
+            wheres = selected.append(whereClause: clause)
+        }
+        else if let selected = wheres {
+            wheres = clause.insert(whereClause: selected)
+        }
+    }
+    
+    func insert(statement: Statement) {
+        insert(clause: .base(statement))
     }
     
     func reload() {
@@ -96,7 +107,7 @@ class QueryRequest: NSObject {
         case .select:   return 0
         case .from:     return 1
         case .join:     return 2
-        case .where:    return (wheres.isEmpty ? 1 : 2) + joins.count
+        case .where:    return (wheres == nil ? 1 : 2) + joins.count
         case .groupBy:  return (groupBy.isEmpty ? 0 : 1) + getSection(of: .where)
         case .having:   return (having.isEmpty ? 0 : 1) + getSection(of: .groupBy)
         case .orderBy:  return (orderBy.isEmpty ? 0 : 1) + getSection(of: .having)
@@ -139,14 +150,7 @@ class QueryRequest: NSObject {
             cell.detailTextLabel?.text = row - 2 < conditionCount ? "AND" : nil
         }
         else if section == getSection(of: .where) {
-            // var index = 0
-            // var count = wheres[0].getCount()
-            // while count < row && index + 1 < wheres.count {
-            //    count += wheres[index + 1].getCount()
-            //    index += 1
-            //}
-            // TODO
-            // cell.textLabel?.text = wheres[index].getDescription(row: row - count)
+            cell.textLabel?.text = wheres?.getDescription(row: row, prefix: "")
         }
         else if section == getSection(of: .groupBy) {
             cell.textLabel?.text = groupBy[row].description
@@ -166,13 +170,13 @@ class QueryRequest: NSObject {
             let vc = GenericTableViewController.getViewController(viewModel: getQueryActionViewModel(action: action))
             navigationController?.presentViewControllerModally(vc, transitioningDelegate: semiModalTransitioningDelegate)
         }
-        else if sender.image != nil {
+        else if sender.title == BarButton.edit.rawValue {
             delegate?.update(editing: true)
-            delegate?.update(rightBarButtons: [doneButton])
+            delegate?.update(rightBarButton: doneButton)
         }
         else if sender.title == BarButton.done.rawValue {
             delegate?.update(editing: false)
-            delegate?.update(rightBarButtons: [excuteButton, editButton])
+            delegate?.update(rightBarButton: editButton)
         }
     }
 }
@@ -184,7 +188,7 @@ extension QueryRequest: GenericTableViewModel {
         setToolbar(viewController)
         viewController.hidesBottomBarWhenPushed = true
         viewController.navigationItem.title = "Query"
-        viewController.navigationItem.rightBarButtonItems = [excuteButton, editButton]
+        viewController.navigationItem.rightBarButtonItem = editButton
     }
     
     private func setToolbar(_ viewController: GenericTableViewController) {
@@ -207,7 +211,7 @@ extension QueryRequest: GenericTableViewModel {
     
     // MARK: - UITableViewDataSource
     func numberOfSections(in tableView: UITableView) -> Int {
-        let whereCount = wheres.isEmpty ? 0 : 1
+        let whereCount = wheres == nil ? 0 : 1
         let havingCount = (having.isEmpty ? 0 : 1)
         let groupCount = (groupBy.isEmpty ? 0 : 1)
         let orderCount = (orderBy.isEmpty ? 0 : 1)
@@ -219,7 +223,7 @@ extension QueryRequest: GenericTableViewModel {
         case 0:     return selected.count
         case 1:     return 1
         case 2 ..< (2 + joins.count):   return (joins[section - 2].onConditions?.count ?? 0) + 1
-        case getSection(of: .where):    return wheres.reduce(0) { $0 + $1.getCount() }
+        case getSection(of: .where):    return wheres?.getCount() ?? 0
         case getSection(of: .groupBy):  return groupBy.count
         case getSection(of: .having):   return having.count
         case getSection(of: .orderBy):  return orderBy.count
@@ -235,7 +239,7 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == getSection(of: .orderBy) {
+        if !orderBy.isEmpty && indexPath.section == getSection(of: .orderBy) {
             orderBy[indexPath.row].toggleOrder()
             tableView.cellForRow(at: indexPath)?.textLabel?.attributedText = orderBy[indexPath.row].getAttributedString()
         }
