@@ -17,6 +17,7 @@ protocol GenericTableViewModelDelegate: class {
     func remove(rows: [IndexPath])
     func animateTable(in section: Int, reloadRows: [Int], insertRows: [Int], deleteRows: [Int])
     func dismissKeyboard()
+    func getTintColor() -> UIColor
 }
 
 class GenericTableViewController: UITableViewController, GenericTableViewModelDelegate {
@@ -56,11 +57,13 @@ class GenericTableViewController: UITableViewController, GenericTableViewModelDe
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.set(navigationController: navigationController)
-        viewModel.viewDidLoad(self)
         view.backgroundColor = UIColor.groupTableViewBackground
         tableView.dataSource = viewModel
         tableView.delegate = viewModel
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 45
         tableView.tableFooterView = UIView()
+        viewModel.viewDidLoad(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,6 +82,10 @@ class GenericTableViewController: UITableViewController, GenericTableViewModelDe
         tableView.reloadData()
     }
 
+    func getTintColor() -> UIColor {
+        return tableView.tintColor
+    }
+    
     func dismissKeyboard() {
         view.endEditing(true)
     }

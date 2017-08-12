@@ -92,6 +92,40 @@
                                     <outlet property="textField" destination="iMz-He-czQ" id="fKm-qX-zAu"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ExecuteTableViewCell" rowHeight="100" id="18a-Y9-nj2" customClass="ExecuteTableViewCell" customModule="UtilityHelper" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="160" width="375" height="100"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="18a-Y9-nj2" id="5I2-V5-1EN">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="99.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VMk-nl-Kmb">
+                                            <rect key="frame" x="0.0" y="28" width="375" height="43.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" priority="999" constant="44" id="8C2-DL-f8w"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <state key="normal" title="Execute">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="didClicked:" destination="18a-Y9-nj2" eventType="touchUpInside" id="zXP-5a-Wsr"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="VMk-nl-Kmb" firstAttribute="width" secondItem="5I2-V5-1EN" secondAttribute="width" id="Svu-dd-peu"/>
+                                        <constraint firstItem="VMk-nl-Kmb" firstAttribute="top" secondItem="5I2-V5-1EN" secondAttribute="top" constant="28" id="bYW-v9-Sh3"/>
+                                        <constraint firstItem="VMk-nl-Kmb" firstAttribute="centerX" secondItem="5I2-V5-1EN" secondAttribute="centerX" id="sUf-hU-8Zz"/>
+                                        <constraint firstAttribute="bottom" secondItem="VMk-nl-Kmb" secondAttribute="bottom" constant="28" id="yvf-it-2MM"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="button" destination="VMk-nl-Kmb" id="ZiI-ms-3dX"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="vti-ji-h05" id="BtM-a3-6p8"/>

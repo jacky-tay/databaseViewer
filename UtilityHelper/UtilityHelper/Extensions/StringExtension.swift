@@ -54,7 +54,7 @@ extension String {
     }
     
     func buildAliasName() -> String {
-        guard contains("_") else {
+        guard !contains("_") else {
             return "".joined(contentsOf: components(separatedBy: "_").map { $0.characters.first?.toString() })
         }
         let uppercase = CharacterSet.uppercaseLetters

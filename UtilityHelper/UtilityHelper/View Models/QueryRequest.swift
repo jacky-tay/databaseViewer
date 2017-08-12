@@ -8,7 +8,7 @@
 
 import Foundation
 
-class QueryRequest: NSObject {
+class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
     weak var delegate: GenericTableViewModelDelegate?
     weak var navigationController: UINavigationController?
     
@@ -117,6 +117,7 @@ class QueryRequest: NSObject {
         case .groupBy:  return (groupBy.isEmpty ? 0 : 1) + getSection(of: .where)
         case .having:   return (having.isEmpty ? 0 : 1) + getSection(of: .groupBy)
         case .orderBy:  return (orderBy.isEmpty ? 0 : 1) + getSection(of: .having)
+        case .execute:  return 1 + getSection(of: .orderBy)
         default:        return 0
         }
     }
@@ -185,6 +186,15 @@ class QueryRequest: NSObject {
             delegate?.update(rightBarButton: editButton)
         }
     }
+    
+    // MARK: - ExecuteTableViewCellDelegate
+    func execute() {
+        print("Execute...")
+    }
+    
+    func getTintColor() -> UIColor {
+        return delegate?.getTintColor() ?? Material.blue
+    }
 }
 
 // MARK: - GenericTableViewModel
@@ -221,7 +231,8 @@ extension QueryRequest: GenericTableViewModel {
         let havingCount = (having.isEmpty ? 0 : 1)
         let groupCount = (groupBy.isEmpty ? 0 : 1)
         let orderCount = (orderBy.isEmpty ? 0 : 1)
-        return 2 + joins.count + whereCount + havingCount + groupCount + orderCount
+        // 3 = select + from + execute
+        return 3 + joins.count + whereCount + havingCount + groupCount + orderCount
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -233,11 +244,18 @@ extension QueryRequest: GenericTableViewModel {
         case getSection(of: .groupBy):  return groupBy.count
         case getSection(of: .having):   return having.count
         case getSection(of: .orderBy):  return orderBy.count
+        case getSection(of: .execute):  return 1
         default:    return 0
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard indexPath.section != getSection(of: .execute) else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ExecuteTableViewCell", for: indexPath)
+            (cell as? ExecuteTableViewCell)?.set(delegate: self)
+            return cell
+        }
+        
         let cell = getCell(from: tableView, indexPath: indexPath)
         cell.detailTextLabel?.text = nil
         update(cell: cell, indexPath: indexPath)
@@ -274,7 +292,7 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return indexPath.section != 1
+        return !(indexPath.section == 1 || indexPath.section == getSection(of: .execute))
     }
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
