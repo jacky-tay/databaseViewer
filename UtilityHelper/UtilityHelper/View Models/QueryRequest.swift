@@ -154,10 +154,7 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
         else if section > 1 && section < joins.count + 2 {
             cell.textLabel?.text = joins[section - 2].getConditionDescription(at: row - 1)
             let conditionCount = joins[section - 2].onConditions?.count ?? 0
-            cell.detailTextLabel?.text = row - 2 < conditionCount ? "AND" : nil
-        }
-        else if section == getSection(of: .where) {
-            cell.textLabel?.text = wheres?.getDescription(row: row)
+            cell.detailTextLabel?.text = row < conditionCount ? "AND" : nil
         }
         else if section == getSection(of: .groupBy) {
             cell.textLabel?.text = groupBy[row].description
@@ -250,9 +247,16 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard indexPath.section != getSection(of: .execute) else {
+        if indexPath.section == getSection(of: .execute) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ExecuteTableViewCell", for: indexPath)
             (cell as? ExecuteTableViewCell)?.set(delegate: self)
+            return cell
+        }
+        else if indexPath.section == getSection(of: .where),
+            let whereClause = wheres?.getDescription(row: indexPath.row),
+            let cell = tableView.dequeueReusableCell(withIdentifier: "WhereClauseTableViewCell", for: indexPath) as? WhereClauseTableViewCell {
+            
+            cell.updateContent(statement: whereClause)
             return cell
         }
         
@@ -296,7 +300,7 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return (indexPath.section == 0 || indexPath.section == getSection(of: .orderBy)) && self.tableView(tableView, numberOfRowsInSection: indexPath.section) > 1
+        return (indexPath.section == 0 || (!orderBy.isEmpty && indexPath.section == getSection(of: .orderBy))) && self.tableView(tableView, numberOfRowsInSection: indexPath.section) > 1
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {

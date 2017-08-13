@@ -22,7 +22,7 @@ extension NSManagedObjectContext {
                     var columns = [String?]()
                     for key in keys {
                         let value = (fetchResult.value(forKey: key) as AnyObject).description
-                        columns.append(value == nullTag ? nil : value)
+                        columns.append(value == nullTag ? nil : value?.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines))
                     }
                     results.append(columns)
                 } // for

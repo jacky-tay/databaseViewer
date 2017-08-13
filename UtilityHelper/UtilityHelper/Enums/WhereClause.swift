@@ -8,6 +8,8 @@
 
 import Foundation
 
+typealias WhereClauseStatement = (prefix: [WhereCategory], statement: String, suffix: [WhereCategory], index: Int, isLast: Bool)
+
 indirect enum WhereClause {
     case add([WhereClause])
     case or([WhereClause])
@@ -64,10 +66,10 @@ indirect enum WhereClause {
         return self
     }
     
-    func getDescription(row: Int, prefix: [WhereCategory] = [], suffix: [WhereCategory] = []) -> String? {
+    func getDescription(row: Int, prefix: [WhereCategory] = [], suffix: [WhereCategory] = [], isLast: Bool = false) -> WhereClauseStatement? {
         if case .base(let statement) = self {
             // TODO
-            return statement.description //" ".joined(contentsOf: [prefix, statement.description])
+            return (prefix, statement.description, suffix, row, isLast)
         }
         else if case .add(let list) = self {
             return getDescription(row: row, prefix: prefix + WhereCategory.and, suffix: suffix, list: list)
@@ -81,14 +83,14 @@ indirect enum WhereClause {
         return nil
     }
     
-    private func getDescription(row: Int, prefix: [WhereCategory], suffix: [WhereCategory], list: [WhereClause]) -> String? {
+    private func getDescription(row: Int, prefix: [WhereCategory], suffix: [WhereCategory], list: [WhereClause]) -> WhereClauseStatement? {
         var count = 0
         var index = -1
         repeat {
             index += 1
             count += list[index].getCount()
         } while index + 1 < list.count && row >= count
-        return list[index].getDescription(row: row - count + list[index].getCount(), prefix: prefix, suffix: suffix)
+        return list[index].getDescription(row: row - count + list[index].getCount(), prefix: prefix, suffix: suffix, isLast: index + 1 == list.count)
     }
     
     func insert(whereClause: WhereClause) -> WhereClause {
