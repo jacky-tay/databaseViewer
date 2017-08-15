@@ -75,8 +75,8 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
         return getSelectableDatabaseAliasTables().first { $0.alias == alias }
     }
     
-    func getProperty(from aliasProperty: AliasProperty) -> Property? {
-        guard let alias = aliasProperty.alias, let propertyName = aliasProperty.propertyName else {
+    func getProperty(from aliasProperty: AliasProperty?) -> Property? {
+        guard let alias = aliasProperty?.alias, let propertyName = aliasProperty?.propertyName else {
             return nil
         }
         return getDatabaseAliasTable(from: alias)?.toAliasTable()?.properties.first { $0.name == propertyName }
@@ -149,12 +149,6 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
                 .build(from: [(join.otherTable.tableName, nil),
                               (" AS ", Material.blue),
                               (join.otherTable.alias, nil)])
-            cell.detailTextLabel?.text = !(join.onConditions?.isEmpty ?? true) ? "ON" : nil
-        }
-        else if section > 1 && section < joins.count + 2 {
-            cell.textLabel?.text = joins[section - 2].getConditionDescription(at: row - 1)
-            let conditionCount = joins[section - 2].onConditions?.count ?? 0
-            cell.detailTextLabel?.text = row < conditionCount ? "AND" : nil
         }
         else if section == getSection(of: .groupBy) {
             cell.textLabel?.text = groupBy[row].description
@@ -236,7 +230,7 @@ extension QueryRequest: GenericTableViewModel {
         switch section {
         case 0:     return selected.count
         case 1:     return 1
-        case 2 ..< (2 + joins.count):   return (joins[section - 2].onConditions?.count ?? 0) + 1
+        case 2 ..< (2 + joins.count):   return (joins[section - 2].onConditions?.getCount() ?? 0) + 1
         case getSection(of: .where):    return wheres?.getCount() ?? 0
         case getSection(of: .groupBy):  return groupBy.count
         case getSection(of: .having):   return having.count
@@ -247,15 +241,23 @@ extension QueryRequest: GenericTableViewModel {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == getSection(of: .execute) {
+        let section = indexPath.section
+        if section == getSection(of: .execute) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ExecuteTableViewCell", for: indexPath)
             (cell as? ExecuteTableViewCell)?.set(delegate: self)
             return cell
         }
-        else if indexPath.section == getSection(of: .where),
+        else if section > 1 && section < joins.count + 2 &&
+            indexPath.row > 0 && // first row is joined table name
+            joins[section - 2].onConditions != nil, // must have conditions
+            let whereClause = joins[section - 2].onConditions?.getDescription(row: indexPath.row - 1),
+            let cell = getWhereClauseTableViewCell(from: tableView, indexPath: indexPath) as? WhereClauseTableViewCell {
+            cell.updateContent(statement: whereClause)
+            return cell
+        }
+        else if section == getSection(of: .where),
             let whereClause = wheres?.getDescription(row: indexPath.row),
-            let cell = tableView.dequeueReusableCell(withIdentifier: "WhereClauseTableViewCell", for: indexPath) as? WhereClauseTableViewCell {
-            
+            let cell = getWhereClauseTableViewCell(from: tableView, indexPath: indexPath) as? WhereClauseTableViewCell {
             cell.updateContent(statement: whereClause)
             return cell
         }

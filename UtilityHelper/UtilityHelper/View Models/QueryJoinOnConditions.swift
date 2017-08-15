@@ -26,6 +26,7 @@ class QueryJoinOnConditions: NSObject, GenericTableViewModel {
                                        space]
         
         if let genericTableViewControllers = viewController.navigationController?.viewControllers as? [GenericTableViewController] {
+            // TODO: check
             for vc in genericTableViewControllers where
                 (vc.viewModel is QueryJoinRequestTablePropertySelect || vc.viewModel is QueryComparator) {
                     vc.removeFromParentViewController()
@@ -38,11 +39,12 @@ class QueryJoinOnConditions: NSObject, GenericTableViewModel {
     }
     
     func viewWillAppear(_ viewController: GenericTableViewController) {
-        if queryRequest?.joins.last?.onConditions?.last?.comparator == nil,
-            let count = queryRequest?.joins.last?.onConditions?.count, count > 0 {
-            // prevent user tap add another and then pop back
-            queryRequest?.joins.last?.onConditions?.remove(at: count - 1)
-        }
+        // TODO
+//        if queryRequest?.joins.last?.onConditions?.last?.comparator == nil,
+//            let count = queryRequest?.joins.last?.onConditions?.count, count > 0 {
+//            // prevent user tap add another and then pop back
+//            queryRequest?.joins.last?.onConditions?.remove(at: count - 1)
+//        }
         
         navigationController?.setToolbarHidden(false, animated: true)
     }
@@ -52,21 +54,40 @@ class QueryJoinOnConditions: NSObject, GenericTableViewModel {
     }
     
     dynamic private func addCondition(sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let options: [WhereCategory] = [.and, .or]
+        options.forEach { (option) in
+            alert.addAction(UIAlertAction(title: option.description, style: .default) { [weak self] _ in
+                self?.navigate(withOption: option)
+            })
+        } // forEach
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        navigationController?.present(alert, animated: true, completion: nil)
+    }
+    
+    private func navigate(withOption: WhereCategory) {
         if let queryRequest = queryRequest,
-            let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest)) {
+            let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest, joinedAliasProperty: nil, comparator: nil)) {
+            if withOption == .and {
+                queryRequest.joins.last?.insert(clause: .add([]))
+            }
+            else {
+                queryRequest.joins.last?.insert(clause: .or([]))
+            }
             navigationController?.pushViewController(vc, animated: true)
         }
     }
     
     // MARK: - UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return queryRequest?.joins.last?.onConditions?.count ?? 0
+        return queryRequest?.joins.last?.onConditions?.getCount() ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = getCell(from: tableView, indexPath: indexPath)
-        cell.textLabel?.text = queryRequest?.joins.last?.getConditionDescription(at: indexPath.row)
-        cell.detailTextLabel?.text = nil
+        let cell = getWhereClauseTableViewCell(from: tableView, indexPath: indexPath)
+        if let cell = cell as? WhereClauseTableViewCell, let clause = queryRequest?.joins.last?.onConditions?.getDescription(row: indexPath.row) {
+            cell.updateContent(statement: clause)
+        }
         cell.accessoryType = .none
         cell.selectionStyle = .none
         return cell

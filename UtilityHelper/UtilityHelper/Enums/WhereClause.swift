@@ -25,6 +25,15 @@ indirect enum WhereClause {
         }
     }
     
+    static func shouldInsert(lhs: WhereClause, rhs: WhereClause) -> Bool {
+        switch (lhs, rhs) {
+        case (.base, .add), (.bracket, .add), (.base, .or), (.bracket, .or):
+            return true
+        default:
+            return false
+        }
+    }
+    
     func isBase() -> Bool {
         if case .base(_) = self {
             return true

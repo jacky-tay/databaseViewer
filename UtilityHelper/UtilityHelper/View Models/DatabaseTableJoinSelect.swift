@@ -60,9 +60,9 @@ class DatabaseTableJoinSelect: DatabaseTableSelect {
         else if let queryRequest = queryRequest {
             cell?.accessoryType = .disclosureIndicator
             let joinTable = DatabaseAliasTable(databaseName: database.databaseName, tableName: database.tables[indexPath.row], alias: alias)
-            let relationshipWith = aliasTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: [])
+            let relationshipWith = aliasTable.toJoinByDatabaseAlias(join: join, with: joinTable, onConditions: nil)
             queryRequest.joins.append(relationshipWith)
-            if let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest)) {
+            if let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest, joinedAliasProperty: nil, comparator: nil)) {
                 navigationController?.pushViewController(vc, animated: true)
             }
         }

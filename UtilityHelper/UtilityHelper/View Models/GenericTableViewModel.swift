@@ -56,6 +56,10 @@ extension GenericTableViewModel {
         return cell
     }
     
+    func getWhereClauseTableViewCell(from tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: "WhereClauseTableViewCell", for: indexPath)
+    }
+    
     func applyHeaderLayout(view: UIView) {
         if let headerView = view as? UITableViewHeaderFooterView,
             let header = headerView.textLabel?.text {

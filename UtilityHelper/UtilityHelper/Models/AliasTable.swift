@@ -19,11 +19,17 @@ class AliasTable: Table {
         return toDatabaseTable(alias: alias)
     }
     
-    func toDatabaseAliasTableWithProperties(includeWildCard: Bool) -> DatabaseAliasTableWithProperties {
-        var propertieStrings = properties.flatMap { $0 }
-        if includeWildCard {
-            propertieStrings.insert(Property(name: "*", attributeType: .undefinedAttributeType), at: 0)
+    func toDatabaseAliasTableWithProperties(includeWildCard: Bool, with filter: AttributeCategory? = nil) -> DatabaseAliasTableWithProperties {
+        var temp: [Property]
+        if let filter = filter {
+            temp = properties.flatMap { $0.attributeType.getCategory() == filter ? $0 : nil }
         }
-        return toDatabaseAliasTable().toDatabaseAliasTable(with: propertieStrings)
+        else {
+           temp = properties.flatMap { $0 }
+        }
+        if includeWildCard {
+            temp.insert(Property(name: "*", attributeType: .undefinedAttributeType), at: 0)
+        }
+        return toDatabaseAliasTable().toDatabaseAliasTable(with: temp)
     }
 }

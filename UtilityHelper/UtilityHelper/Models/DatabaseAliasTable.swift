@@ -24,7 +24,7 @@ class DatabaseAliasTable : DatabaseTable, CustomStringConvertible {
         return DatabaseManager.sharedInstance.getTable(from: self)?.toAliasTable(alias: alias)
     }
     
-    func toJoinByDatabaseAlias(join: Join, with other: DatabaseAliasTable, onConditions: [JoinWithDatabaseAliasTable]?) -> JoinByDatabaseAlias {
+    func toJoinByDatabaseAlias(join: Join, with other: DatabaseAliasTable, onConditions: WhereClause?) -> JoinByDatabaseAlias {
         return JoinByDatabaseAlias(databaseName: databaseName, tableName: tableName, alias: alias, join: join, otherTable: other, onConditions: onConditions)
     }
     

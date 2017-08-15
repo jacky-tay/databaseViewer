@@ -11,22 +11,24 @@ import Foundation
 class JoinByDatabaseAlias : DatabaseAliasTable {
     let joinType: Join!
     let otherTable: DatabaseAliasTable!
-    var onConditions: [JoinWithDatabaseAliasTable]?
+    var onConditions: WhereClause?
     
-    init(databaseName: String, tableName: String, alias: String, join: Join, otherTable: DatabaseAliasTable, onConditions: [JoinWithDatabaseAliasTable]?) {
+    init(databaseName: String, tableName: String, alias: String, join: Join, otherTable: DatabaseAliasTable, onConditions: WhereClause?) {
         self.joinType = join
         self.otherTable = otherTable
         self.onConditions = onConditions
         super.init(databaseName: databaseName, tableName: tableName, alias: alias)
     }
     
-    func getConditionDescription(at index: Int) -> String {
-        guard let conditions = onConditions else {
-            return ""
+    func insert(clause: WhereClause) {
+        if onConditions == nil {
+            onConditions = clause
         }
-        let condition = conditions[index]
-        let otherProperty = ".".joined(contentsOf: [otherTable.alias, condition.otherTableProperty])
-        let property = ".".joined(contentsOf: [alias, condition.propertyName])
-        return " ".joined(contentsOf: [otherProperty, condition.comparator?.description, property])
+        else if let selected = onConditions, WhereClause.canAppend(lhs: selected, rhs: clause) {
+            onConditions = selected.append(whereClause: clause)
+        }
+        else if let selected = onConditions, WhereClause.shouldInsert(lhs: selected, rhs: clause) {
+            onConditions = clause.insert(whereClause: selected)
+        }
     }
 }

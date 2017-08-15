@@ -40,8 +40,7 @@ class QueryComparator: NSObject, GenericTableViewModel {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let comparator = list[indexPath.row]
-        if action == .join, let queryRequest = queryRequest, let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest)) {
-            queryRequest.joins.last?.onConditions?.last?.comparator = comparator
+        if action == .join, let queryRequest = queryRequest, let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest, joinedAliasProperty: aliasProperty, comparator: comparator)) {
             navigationController?.pushViewController(vc, animated: true)
         }
         else if let queryRequest = queryRequest,

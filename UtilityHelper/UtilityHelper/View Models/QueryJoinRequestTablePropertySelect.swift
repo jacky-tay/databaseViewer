@@ -11,22 +11,21 @@ import UIKit
 class QueryJoinRequestTablePropertySelect: QuerySelect {
     
     private var hasComparator = false
-    private let createNewOnConditions: Bool
+    private var joinedAliasProperty: AliasProperty?
+    private var comparator: Comparator?
     
-    override init(queryRequest: QueryRequest) {
-        
-        self.createNewOnConditions = (queryRequest.joins.last?.onConditions?.isEmpty ?? false) ||
-            queryRequest.joins.last?.onConditions?.last?.propertyName != nil
+    init(queryRequest: QueryRequest, joinedAliasProperty: AliasProperty?, comparator: Comparator?) {
         
         super.init(queryRequest: queryRequest)
         self.action = .join
+        self.joinedAliasProperty = joinedAliasProperty
+        self.comparator = comparator
 
         // insert otherPropertyName first, then propertyName
-        if createNewOnConditions, let properties = queryRequest.joins.last?.otherTable.toAliasTable()?.toDatabaseAliasTableWithProperties(includeWildCard: false) {
+        if joinedAliasProperty == nil, let properties = queryRequest.joins.last?.otherTable.toAliasTable()?.toDatabaseAliasTableWithProperties(includeWildCard: false) {
             self.list = [properties]
-            queryRequest.joins.last?.onConditions?.append(JoinWithDatabaseAliasTable())
         }
-        else if let properties = queryRequest.joins.last?.toAliasTable()?.toDatabaseAliasTableWithProperties(includeWildCard: false) {
+        else if let properties = queryRequest.joins.last?.toAliasTable()?.toDatabaseAliasTableWithProperties(includeWildCard: false, with: queryRequest.getProperty(from: joinedAliasProperty)?.attributeType.getCategory()) {
             self.list = [properties]
         }
     }
@@ -45,17 +44,22 @@ class QueryJoinRequestTablePropertySelect: QuerySelect {
         selectedIndexPath.removeAll()
         
         super.tableView(tableView, didSelectRowAt: indexPath)
-        let property = list[indexPath.section].properties[indexPath.row]
-        if createNewOnConditions,
+        let table = list[indexPath.section]
+        let property = table.properties[indexPath.row]
+        let aliasProperty = AliasProperty(alias: table.alias, propertyName: property.name)
+        
+        if joinedAliasProperty == nil,
             let queryRequest = queryRequest,
-            let vc = GenericTableViewController.getViewController(viewModel: QueryComparator(queryRequest: queryRequest, action: .join, aliasProperty: AliasProperty(alias: queryRequest.joins.last?.otherTable?.alias, propertyName: property.name), category: property.attributeType.getCategory())) {
-            let lastJoin = queryRequest.joins.last
-            lastJoin?.onConditions?.last?.otherTableProperty = property.name
+            let vc = GenericTableViewController.getViewController(viewModel: QueryComparator(queryRequest: queryRequest, action: .join, aliasProperty: aliasProperty, category: property.attributeType.getCategory())) {
+            
             navigationController?.pushViewController(vc, animated: true)
         }
         else if let queryRequest = queryRequest,
+            let joinedAliasProperty = joinedAliasProperty,
+            let comparator = comparator,
             let vc = GenericTableViewController.getViewController(viewModel: QueryJoinOnConditions(queryRequest: queryRequest)) {
-            queryRequest.joins.last?.onConditions?.last?.propertyName = property.name
+            let statement = Statement(aliasProperty: joinedAliasProperty, argument: comparator, otherAliasProperty: aliasProperty)
+            queryRequest.joins.last?.insert(clause: .base(statement))
             navigationController?.pushViewController(vc, animated: true)
         }
     }
