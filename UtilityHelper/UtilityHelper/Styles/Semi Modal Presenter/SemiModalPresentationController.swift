@@ -31,6 +31,6 @@ class SemiModalPresentationController: UIPresentationController {
     }
 
     override func containerViewWillLayoutSubviews() {
-        presentedView?.frame = frameOfPresentedViewInContainerView
+        presentedView?.frame = UIDevice.current.orientation.isLandscape ? containerView!.bounds : frameOfPresentedViewInContainerView
     }
 }
