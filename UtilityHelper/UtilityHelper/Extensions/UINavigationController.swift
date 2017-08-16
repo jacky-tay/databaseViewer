@@ -35,7 +35,7 @@ extension UINavigationController: UINavigationBarDelegate, UIGestureRecognizerDe
 
     public func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
 
-        if viewControllers.count < navigationBar.items?.count {
+        if viewControllers.count < (navigationBar.items?.count ?? 0) {
             return true
         }
 
