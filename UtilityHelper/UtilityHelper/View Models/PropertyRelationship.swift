@@ -23,7 +23,7 @@ class PropertyRelationship: NSObject, GenericTableViewModel {
     
     // MARK: - UITableViewDataSource
     func numberOfSections(in tableView: UITableView) -> Int {
-        return databaseTable.relationships.isEmpty ? 1 : 0
+        return databaseTable.relationships.isEmpty ? 1 : 2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -39,6 +39,8 @@ class PropertyRelationship: NSObject, GenericTableViewModel {
             cell.detailTextLabel?.text = databaseTable.properties[indexPath.row].attributeType.description
         }
         else {
+            cell.accessoryType = .disclosureIndicator
+            cell.selectionStyle = .default
             cell.textLabel?.text = databaseTable.relationships[indexPath.row]
             cell.detailTextLabel?.text = nil
         }
@@ -59,5 +61,16 @@ class PropertyRelationship: NSObject, GenericTableViewModel {
 
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         applyFooterLayout(view: view)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 1,
+            let table = DatabaseManager.sharedInstance.getTable(from: DatabaseTable(databaseName: databaseTable.databaseName, tableName: databaseTable.relationships[indexPath.row])),
+            let vc = GenericTableViewController.getViewController(viewModel: PropertyRelationship(databaseTable: table.toDatabaseAliasTableWithPropertiesRelationships())) {
+            navigationController?.pushViewController(vc, animated: true)
+        }
+        else {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
 }
