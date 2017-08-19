@@ -30,6 +30,7 @@ class DatabaseTableJoinSelect: DatabaseTableSelect {
                 }
             }
             if let relationships = table.relationships, !relationships.isEmpty {
+                hasRelationshipSection = true
                 databases.insert(DatabaseTables(databaseName: "Relationships", tables: relationships), at: 0)
             }
         } // remove table from its database

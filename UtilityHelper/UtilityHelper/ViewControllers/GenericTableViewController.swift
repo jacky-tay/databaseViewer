@@ -20,7 +20,7 @@ protocol GenericTableViewModelDelegate: class {
     func getTintColor() -> UIColor
 }
 
-class GenericTableViewController: UITableViewController, GenericTableViewModelDelegate {
+class GenericTableViewController: UITableViewController, InterceptableViewController, GenericTableViewModelDelegate {
 
     internal var viewModel: GenericTableViewModel!
     
@@ -123,5 +123,13 @@ class GenericTableViewController: UITableViewController, GenericTableViewModelDe
         tableView.deleteRows(at: deleteRows.map { IndexPath(row: $0, section: section) }, with: .automatic)
         tableView.insertRows(at: insertRows.map { IndexPath(row: $0, section: section) }, with: .automatic)
         tableView.endUpdates()
+    }
+    
+    // MARK: - InterceptableViewController
+    func canIntercept() -> Bool {
+        guard let interceptable = viewModel as? InterceptableViewController else {
+            return false
+        }
+        return interceptable.canIntercept()
     }
 }

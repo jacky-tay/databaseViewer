@@ -8,7 +8,7 @@
 
 import UIKit
 
-class QueryJoinOnConditions: NSObject, GenericTableViewModel {
+class QueryJoinOnConditions: NSObject, GenericTableViewModel, InterceptableViewController {
     weak var navigationController: UINavigationController?
     private weak var queryRequest: QueryRequest?
     
@@ -24,14 +24,6 @@ class QueryJoinOnConditions: NSObject, GenericTableViewModel {
         viewController.toolbarItems = [space,
                                        UIBarButtonItem(title: "Add another condition", style: .plain, target: self, action: #selector(addCondition(sender:))),
                                        space]
-        
-        if let genericTableViewControllers = viewController.navigationController?.viewControllers as? [GenericTableViewController] {
-            // TODO: check
-            for vc in genericTableViewControllers where
-                (vc.viewModel is QueryJoinRequestTablePropertySelect || vc.viewModel is QueryComparator) {
-                    vc.removeFromParentViewController()
-            }
-        }
     }
     
     func doneIsClicked() {
@@ -91,5 +83,20 @@ class QueryJoinOnConditions: NSObject, GenericTableViewModel {
         cell.accessoryType = .none
         cell.selectionStyle = .none
         return cell
+    }
+    
+    // MARK: - InterceptableViewController
+    func canIntercept() -> Bool {
+        guard let last = queryRequest?.joins.last else {
+            return false
+        }
+        let alert = UIAlertController(title: "Warning", message: "This action will remove \(last.tableName ?? "table").\nDo you wish to continue?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Remove", style: .destructive) { [weak self] _ in
+            self?.queryRequest?.joins.removeLast()
+            self?.navigationController?.popToRootViewController(animated: true)
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        navigationController?.present(alert, animated: true, completion: nil)
+        return true
     }
 }
