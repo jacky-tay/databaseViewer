@@ -9,8 +9,6 @@
 import Foundation
 
 enum WhereCategory: CustomStringConvertible {
-    case bracketStart
-    case bracketEnd
     case and
     case or
     case `default`
@@ -18,15 +16,55 @@ enum WhereCategory: CustomStringConvertible {
     var description: String {
         switch self {
         case .and:  return "AND"
-        case .bracketEnd:   return ")"
-        case .bracketStart: return "("
         case .or:   return "OR"
         default:    return ""
         }
     }
 }
 
-func + (lhs: [WhereCategory], rhs: WhereCategory) -> [WhereCategory] {
+enum WhereCategoryDisplay: CustomStringConvertible {
+    case bracketStart(Int)
+    case bracketEnd(Bool)
+    case and(Int)
+    case or(Int)
+    
+    var description: String {
+        switch self {
+        case .and:  return "AND "
+        case .bracketEnd:   return ")"
+        case .bracketStart: return "("
+        case .or:   return "OR "
+        }
+    }
+    
+    func debugDesription() -> String {
+        switch self {
+        case .and(let v):  return "AND(\(v)) "
+        case .bracketEnd(let v):   return ")(\(v))"
+        case .bracketStart(let v): return "((\(v))"
+        case .or(let v):   return "OR(\(v)) "
+        }
+    }
+}
+
+extension Array where Element == WhereCategoryDisplay {
+    func update(to value: Int) -> [WhereCategoryDisplay] {
+        var list = Array(self)
+        let lastValue = list.removeLast()
+        if case .and(_) = lastValue {
+            list.append(.and(value))
+        }
+        else if case .or(_) = lastValue {
+            list.append(.or(value))
+        }
+        else if case .bracketStart(_) = lastValue {
+            list.append(.bracketStart(value))
+        }
+        return list
+    }
+}
+
+func + (lhs: [WhereCategoryDisplay], rhs: WhereCategoryDisplay) -> [WhereCategoryDisplay] {
     var list = lhs
     list.append(rhs)
     return list
@@ -59,5 +97,10 @@ enum WhereOptions: CustomStringConvertible {
     
     func isBracket() -> Bool {
         return [.orWithBracket, .andWithBracket].contains(self)
+    }
+    
+    func getCategory() -> WhereCategory {
+        return isAnd() ? .and :
+            isOr() ? .or : .default
     }
 }

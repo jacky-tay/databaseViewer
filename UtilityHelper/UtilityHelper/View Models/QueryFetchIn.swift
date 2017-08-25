@@ -14,10 +14,15 @@ class QueryFetchIn: NSObject, GenericTableViewModel {
     private var list = [String]()
     private var selectedIndexPath = [IndexPath]()
     private let aliasProperty: AliasProperty!
+    private let whereOption: WhereOptions?
+    private let endLastBracket: Bool?
     
-    init(queryRequest: QueryRequest, aliasProperty: AliasProperty) {
+    init(queryRequest: QueryRequest, aliasProperty: AliasProperty, whereOption: WhereOptions?, endLastBracket: Bool?) {
         self.queryRequest = queryRequest
         self.aliasProperty = aliasProperty
+        self.whereOption = whereOption
+        self.endLastBracket = endLastBracket
+        
         if let alias = aliasProperty.alias,
             let propertyName = aliasProperty.propertyName,
             let databaseTable = queryRequest.getDatabaseAliasTable(from: alias) {
@@ -34,7 +39,7 @@ class QueryFetchIn: NSObject, GenericTableViewModel {
         let options = selectedIndexPath.flatMap { [weak self] in self?.list[$0.row] }
         if !options.isEmpty {
             let statement = Statement(aliasProperty: aliasProperty, argument: Argument.in, values: options)
-            queryRequest?.insert(statement: statement)
+            queryRequest?.insert(statement: statement, whereOption: whereOption, endLastBracket: endLastBracket)
             queryRequest?.reload()
         }
     }

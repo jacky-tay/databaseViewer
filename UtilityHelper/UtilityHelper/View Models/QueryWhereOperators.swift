@@ -13,9 +13,13 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
     weak var queryRequest: QueryRequest?
     internal var list: [(String, [WhereArgument])] = []
     private let aliasProperty: AliasProperty!
+    private let whereOption: WhereOptions?
+    private let endLastBracket: Bool?
     
-    init(queryRequest: QueryRequest, alias: String, property: Property) {
+    init(queryRequest: QueryRequest, alias: String, property: Property, whereOption: WhereOptions?, endLastBracket: Bool?) {
         self.queryRequest = queryRequest
+        self.whereOption = whereOption
+        self.endLastBracket = endLastBracket
         list = [("Comparison Operator", Comparator.getAll(filterBy: property.attributeType.getCategory())),
                 ("Operator", Argument.getAll(filterBy: property.attributeType.getCategory()))]
         self.aliasProperty = AliasProperty(alias: alias, propertyName: property.name)
@@ -58,24 +62,24 @@ class QueryWhereOperators: NSObject, GenericTableViewModel {
         let selectedOperator = list[indexPath.section].1[indexPath.row]
         var viewModel: GenericTableViewModel?
         if selectedOperator.description == Argument.in.description {
-            viewModel = QueryFetchIn(queryRequest: queryRequest, aliasProperty: aliasProperty)
+            viewModel = QueryFetchIn(queryRequest: queryRequest, aliasProperty: aliasProperty, whereOption: whereOption, endLastBracket: endLastBracket)
         }
         else if [Argument.isNotNull, Argument.isNull].contains(where: { $0.description == selectedOperator.description }) {
             tableView.deselectRow(at: indexPath, animated: true)
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-            // TODO add to queryRequest
+
             let statement = Statement(aliasProperty: aliasProperty, argument: selectedOperator, values: [])
-            queryRequest.insert(statement: statement)
+            queryRequest.insert(statement: statement, whereOption: whereOption, endLastBracket: endLastBracket)
             queryRequest.reload()
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1) { [weak self] in
                 self?.navigationController?.dismiss(animated: true, completion: nil)
             }
         }
         else if Argument.between.description == selectedOperator.description {
-            viewModel = QueryBetweenOperatorTextInput(queryRequest: queryRequest, aliasProperty: aliasProperty, whereArgument: selectedOperator)
+            viewModel = QueryBetweenOperatorTextInput(queryRequest: queryRequest, aliasProperty: aliasProperty, whereArgument: selectedOperator, whereOption: whereOption, endLastBracket: endLastBracket)
         }
         else {
-            viewModel = QueryOperatorTextInput(queryRequest: queryRequest, aliasProperty: aliasProperty, whereArgument: selectedOperator)
+            viewModel = QueryWhereOperatorTextInput(queryRequest: queryRequest, aliasProperty: aliasProperty, whereArgument: selectedOperator, whereOption: whereOption, endLastBracket: endLastBracket)
         }
         
         if let viewModel = viewModel,

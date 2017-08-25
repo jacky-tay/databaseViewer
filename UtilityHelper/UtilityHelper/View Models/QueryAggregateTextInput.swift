@@ -10,9 +10,9 @@ import UIKit
 
 class QueryAggregateTextInput: QueryOperatorTextInput {
     
-    override func setupContent() {
-        //
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        (cell as? TextFieldTableViewCell)?.textField.becomeFirstResponder()
+        return cell
     }
-    
-    
 }

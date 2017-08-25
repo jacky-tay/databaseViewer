@@ -28,7 +28,7 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
         self.whereArgument = whereArgument
         self.attributeCategory = queryRequest.getProperty(from: aliasProperty)?.attributeType.getCategory() ?? .undefined
     }
-    
+        
     func setupContent() {
         if let alias = aliasProperty.alias,
             let propertyName = aliasProperty.propertyName,
@@ -40,17 +40,7 @@ class QueryOperatorTextInput: NSObject, GenericTableViewModel, UITextFieldDelega
     
     func viewDidLoad(_ viewController: GenericTableViewController) {
         viewController.navigationItem.title = whereArgument.description
-        addDoneOnRightHandSide(viewController)
         setupContent()
-    }
-    
-    func doneIsClicked() {
-        if let cell = delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell,
-            let text = cell.textField.text {
-            let statement = Statement(aliasProperty: aliasProperty, argument: whereArgument, values: [text])
-            queryRequest?.insert(statement: statement)
-            queryRequest?.reload()
-        }
     }
 
     func dismissKeyboard() {

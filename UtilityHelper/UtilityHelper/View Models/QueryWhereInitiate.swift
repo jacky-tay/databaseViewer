@@ -12,13 +12,15 @@ class QueryWhereInitiate: NSObject, GenericTableViewModel {
     weak var navigationController: UINavigationController?
     private weak var queryReuest: QueryRequest!
     private var list = [(WhereCategory, [WhereOptions])]()
+    private let endLastBracket: Bool!
     
     init(queryRequest: QueryRequest, bracketHasEnded: Bool) {
         self.queryReuest = queryRequest
+        self.endLastBracket = bracketHasEnded
         list = [(.and, [.andWithBracket, .andWithoutBracket]),
                 (.or, [.orWithBracket, .orWithoutBracket])]
         
-        if !bracketHasEnded && (queryRequest.wheres?.isBracket() ?? false || queryRequest.wheres?.getLast()?.isBracket() ?? false) {
+        if !bracketHasEnded && (queryRequest.wheres?.isLastBaseWrapWithBracket() ?? false || queryRequest.wheres?.getLast()?.isBracket() ?? false) {
             list.insert((.default, [.endBracket]), at: 0)
         }
     }
@@ -58,21 +60,27 @@ class QueryWhereInitiate: NSObject, GenericTableViewModel {
             viewModel = QueryWhereInitiate(queryRequest: queryRequest, bracketHasEnded: true)
         }
         else {
-            viewModel = QueryWhere(queryRequest: queryRequest, action: .where, whereOption: option)
+            let isAndWithNewOr = (queryRequest.wheres?.isAdd() ?? false) &&
+                !(queryRequest.wheres?.isLastBaseWrapWithBracket() ?? false) &&
+                option.isOr()
+            let isOrWithNewAnd = (queryRequest.wheres?.isOr() ?? false) &&
+                !(queryRequest.wheres?.isLastBaseWrapWithBracket() ?? false) &&
+                option.isAnd()
+            viewModel = QueryWhere(queryRequest: queryRequest, action: .where, whereOption: option, endLastBracket: endLastBracket || isAndWithNewOr || isOrWithNewAnd)
         }
         
-        if !(queryRequest.wheres?.isAdd() ?? true) && option.isAnd() {
-            queryRequest.convertWhereClauseToBracketIfNeeded()
-            queryRequest.insert(clause: .add([]))
-        }
-        else if !(queryRequest.wheres?.isOr() ?? true) && option.isOr() {
-            queryRequest.convertWhereClauseToBracketIfNeeded()
-            queryRequest.insert(clause: .or([]))
-        }
-        
-        if option.isBracket() {
-            queryRequest.insert(clause: .bracket(nil))
-        }
+//        if !(queryRequest.wheres?.isAdd() ?? true) && option.isAnd() {
+//            queryRequest.convertWhereClauseToBracketIfNeeded()
+//            queryRequest.insert(clause: .add([]))
+//        }
+//        else if !(queryRequest.wheres?.isOr() ?? true) && option.isOr() {
+//            queryRequest.convertWhereClauseToBracketIfNeeded()
+//            queryRequest.insert(clause: .or([]))
+//        }
+//        
+//        if option.isBracket() {
+//            queryRequest.insert(clause: .bracket(nil))
+//        }
         
         if let viewModel = viewModel,
             let vc = GenericTableViewController.getViewController(viewModel: viewModel) {

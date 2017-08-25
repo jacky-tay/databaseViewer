@@ -10,11 +10,13 @@ import UIKit
 
 class QueryWhere: QuerySelect {
     
+    private var endLastBracket: Bool?
     private var whereOption: WhereOptions?
     
-    convenience init(queryRequest: QueryRequest, action: QueryAction, whereOption: WhereOptions) {
+    convenience init(queryRequest: QueryRequest, action: QueryAction, whereOption: WhereOptions, endLastBracket: Bool) {
         self.init(queryRequest: queryRequest, action: action)
         self.whereOption = whereOption
+        self.endLastBracket = endLastBracket
     }
     
     override func viewDidLoad(_ viewController: GenericTableViewController) {
@@ -30,7 +32,7 @@ class QueryWhere: QuerySelect {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let queryRequest = queryRequest,
-            let vc = GenericTableViewController.getViewController(viewModel: QueryWhereOperators(queryRequest: queryRequest, alias: list[indexPath.section].alias, property: list[indexPath.section].properties[indexPath.row])) {
+            let vc = GenericTableViewController.getViewController(viewModel: QueryWhereOperators(queryRequest: queryRequest, alias: list[indexPath.section].alias, property: list[indexPath.section].properties[indexPath.row], whereOption: whereOption, endLastBracket: endLastBracket)) {
             navigationController?.pushViewController(vc, animated: true)
         }
     }

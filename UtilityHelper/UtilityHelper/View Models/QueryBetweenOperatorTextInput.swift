@@ -8,7 +8,7 @@
 
 import UIKit
 
-class QueryBetweenOperatorTextInput: QueryOperatorTextInput {
+class QueryBetweenOperatorTextInput: QueryWhereOperatorTextInput {
     
     private var firstText: String?
     private var secondText: String?
@@ -21,7 +21,7 @@ class QueryBetweenOperatorTextInput: QueryOperatorTextInput {
         if let first = (delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell)?.textField.text,
             let second = (delegate?.getCellRow(at: IndexPath(row: 0, section: 0)) as? TextFieldTableViewCell)?.textField.text {
             let statement = Statement(aliasProperty: aliasProperty, argument: Argument.between, values: [first, second])
-            queryRequest?.insert(statement: statement)
+            queryRequest?.insert(statement: statement, whereOption: whereOption, endLastBracket: endLastBracket)
             queryRequest?.reload()
         }
     }

@@ -61,7 +61,7 @@ class QueryJoinOnConditions: NSObject, GenericTableViewModel, InterceptableViewC
         if let queryRequest = queryRequest,
             let vc = GenericTableViewController.getViewController(viewModel: QueryJoinRequestTablePropertySelect(queryRequest: queryRequest, joinedAliasProperty: nil, comparator: nil)) {
             if withOption == .and {
-                queryRequest.joins.last?.insert(clause: .add([]))
+                queryRequest.joins.last?.insert(clause: .and([]))
             }
             else {
                 queryRequest.joins.last?.insert(clause: .or([]))
@@ -78,7 +78,7 @@ class QueryJoinOnConditions: NSObject, GenericTableViewModel, InterceptableViewC
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = getWhereClauseTableViewCell(from: tableView, indexPath: indexPath)
         if let cell = cell as? WhereClauseTableViewCell, let clause = queryRequest?.joins.last?.onConditions?.getDescription(row: indexPath.row) {
-            cell.updateContent(statement: clause)
+            cell.updateContent(statement: clause, row: indexPath.row)
         }
         cell.accessoryType = .none
         cell.selectionStyle = .none

@@ -82,26 +82,31 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
         return getDatabaseAliasTable(from: alias)?.toAliasTable()?.properties.first { $0.name == propertyName }
     }
     
-    func convertWhereClauseToBracketIfNeeded() {
-        if wheres?.isOr() ?? false || wheres?.isAdd() ?? false {
-            wheres = .bracket(wheres)
-        }
-    }
+//    func convertWhereClauseToBracketIfNeeded() {
+//        if wheres?.isOr() ?? false || wheres?.isAdd() ?? false {
+//            wheres = .bracket(wheres)
+//        }
+//    }
     
-    func insert(clause: WhereClause) {
-        if wheres == nil {
-            wheres = clause
-        }
-        else if let selected = wheres, WhereClause.canAppend(lhs: selected, rhs: clause) {
-            wheres = selected.append(whereClause: clause)
-        }
-        else if let selected = wheres {
-            wheres = clause.insert(whereClause: selected)
-        }
-    }
+//    func insert(clause: WhereClause) {
+//        if wheres == nil {
+//            wheres = clause
+//        }
+//        else if let selected = wheres, WhereClause.canAppend(lhs: selected, rhs: clause) {
+//            wheres = selected.append(whereClause: clause)
+//        }
+//        else if let selected = wheres {
+//            wheres = clause.insert(whereClause: selected)
+//        }
+//    }
     
-    func insert(statement: Statement) {
-        insert(clause: .base(statement))
+    func insert(statement: Statement, whereOption: WhereOptions?, endLastBracket: Bool?) {
+        guard let whereOption = whereOption, let endLastBracket = endLastBracket else {
+            wheres = .base(statement)
+            return
+        }
+        let clause: WhereClause = whereOption.isBracket() ? .bracket(.base(statement)) : .base(statement)
+        wheres = clause.update(whereClause: wheres, with: whereOption.getCategory(), endLastBracket: endLastBracket)
     }
     
     func reload() {
@@ -252,13 +257,13 @@ extension QueryRequest: GenericTableViewModel {
             joins[section - 2].onConditions != nil, // must have conditions
             let whereClause = joins[section - 2].onConditions?.getDescription(row: indexPath.row - 1),
             let cell = getWhereClauseTableViewCell(from: tableView, indexPath: indexPath) as? WhereClauseTableViewCell {
-            cell.updateContent(statement: whereClause)
+            cell.updateContent(statement: whereClause, row: indexPath.row - 1)
             return cell
         }
         else if section == getSection(of: .where),
             let whereClause = wheres?.getDescription(row: indexPath.row),
             let cell = getWhereClauseTableViewCell(from: tableView, indexPath: indexPath) as? WhereClauseTableViewCell {
-            cell.updateContent(statement: whereClause)
+            cell.updateContent(statement: whereClause, row: indexPath.row)
             return cell
         }
         
