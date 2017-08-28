@@ -65,37 +65,31 @@ indirect enum WhereClause {
     }
     
     func getLast() -> WhereClause? {
-        if case .and(let list) = self {
-            return list.last?.getLast()
-        }
-        else if case .or(let list) = self {
-            return list.last?.getLast()
-        }
-        else if case .bracket(let clause) = self {
-            return clause.getLast()
-        }
-        return self
+        return getLast(ancestor: []).last
     }
     
-    func isLastBaseWrapWithBracket() -> Bool {
+    private func getLast(ancestor: [WhereClause]) -> [WhereClause] {
         if case .and(let list) = self {
-            if let last = list.last, last.isBracket(), case .bracket(let clause) = last {
-                return clause.isBase()
-            }
-            else {
-                return list.last?.isLastBaseWrapWithBracket() ?? false
-            }
+            return list.last?.getLast(ancestor: ancestor + self) ?? ancestor
         }
         else if case .or(let list) = self {
-            if let last = list.last, last.isBracket(), case .bracket(let clause) = last {
-                return clause.isBase()
-            }
-            else {
-                return list.last?.isLastBaseWrapWithBracket() ?? false
-            }
+            return list.last?.getLast(ancestor: ancestor + self) ?? ancestor
         }
         else if case .bracket(let clause) = self {
-            return clause.isBase()
+            return clause.getLast(ancestor: ancestor + self)
+        }
+        return ancestor + self
+    }
+    
+    func isLastClauseWrapWithBracket() -> Bool {
+        let root = getLast(ancestor: [])
+        if root.count > 2 {
+            let lastIndex = root.count - 1
+            return root[lastIndex - 1].isBracket() ||
+                    ((root[lastIndex - 1].isOr() || root[lastIndex - 1].isAdd()) && root[lastIndex - 2].isBracket())
+        }
+        else if root.count > 1 {
+            return root[0].isBracket()
         }
         return false
     }
@@ -106,13 +100,13 @@ indirect enum WhereClause {
             return (prefix, statement.description, suffix, row, isLast)
         }
         else if case .and(let list) = self {
-            return getDescription(row: row, prefix: prefix + WhereCategoryDisplay.and(0), suffix: suffix, list: list)
+            return getDescription(row: row, prefix: prefix + WhereCategoryDisplay.and(0, list.count), suffix: suffix, list: list)
         }
         else if case .or(let list) = self {
-            return getDescription(row: row, prefix: prefix + WhereCategoryDisplay.or(0), suffix: suffix, list: list)
+            return getDescription(row: row, prefix: prefix + WhereCategoryDisplay.or(0, list.count), suffix: suffix, list: list)
         }
         else if case .bracket(let clause) = self {
-            return clause.getDescription(row: row, prefix: prefix + WhereCategoryDisplay.bracketStart(row), suffix: suffix + WhereCategoryDisplay.bracketEnd(false))
+            return clause.getDescription(row: row, prefix: prefix + WhereCategoryDisplay.bracketStart(row), suffix: suffix + WhereCategoryDisplay.bracketEnd(row))
         }
         return nil
     }
@@ -125,8 +119,11 @@ indirect enum WhereClause {
             count += list[index].getCount()
         } while index + 1 < list.count && row >= count
         let rowInArray = row - count + list[index].getCount()
-        let useIndex = list[index].isBase()
-        return list[index].getDescription(row: rowInArray, prefix: prefix.update(to: useIndex ? index : rowInArray), suffix: suffix, isLast: index + 1 == list.count)
+        let useIndex = list[index].isBase() || list[index].isBracket()
+        return list[index].getDescription(row: rowInArray,
+                                          prefix: prefix.update(to: useIndex ? index : rowInArray),
+                                          suffix: suffix.update(to: useIndex ? index : rowInArray),
+                                          isLast: index + 1 == list.count)
     }
     
     func insert(whereClause: WhereClause) -> WhereClause {
@@ -178,7 +175,7 @@ indirect enum WhereClause {
         else if whereClause.isBase() && category == .and {
             return .and([whereClause, self])
         }
-        else if whereClause.isOr() && category == .or {
+        else if whereClause.isBase() && category == .or {
             return .or([whereClause, self])
         }
         else if endLastBracket && whereClause.isAdd() && category == .or {
@@ -189,7 +186,7 @@ indirect enum WhereClause {
         }
         else if case .and(let list) = whereClause {
             var _list = list
-            if category == .and && endLastBracket {
+            if category == .and && (endLastBracket || list.last?.isBase() ?? false) {
                 _list.append(self)
             }
             else {
@@ -200,7 +197,7 @@ indirect enum WhereClause {
         }
         else if case .or(let list) = whereClause {
             var _list = list
-            if category == .or && endLastBracket {
+            if category == .or && (endLastBracket || list.last?.isBase() ?? false) {
                 _list.append(self)
             }
             else {
@@ -227,4 +224,10 @@ indirect enum WhereClause {
         }
         return 0
     }
+}
+
+func + (lhs: [WhereClause], rhs: WhereClause) -> [WhereClause] {
+    var list = lhs
+    list.append(rhs)
+    return list
 }

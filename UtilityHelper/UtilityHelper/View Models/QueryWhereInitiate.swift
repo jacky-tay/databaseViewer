@@ -20,7 +20,7 @@ class QueryWhereInitiate: NSObject, GenericTableViewModel {
         list = [(.and, [.andWithBracket, .andWithoutBracket]),
                 (.or, [.orWithBracket, .orWithoutBracket])]
         
-        if !bracketHasEnded && (queryRequest.wheres?.isLastBaseWrapWithBracket() ?? false || queryRequest.wheres?.getLast()?.isBracket() ?? false) {
+        if !bracketHasEnded && (queryRequest.wheres?.isLastClauseWrapWithBracket() ?? false || queryRequest.wheres?.getLast()?.isBracket() ?? false) {
             list.insert((.default, [.endBracket]), at: 0)
         }
     }
@@ -61,27 +61,14 @@ class QueryWhereInitiate: NSObject, GenericTableViewModel {
         }
         else {
             let isAndWithNewOr = (queryRequest.wheres?.isAdd() ?? false) &&
-                !(queryRequest.wheres?.isLastBaseWrapWithBracket() ?? false) &&
+                !(queryRequest.wheres?.isLastClauseWrapWithBracket() ?? false) &&
                 option.isOr()
             let isOrWithNewAnd = (queryRequest.wheres?.isOr() ?? false) &&
-                !(queryRequest.wheres?.isLastBaseWrapWithBracket() ?? false) &&
+                !(queryRequest.wheres?.isLastClauseWrapWithBracket() ?? false) &&
                 option.isAnd()
             viewModel = QueryWhere(queryRequest: queryRequest, action: .where, whereOption: option, endLastBracket: endLastBracket || isAndWithNewOr || isOrWithNewAnd)
         }
-        
-//        if !(queryRequest.wheres?.isAdd() ?? true) && option.isAnd() {
-//            queryRequest.convertWhereClauseToBracketIfNeeded()
-//            queryRequest.insert(clause: .add([]))
-//        }
-//        else if !(queryRequest.wheres?.isOr() ?? true) && option.isOr() {
-//            queryRequest.convertWhereClauseToBracketIfNeeded()
-//            queryRequest.insert(clause: .or([]))
-//        }
-//        
-//        if option.isBracket() {
-//            queryRequest.insert(clause: .bracket(nil))
-//        }
-        
+
         if let viewModel = viewModel,
             let vc = GenericTableViewController.getViewController(viewModel: viewModel) {
             navigationController?.pushViewController(vc, animated: true)

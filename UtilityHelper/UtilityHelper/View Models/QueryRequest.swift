@@ -111,6 +111,7 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
     
     func reload() {
         delegate?.reload()
+        print()
     }
     
     fileprivate func getSection(of section: QueryAction) -> Int {

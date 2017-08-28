@@ -24,9 +24,9 @@ enum WhereCategory: CustomStringConvertible {
 
 enum WhereCategoryDisplay: CustomStringConvertible {
     case bracketStart(Int)
-    case bracketEnd(Bool)
-    case and(Int)
-    case or(Int)
+    case bracketEnd(Int)
+    case and(Int, Int)
+    case or(Int, Int)
     
     var description: String {
         switch self {
@@ -39,26 +39,48 @@ enum WhereCategoryDisplay: CustomStringConvertible {
     
     func debugDesription() -> String {
         switch self {
-        case .and(let v):  return "AND(\(v)) "
-        case .bracketEnd(let v):   return ")(\(v))"
-        case .bracketStart(let v): return "((\(v))"
-        case .or(let v):   return "OR(\(v)) "
+        case .and(let v, let c):  return "AND.\(v).\(c)"
+        case .bracketEnd(let v):   return ").\(v)"
+        case .bracketStart(let v): return "(.\(v)"
+        case .or(let v, let c):   return "OR.\(v)\(c)"
+        }
+    }
+    
+    func getBracketIndex() -> Int? {
+        switch self {
+        case .bracketStart(let v), .bracketEnd(let v):    return v
+        default:    return nil
+        }
+    }
+    
+    func getAndOrIndexCount() -> (index: Int, count: Int)? {
+        switch self {
+        case .and(let i, let c), .or(let i, let c):    return (i, c)
+        default:    return nil
         }
     }
 }
 
 extension Array where Element == WhereCategoryDisplay {
+    
     func update(to value: Int) -> [WhereCategoryDisplay] {
         var list = Array(self)
-        let lastValue = list.removeLast()
-        if case .and(_) = lastValue {
-            list.append(.and(value))
+        guard !list.isEmpty else {
+            return list
         }
-        else if case .or(_) = lastValue {
-            list.append(.or(value))
+        
+        let lastValue = list.removeLast()
+        if case .and(_ ,let count) = lastValue {
+            list.append(.and(value, count))
+        }
+        else if case .or(_, let count) = lastValue {
+            list.append(.or(value, count))
         }
         else if case .bracketStart(_) = lastValue {
             list.append(.bracketStart(value))
+        }
+        else if case .bracketEnd(_) = lastValue {
+            list.append(.bracketEnd(value))
         }
         return list
     }
