@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias WhereClauseStatement = (prefix: [WhereCategoryDisplay], statement: String, suffix: [WhereCategoryDisplay], index: Int, isLast: Bool)
+typealias WhereClauseStatement = (prefix: [WhereCategoryDisplay], statement: String, suffix: [WhereCategoryDisplay])
 
 indirect enum WhereClause {
     case and([WhereClause])
@@ -96,8 +96,7 @@ indirect enum WhereClause {
     
     func getDescription(row: Int, prefix: [WhereCategoryDisplay] = [], suffix: [WhereCategoryDisplay] = [], isLast: Bool = false) -> WhereClauseStatement? {
         if case .base(let statement) = self {
-            // TODO
-            return (prefix, statement.description, suffix, row, isLast)
+            return (prefix, statement.description, suffix)
         }
         else if case .and(let list) = self {
             return getDescription(row: row, prefix: prefix + WhereCategoryDisplay.and(0, list.count), suffix: suffix, list: list)
@@ -109,6 +108,51 @@ indirect enum WhereClause {
             return clause.getDescription(row: row, prefix: prefix + WhereCategoryDisplay.bracketStart(row), suffix: suffix + WhereCategoryDisplay.bracketEnd(row))
         }
         return nil
+    }
+    
+    static func getDisplayDescription(statement: WhereClauseStatement?, highlightColor: Bool = false) -> (prefix: NSAttributedString, statement: String, suffix: NSAttributedString)? {
+        
+        guard let statement = statement else {
+            return nil
+        }
+        let prefixString = NSMutableAttributedString()
+        var preList = [WhereCategoryDisplay]()
+        
+        for pre in statement.prefix.enumerated() {
+            var show = false
+            if let andOr = pre.element.getAndOrIndexCount() {
+                show = andOr.index != 0
+                if show && pre.offset + 1 < statement.prefix.count, let bracket = statement.prefix[pre.offset + 1].getBracketIndex() {
+                    show = bracket == 0
+                }
+                preList = preList.update(to: (andOr.index - andOr.count))
+            }
+            else if let bracket = pre.element.getBracketIndex() {
+                show = bracket == 0
+                preList.append(.bracketStart(-1))
+            }
+            let color = show ? pre.element.getColor(highlightColor: highlightColor) : UIColor.clear
+            prefixString.append(NSAttributedString(string: pre.element.description, attributes: [NSForegroundColorAttributeName : color]))
+        }
+        
+        preList = preList.reversed()
+        let suffixString = NSMutableAttributedString()
+        for pre in preList.enumerated() {
+            var show = true
+            
+            if let preIndex = pre.element.getBracketIndex() {
+                let suffix = preList.prefix(pre.offset)
+                for s in suffix {
+                    if let bracket = s.getBracketIndex(), bracket != -1 {
+                        show = false
+                    }
+                }
+                show = show && preIndex == -1
+            }
+            let color = show ? UIColor.darkText : UIColor.clear
+            suffixString.append(NSAttributedString(string: ")", attributes: [NSForegroundColorAttributeName : color]))
+        }
+        return (prefixString, statement.statement, suffixString)
     }
     
     private func getDescription(row: Int, prefix: [WhereCategoryDisplay], suffix: [WhereCategoryDisplay], list: [WhereClause]) -> WhereClauseStatement? {
@@ -126,43 +170,14 @@ indirect enum WhereClause {
                                           isLast: index + 1 == list.count)
     }
     
-    func insert(whereClause: WhereClause) -> WhereClause {
-        if case .and(let list) = self {
-            var array = list
-            array.insert(whereClause, at: 0)
-            return .and(array)
+    func insert(statement: Statement, whereOption: WhereOptions?, endLastBracket: Bool?) -> WhereClause {
+        guard let whereOption = whereOption, let endLastBracket = endLastBracket else {
+            return .base(statement)
         }
-        else if case .or(let list) = self {
-            var array = list
-            array.insert(whereClause, at: 0)
-            return .or(array)
-        }
-        else {
-            return whereClause.append(whereClause: self)
-        }
+        let clause: WhereClause = whereOption.isBracket() ? .bracket(.base(statement)) : .base(statement)
+        return clause.update(whereClause: self, with: whereOption.getCategory(), endLastBracket: endLastBracket)
     }
     
-    func append(whereClause: WhereClause) -> WhereClause {
-        if case .and(let list) = self {
-            var array = list
-            array.append(whereClause)
-            return .and(array)
-        }
-        else if case .or(let list) = self {
-            var array = list
-            array.append(whereClause)
-            return .or(array)
-        }
-        else if case .bracket(let clause) = self {
-            if WhereClause.canAppend(lhs: clause, rhs: whereClause) {
-                return .bracket(clause.append(whereClause: whereClause))
-            }
-            else {
-                return .bracket(whereClause.insert(whereClause: clause))
-            }
-        }
-        return whereClause
-    }
     
     func update(whereClause: WhereClause?, with category: WhereCategory, endLastBracket: Bool) -> WhereClause {
         guard let whereClause = whereClause else {

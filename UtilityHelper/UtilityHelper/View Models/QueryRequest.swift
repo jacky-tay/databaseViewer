@@ -82,31 +82,8 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
         return getDatabaseAliasTable(from: alias)?.toAliasTable()?.properties.first { $0.name == propertyName }
     }
     
-//    func convertWhereClauseToBracketIfNeeded() {
-//        if wheres?.isOr() ?? false || wheres?.isAdd() ?? false {
-//            wheres = .bracket(wheres)
-//        }
-//    }
-    
-//    func insert(clause: WhereClause) {
-//        if wheres == nil {
-//            wheres = clause
-//        }
-//        else if let selected = wheres, WhereClause.canAppend(lhs: selected, rhs: clause) {
-//            wheres = selected.append(whereClause: clause)
-//        }
-//        else if let selected = wheres {
-//            wheres = clause.insert(whereClause: selected)
-//        }
-//    }
-    
     func insert(statement: Statement, whereOption: WhereOptions?, endLastBracket: Bool?) {
-        guard let whereOption = whereOption, let endLastBracket = endLastBracket else {
-            wheres = .base(statement)
-            return
-        }
-        let clause: WhereClause = whereOption.isBracket() ? .bracket(.base(statement)) : .base(statement)
-        wheres = clause.update(whereClause: wheres, with: whereOption.getCategory(), endLastBracket: endLastBracket)
+        wheres = wheres?.insert(statement: statement, whereOption: whereOption, endLastBracket: endLastBracket) ?? .base(statement)
     }
     
     func reload() {
@@ -146,14 +123,14 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
         else if section == 1, !joins.isEmpty {
             cell.textLabel?.attributedText = NSMutableAttributedString
                 .build(from: [(from.tableName, nil),
-                              (" AS ", Material.blue),
+                              (" AS ", MaterialColor.blue),
                               (from.alias, nil)])
         }
         else if section > 1 && section < joins.count + 2, row == 0 {
             let join = joins[section - 2]
             cell.textLabel?.attributedText = NSMutableAttributedString
                 .build(from: [(join.otherTable.tableName, nil),
-                              (" AS ", Material.blue),
+                              (" AS ", MaterialColor.blue),
                               (join.otherTable.alias, nil)])
         }
         else if section == getSection(of: .groupBy) {
@@ -190,7 +167,7 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
     }
     
     func getTintColor() -> UIColor {
-        return delegate?.getTintColor() ?? Material.blue
+        return delegate?.getTintColor() ?? MaterialColor.blue
     }
 }
 

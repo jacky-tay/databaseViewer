@@ -60,12 +60,16 @@ extension GenericTableViewModel {
         return tableView.dequeueReusableCell(withIdentifier: "WhereClauseTableViewCell", for: indexPath)
     }
     
+    func getTripleLinesTableViewCell(from tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: "TripleLinesTableViewCell", for: indexPath)
+    }
+    
     func applyHeaderLayout(view: UIView) {
         if let headerView = view as? UITableViewHeaderFooterView,
             let header = headerView.textLabel?.text {
             let range = NSString(string: header).range(of: " AS ")
             let attributedText = NSMutableAttributedString(string: header)
-            attributedText.addAttributes([NSForegroundColorAttributeName : Material.blue], range: range)
+            attributedText.addAttributes([NSForegroundColorAttributeName : MaterialColor.blue], range: range)
             headerView.textLabel?.attributedText = attributedText
         }
     }

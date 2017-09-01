@@ -32,7 +32,7 @@ class AliasPropertyOrder: AliasProperty, Hashable {
     func getAttributedString() -> NSAttributedString {
         return NSMutableAttributedString.build(from: [(description, nil),
                                                       (" ", nil),
-                                                      (order.description, Material.blue)])
+                                                      (order.description, MaterialColor.blue)])
     }
     
     func toggleOrder() {

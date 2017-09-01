@@ -59,6 +59,13 @@ enum WhereCategoryDisplay: CustomStringConvertible {
         default:    return nil
         }
     }
+    
+    func getColor(highlightColor: Bool) -> UIColor {
+        switch self {
+        case .bracketStart, .bracketEnd:    return UIColor.darkText
+        default:    return highlightColor ? UIColor(red: 41, green: 98, blue: 255) : UIColor.darkText
+        }
+    }
 }
 
 extension Array where Element == WhereCategoryDisplay {

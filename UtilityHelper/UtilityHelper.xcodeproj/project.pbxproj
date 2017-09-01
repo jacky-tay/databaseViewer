@@ -48,6 +48,8 @@
 		28C3071C1F218B58004D9ED9 /* QueryJoinRequestWithTableOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3071B1F218B58004D9ED9 /* QueryJoinRequestWithTableOptions.swift */; };
 		28C3071E1F21A143004D9ED9 /* QuerySelect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3071D1F21A143004D9ED9 /* QuerySelect.swift */; };
 		28C307201F21C888004D9ED9 /* QueryOrderBy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C3071F1F21C888004D9ED9 /* QueryOrderBy.swift */; };
+		28C67B7E1F54215900D293ED /* MaterialColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C67B7D1F54215900D293ED /* MaterialColor.swift */; };
+		28C67B801F542BB900D293ED /* TripleLinesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C67B7F1F542BB900D293ED /* TripleLinesTableViewCell.swift */; };
 		28EFDDF31F221D4300557145 /* PropertyRelationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EFDDF21F221D4300557145 /* PropertyRelationship.swift */; };
 		28EFDDF51F22293200557145 /* DatabaseTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EFDDF41F22293200557145 /* DatabaseTableView.swift */; };
 		28EFDDF71F2233B000557145 /* DatabaseTableSelect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28EFDDF61F2233B000557145 /* DatabaseTableSelect.swift */; };
@@ -123,6 +125,8 @@
 		28C3071B1F218B58004D9ED9 /* QueryJoinRequestWithTableOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryJoinRequestWithTableOptions.swift; sourceTree = "<group>"; };
 		28C3071D1F21A143004D9ED9 /* QuerySelect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuerySelect.swift; sourceTree = "<group>"; };
 		28C3071F1F21C888004D9ED9 /* QueryOrderBy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryOrderBy.swift; sourceTree = "<group>"; };
+		28C67B7D1F54215900D293ED /* MaterialColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialColor.swift; sourceTree = "<group>"; };
+		28C67B7F1F542BB900D293ED /* TripleLinesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TripleLinesTableViewCell.swift; sourceTree = "<group>"; };
 		28EFDDF21F221D4300557145 /* PropertyRelationship.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyRelationship.swift; sourceTree = "<group>"; };
 		28EFDDF41F22293200557145 /* DatabaseTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableView.swift; sourceTree = "<group>"; };
 		28EFDDF61F2233B000557145 /* DatabaseTableSelect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTableSelect.swift; sourceTree = "<group>"; };
@@ -209,6 +213,7 @@
 			children = (
 				850C38151F1C63AD00F2D116 /* DatabaseResultCollectionViewCell.swift */,
 				850C380B1F1C52DC00F2D116 /* DatabaseViewer.storyboard */,
+				28C67B7F1F542BB900D293ED /* TripleLinesTableViewCell.swift */,
 				850C38101F1C632800F2D116 /* DuplexCollectionViewLayout.swift */,
 				2822436B1F3F267E005501BE /* ExecuteTableViewCell.swift */,
 				2822436D1F3FAB7F005501BE /* WhereClauseTableViewCell.swift */,
@@ -336,6 +341,7 @@
 		85E70F7E1F1EF52900F30771 /* Styles */ = {
 			isa = PBXGroup;
 			children = (
+				28C67B7D1F54215900D293ED /* MaterialColor.swift */,
 				2836E4D31F28A03D00815D65 /* StyleKit.swift */,
 				85E70F7F1F1EF75B00F30771 /* Semi Modal Presenter */,
 			);
@@ -472,6 +478,7 @@
 				28C307181F217661004D9ED9 /* GenericTableViewController.swift in Sources */,
 				850C38291F1D753A00F2D116 /* QueryAction.swift in Sources */,
 				2836E4CC1F24BEBC00815D65 /* QueryFetchIn.swift in Sources */,
+				28C67B801F542BB900D293ED /* TripleLinesTableViewCell.swift in Sources */,
 				85599E301F1C45430024FA39 /* Table.swift in Sources */,
 				850C38161F1C63AD00F2D116 /* DatabaseResultCollectionViewCell.swift in Sources */,
 				850C38271F1D655700F2D116 /* Join.swift in Sources */,
@@ -495,6 +502,7 @@
 				28EFDDF31F221D4300557145 /* PropertyRelationship.swift in Sources */,
 				2836E4D21F275BC600815D65 /* QueryBetweenOperatorTextInput.swift in Sources */,
 				28F8CDFA1F2DC01E00325516 /* QueryWhereInitiate.swift in Sources */,
+				28C67B7E1F54215900D293ED /* MaterialColor.swift in Sources */,
 				28F8CDDE1F2C6B0B00325516 /* WhereClause.swift in Sources */,
 				850C38091F1C52BD00F2D116 /* UICollectionViewLayoutAttributesExtension.swift in Sources */,
 				28C3071C1F218B58004D9ED9 /* QueryJoinRequestWithTableOptions.swift in Sources */,

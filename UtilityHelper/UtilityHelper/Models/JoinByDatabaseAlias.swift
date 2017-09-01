@@ -24,11 +24,6 @@ class JoinByDatabaseAlias : DatabaseAliasTable {
         if onConditions == nil {
             onConditions = clause
         }
-        else if let selected = onConditions, WhereClause.canAppend(lhs: selected, rhs: clause) {
-            onConditions = selected.append(whereClause: clause)
-        }
-        else if let selected = onConditions, WhereClause.shouldInsert(lhs: selected, rhs: clause) {
-            onConditions = clause.insert(whereClause: selected)
-        }
+        // TODO
     }
 }

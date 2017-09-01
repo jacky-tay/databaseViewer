@@ -14,6 +14,7 @@ enum Argument: WhereArgument {
     case isNotNull
     case between
     case like
+    case `default`
     
     var description: String {
         switch self {
@@ -22,6 +23,7 @@ enum Argument: WhereArgument {
         case .isNotNull:    return "IS NOT NULL"
         case .between:  return "BETWEEN"
         case .like:     return "LIKE"
+        case .default:  return ""
         }
     }
     
