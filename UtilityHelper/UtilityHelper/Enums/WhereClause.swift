@@ -16,26 +16,6 @@ indirect enum WhereClause {
     case bracket(WhereClause)
     case base(Statement)
     
-    static func canAppend(lhs: WhereClause, rhs: WhereClause) -> Bool {
-        switch (lhs, rhs) {
-        case (.and, .base), (.and, .bracket), (.or, .base), (.or, .bracket):
-            return true
-        case (.bracket, base), (.bracket, .and), (.bracket, .or):
-            return true
-        default:
-            return false
-        }
-    }
-    
-    static func shouldInsert(lhs: WhereClause, rhs: WhereClause) -> Bool {
-        switch (lhs, rhs) {
-        case (.base, .and), (.bracket, .and), (.base, .or), (.bracket, .or):
-            return true
-        default:
-            return false
-        }
-    }
-    
     func isBase() -> Bool {
         if case .base(_) = self {
             return true
@@ -92,6 +72,40 @@ indirect enum WhereClause {
             return root[0].isBracket()
         }
         return false
+    }
+    
+    func toNSPredicate(filterBy alias: String?) -> NSPredicate? {
+        if case .and(let list) = self {
+            let predicates = list.flatMap { $0.toNSPredicate(filterBy: alias) }
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }
+        else if case .or(let list) = self {
+            let predicates = list.flatMap { $0.toNSPredicate(filterBy: alias) }
+            return NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+        }
+        else if case .bracket(let clause) = self {
+            return clause.toNSPredicate(filterBy: alias)
+        }
+        else if case .base(let statement) = self {
+            return statement.toNSPredicate(filterBy: alias)
+        }
+        return nil
+    }
+    
+    func getPropertyNames(filterBy alias: String?) -> [String?] {
+        if case .and(let list) = self {
+            return list.flatMap { $0.getPropertyNames(filterBy: alias) }
+        }
+        else if case .or(let list) = self {
+            return list.flatMap { $0.getPropertyNames(filterBy: alias) }
+        }
+        else if case .bracket(let clause) = self {
+            return clause.getPropertyNames(filterBy: alias)
+        }
+        else if case .base(let statement) = self {
+            return statement.aliasProperty.alias == alias ? [statement.aliasProperty.propertyName] : [nil]
+        }
+        return [nil]
     }
     
     func getDescription(row: Int, prefix: [WhereCategoryDisplay] = [], suffix: [WhereCategoryDisplay] = [], isLast: Bool = false) -> WhereClauseStatement? {
@@ -177,7 +191,6 @@ indirect enum WhereClause {
         let clause: WhereClause = whereOption.isBracket() ? .bracket(.base(statement)) : .base(statement)
         return clause.update(whereClause: self, with: whereOption.getCategory(), endLastBracket: endLastBracket)
     }
-    
     
     func update(whereClause: WhereClause?, with category: WhereCategory, endLastBracket: Bool) -> WhereClause {
         guard let whereClause = whereClause else {

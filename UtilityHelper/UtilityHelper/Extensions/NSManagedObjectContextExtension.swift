@@ -47,4 +47,22 @@ extension NSManagedObjectContext {
         } // performAndWait
         return results.distinct()
     }
+    
+    func fetch(for entityName: String, predicate: NSPredicate?, keys: [String]) -> [[String : Any]] {
+        var results = [[String : Any]]()
+        performAndWait { [weak self] in
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+            fetchRequest.predicate = predicate
+            if let fetchResults = (try? self?.fetch(fetchRequest)) as? [NSManagedObject] {
+                for fetchResult in fetchResults {
+                    var dict = [String : Any]()
+                    for key in keys {
+                        dict[key] = fetchResult.value(forKey: key)
+                    } // for key
+                    results.append(dict)
+                } // for fetchResults
+            } // if let
+        } // performAndWait
+        return results
+    }
 }

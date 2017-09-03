@@ -6,6 +6,7 @@
 //  Copyright © 2017 JackyTay. All rights reserved.
 //
 
+import CoreData
 import Foundation
 
 class Statement: CustomStringConvertible {
@@ -44,5 +45,25 @@ class Statement: CustomStringConvertible {
         self.aliasProperty = aliasProperty
         self.argument = argument
         self.otherAliasProperty = otherAliasProperty
+    }
+    
+    func toNSPredicate(filterBy tableAlias: String?) -> NSPredicate? {
+        guard aliasProperty.alias == tableAlias, let propertyName = aliasProperty.propertyName else {
+            return nil
+        }
+        if argument.description == Argument.isNull.description {
+            return NSPredicate(format: "%K = nil", propertyName)
+        }
+        else if argument.description == Argument.isNotNull.description {
+            return NSPredicate(format: "%K != nil", propertyName)
+        }
+        else if argument.description == Argument.in.description {
+            let descriptions = values.flatMap { ($0 as? AnyObject)?.description }
+            return NSCompoundPredicate(orPredicateWithSubpredicates: descriptions.map { NSPredicate(format: "%K = %@", propertyName, $0) })
+        }
+        else if let value = (values.first as? AnyObject)?.description {
+            return NSPredicate(format: "%K \(argument.description) %@", propertyName, value)
+        }
+        return nil
     }
 }

@@ -164,6 +164,10 @@ class QueryRequest: NSObject, ExecuteTableViewCellDelegate {
     // MARK: - ExecuteTableViewCellDelegate
     func execute() {
         print("Execute...")
+        let tables = getSelectableDatabaseAliasTables()
+        for table in tables {
+            FetchResult.executeAndProcess(aliasTable: table, selected: selected, whereClause: wheres, groupBy: groupBy, orderBy: orderBy)
+        }
     }
     
     func getTintColor() -> UIColor {
